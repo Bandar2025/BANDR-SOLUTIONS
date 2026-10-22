@@ -1,0 +1,362 @@
+@import "tailwindcss";
+
+@layer base {
+  :root,
+  html[data-theme="midnight-pro"] {
+    --font-ar: 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
+    --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+    /* 1. Midnight Pro (Default Flagship Dark Theme) */
+    --bg-primary: #0B1020;
+    --bg-surface: #121A2B;
+    --bg-elevated: #192338;
+    --bg-header: rgba(11, 16, 32, 0.94);
+    --bg-footer: #080C18;
+    --text-primary: #F5F7FF;
+    --text-secondary: #D0D8E8;
+    --text-muted: #AAB5CA;
+    --border-subtle: #22304A;
+    --border-strong: #33476B;
+    --accent-primary: #5B8CFF;
+    --accent-primary-hover: #477BFF;
+    --accent-secondary: #43D9D0;
+    --accent-soft: rgba(91, 140, 255, 0.14);
+    --btn-primary-bg: #3B76F6;
+    --btn-primary-hover: #2563EB;
+    --btn-primary-text: #FFFFFF;
+    --focus-ring: #5B8CFF;
+    --shadow-card: 0 10px 30px -10px rgba(4, 8, 20, 0.55);
+    --grid-line: rgba(91, 140, 255, 0.07);
+    --status-success: #10B981;
+    --status-warning: #F59E0B;
+    --status-error: #EF4444;
+  }
+
+  /* 2. Obsidian — Sophisticated Near-Black Studio */
+  html[data-theme="obsidian"] {
+    --bg-primary: #090C12;
+    --bg-surface: #111621;
+    --bg-elevated: #182030;
+    --bg-header: rgba(9, 12, 18, 0.94);
+    --bg-footer: #06080D;
+    --text-primary: #F8FAFC;
+    --text-secondary: #D1D5DB;
+    --text-muted: #9CA3AF;
+    --border-subtle: #232C3D;
+    --border-strong: #374151;
+    --accent-primary: #6E9BFF;
+    --accent-primary-hover: #5889FF;
+    --accent-secondary: #94A3B8;
+    --accent-soft: rgba(110, 155, 255, 0.13);
+    --btn-primary-bg: #3B6EF5;
+    --btn-primary-hover: #295CE0;
+    --btn-primary-text: #FFFFFF;
+    --focus-ring: #6E9BFF;
+    --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.65);
+    --grid-line: rgba(148, 163, 184, 0.06);
+    --status-success: #10B981;
+    --status-warning: #F59E0B;
+    --status-error: #EF4444;
+  }
+
+  /* 3. Arctic Light — Clean White & Cool-Gray Professional Interface */
+  html[data-theme="arctic-light"] {
+    --bg-primary: #F8FAFC;
+    --bg-surface: #FFFFFF;
+    --bg-elevated: #F1F5F9;
+    --bg-header: rgba(255, 255, 255, 0.95);
+    --bg-footer: #F1F5F9;
+    --text-primary: #0F172A;
+    --text-secondary: #334155;
+    --text-muted: #475569;
+    --border-subtle: #E2E8F0;
+    --border-strong: #CBD5E1;
+    --accent-primary: #2563EB;
+    --accent-primary-hover: #1D4ED8;
+    --accent-secondary: #0D9488;
+    --accent-soft: rgba(37, 99, 235, 0.1);
+    --btn-primary-bg: #2563EB;
+    --btn-primary-hover: #1D4ED8;
+    --btn-primary-text: #FFFFFF;
+    --focus-ring: #2563EB;
+    --shadow-card: 0 8px 24px -8px rgba(15, 23, 42, 0.07);
+    --grid-line: rgba(37, 99, 235, 0.06);
+    --status-success: #059669;
+    --status-warning: #D97706;
+    --status-error: #DC2626;
+  }
+
+  /* 4. Ocean Breeze — Deep Blue & Turquoise Accents */
+  html[data-theme="ocean-breeze"] {
+    --bg-primary: #071426;
+    --bg-surface: #0D213B;
+    --bg-elevated: #152F52;
+    --bg-header: rgba(7, 20, 38, 0.94);
+    --bg-footer: #050E1B;
+    --text-primary: #F0F9FF;
+    --text-secondary: #BAE6FD;
+    --text-muted: #93C5FD;
+    --border-subtle: #1E3A5F;
+    --border-strong: #2B5282;
+    --accent-primary: #38BDF8;
+    --accent-primary-hover: #0EA5E9;
+    --accent-secondary: #2DD4BF;
+    --accent-soft: rgba(56, 189, 248, 0.14);
+    --btn-primary-bg: #0284C7;
+    --btn-primary-hover: #0369A1;
+    --btn-primary-text: #FFFFFF;
+    --focus-ring: #38BDF8;
+    --shadow-card: 0 10px 30px -10px rgba(3, 12, 26, 0.6);
+    --grid-line: rgba(56, 189, 248, 0.07);
+    --status-success: #10B981;
+    --status-warning: #F59E0B;
+    --status-error: #EF4444;
+  }
+
+  /* 5. Emerald Tech — Refined Emerald Accents on Balanced Neutral Surfaces */
+  html[data-theme="emerald-tech"] {
+    --bg-primary: #081512;
+    --bg-surface: #0F231E;
+    --bg-elevated: #16322B;
+    --bg-header: rgba(8, 21, 18, 0.94);
+    --bg-footer: #050F0C;
+    --text-primary: #ECFDF5;
+    --text-secondary: #D1FAE5;
+    --text-muted: #A7F3D0;
+    --border-subtle: #1F4239;
+    --border-strong: #2D5E52;
+    --accent-primary: #10B981;
+    --accent-primary-hover: #059669;
+    --accent-secondary: #34D399;
+    --accent-soft: rgba(16, 185, 129, 0.14);
+    --btn-primary-bg: #059669;
+    --btn-primary-hover: #047857;
+    --btn-primary-text: #FFFFFF;
+    --focus-ring: #10B981;
+    --shadow-card: 0 10px 30px -10px rgba(4, 15, 12, 0.6);
+    --grid-line: rgba(16, 185, 129, 0.07);
+    --status-success: #10B981;
+    --status-warning: #F59E0B;
+    --status-error: #EF4444;
+  }
+
+  /* 6. Royal Violet — Sophisticated Violet Accents with Accessible Contrast */
+  html[data-theme="royal-violet"] {
+    --bg-primary: #0E0B1E;
+    --bg-surface: #16122E;
+    --bg-elevated: #201B40;
+    --bg-header: rgba(14, 11, 30, 0.94);
+    --bg-footer: #090714;
+    --text-primary: #F5F3FF;
+    --text-secondary: #DDD6FE;
+    --text-muted: #C4B5FD;
+    --border-subtle: #2D2654;
+    --border-strong: #433878;
+    --accent-primary: #A78BFA;
+    --accent-primary-hover: #8B5CF6;
+    --accent-secondary: #38BDF8;
+    --accent-soft: rgba(167, 139, 250, 0.15);
+    --btn-primary-bg: #7C3AED;
+    --btn-primary-hover: #6D28D9;
+    --btn-primary-text: #FFFFFF;
+    --focus-ring: #A78BFA;
+    --shadow-card: 0 10px 30px -10px rgba(8, 5, 20, 0.6);
+    --grid-line: rgba(167, 139, 250, 0.07);
+    --status-success: #10B981;
+    --status-warning: #F59E0B;
+    --status-error: #EF4444;
+  }
+
+  /* Layout Density Tokens */
+  html,
+  html[data-density="comfortable"] {
+    --section-py: 4.5rem;
+    --card-pad: 1.5rem;
+    --grid-gap: 1.5rem;
+  }
+
+  html[data-density="compact"] {
+    --section-py: 2.75rem;
+    --card-pad: 1.125rem;
+    --grid-gap: 1rem;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 180ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-x: hidden;
+  }
+
+  html[lang="ar"] body {
+    font-family: var(--font-ar);
+    line-height: 1.75;
+  }
+
+  html[lang="en"] body {
+    font-family: var(--font-sans);
+    line-height: 1.65;
+  }
+
+  html[lang="en"] h1,
+  html[lang="en"] h2,
+  html[lang="en"] h3,
+  html[lang="en"] h4,
+  html[lang="en"] .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  html[lang="ar"] h1,
+  html[lang="ar"] h2,
+  html[lang="ar"] h3,
+  html[lang="ar"] h4,
+  html[lang="ar"] .font-display {
+    font-family: var(--font-ar);
+    line-height: 1.35;
+  }
+
+  .font-mono-tabular {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Visible accessible keyboard focus ring across all themes */
+  *:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Semantic Theme Utility Classes */
+.theme-bg-primary {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.theme-bg-surface {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.theme-bg-elevated {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.theme-header {
+  background-color: var(--bg-header);
+  border-color: var(--border-subtle);
+}
+
+.theme-footer {
+  background-color: var(--bg-footer);
+  border-color: var(--border-subtle);
+}
+
+.theme-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+  padding: var(--card-pad);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.theme-card:hover {
+  border-color: var(--accent-primary);
+}
+
+.theme-card-elevated {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+}
+
+.theme-text-primary {
+  color: var(--text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--text-secondary);
+}
+
+.theme-text-muted {
+  color: var(--text-muted);
+}
+
+.theme-accent-text {
+  color: var(--accent-primary);
+}
+
+.theme-accent-secondary {
+  color: var(--accent-secondary);
+}
+
+.theme-border {
+  border-color: var(--border-subtle);
+}
+
+.theme-btn-primary {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.theme-btn-primary:hover {
+  background-color: var(--btn-primary-hover);
+}
+
+.theme-btn-secondary {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.theme-btn-secondary:hover {
+  border-color: var(--accent-primary);
+}
+
+.theme-section-spacing {
+  padding-top: var(--section-py);
+  padding-bottom: var(--section-py);
+}
+
+.theme-grid-gap {
+  gap: var(--grid-gap);
+}
+
+.theme-input {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+}
+
+.theme-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+
+/* Respect OS prefers-reduced-motion AND user-configured data-reduced-motion="true" */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html[data-reduced-motion="true"] *,
+html[data-reduced-motion="true"] *::before,
+html[data-reduced-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}

@@ -1,0 +1,358 @@
+{
+  "entities": {
+    "PortfolioProject": {
+      "title": "PortfolioProject",
+      "description": "A software or engineering project showcased in the Bandr Solutions portfolio.",
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "description": "URL-safe identifier for the project.",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "nameAr": {
+          "type": "string",
+          "description": "Project title in Arabic.",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "nameEn": {
+          "type": "string",
+          "description": "Project title in English.",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "descriptionAr": {
+          "type": "string",
+          "description": "Project summary description in Arabic.",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "descriptionEn": {
+          "type": "string",
+          "description": "Project summary description in English.",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "engineeringContributionAr": {
+          "type": "string",
+          "description": "Concise explanation of engineering contribution in Arabic.",
+          "minLength": 0,
+          "maxLength": 2000
+        },
+        "engineeringContributionEn": {
+          "type": "string",
+          "description": "Concise explanation of engineering contribution in English.",
+          "minLength": 0,
+          "maxLength": 2000
+        },
+        "category": {
+          "type": "string",
+          "description": "Domain category of the project.",
+          "enum": [
+            "e-commerce",
+            "enterprise-accounting",
+            "ai-iot",
+            "web-development",
+            "education-tech",
+            "healthcare-tech"
+          ]
+        },
+        "categoryLabelAr": {
+          "type": "string",
+          "description": "Arabic display label for the category.",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "categoryLabelEn": {
+          "type": "string",
+          "description": "English display label for the category.",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "technologies": {
+          "type": "array",
+          "description": "List of verified technologies used in the project (bounded <= 25)."
+        },
+        "url": {
+          "type": "string",
+          "description": "Main canonical external URL of the project (empty string if case study only).",
+          "minLength": 0,
+          "maxLength": 500
+        },
+        "sourceUrl": {
+          "type": "string",
+          "description": "Optional GitHub or source code repository URL.",
+          "minLength": 0,
+          "maxLength": 500
+        },
+        "featured": {
+          "type": "boolean",
+          "description": "Whether the project is highlighted as featured."
+        },
+        "displayOrder": {
+          "type": "number",
+          "description": "Numeric sort order in the portfolio."
+        },
+        "status": {
+          "type": "string",
+          "description": "Publication visibility state.",
+          "enum": ["published", "draft"]
+        },
+        "isCaseStudyOnly": {
+          "type": "boolean",
+          "description": "Whether the project is a documented engineering case study without a public demo URL."
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "description": "Main project thumbnail URL or optimized data URI.",
+          "minLength": 0,
+          "maxLength": 450000
+        },
+        "thumbnailAltAr": {
+          "type": "string",
+          "description": "Arabic alternative text for the main thumbnail.",
+          "minLength": 0,
+          "maxLength": 300
+        },
+        "thumbnailAltEn": {
+          "type": "string",
+          "description": "English alternative text for the main thumbnail.",
+          "minLength": 0,
+          "maxLength": 300
+        },
+        "galleryMediaIds": {
+          "type": "array",
+          "description": "Bounded list (<= 10) of project_media document IDs for the project gallery."
+        },
+        "ownerUid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the owner who created/updated the record.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the project record was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the project record was last updated."
+        }
+      },
+      "required": [
+        "slug",
+        "nameAr",
+        "nameEn",
+        "descriptionAr",
+        "descriptionEn",
+        "engineeringContributionAr",
+        "engineeringContributionEn",
+        "category",
+        "categoryLabelAr",
+        "categoryLabelEn",
+        "technologies",
+        "url",
+        "sourceUrl",
+        "featured",
+        "displayOrder",
+        "status",
+        "isCaseStudyOnly",
+        "thumbnailUrl",
+        "thumbnailAltAr",
+        "thumbnailAltEn",
+        "galleryMediaIds",
+        "ownerUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ProjectMedia": {
+      "title": "ProjectMedia",
+      "description": "Persistent, access-controlled gallery image or thumbnail asset belonging to a portfolio project.",
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "type": "string",
+          "description": "Parent project ID in /projects/{projectId}.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "fileName": {
+          "type": "string",
+          "description": "Sanitized safe file name.",
+          "minLength": 1,
+          "maxLength": 180,
+          "pattern": "^[a-zA-Z0-9_\\-\\.]+$"
+        },
+        "mimeType": {
+          "type": "string",
+          "description": "Validated image MIME type.",
+          "enum": ["image/jpeg", "image/png", "image/webp"]
+        },
+        "dataUrl": {
+          "type": "string",
+          "description": "Optimized responsive image data URI.",
+          "minLength": 20,
+          "maxLength": 650000
+        },
+        "altAr": {
+          "type": "string",
+          "description": "Arabic alternative text for accessibility.",
+          "minLength": 0,
+          "maxLength": 300
+        },
+        "altEn": {
+          "type": "string",
+          "description": "English alternative text for accessibility.",
+          "minLength": 0,
+          "maxLength": 300
+        },
+        "status": {
+          "type": "string",
+          "description": "Visibility matching parent project status.",
+          "enum": ["published", "draft"]
+        },
+        "ownerUid": {
+          "type": "string",
+          "description": "UID of the authorized portfolio owner.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp."
+        }
+      },
+      "required": [
+        "projectId",
+        "fileName",
+        "mimeType",
+        "dataUrl",
+        "altAr",
+        "altEn",
+        "status",
+        "ownerUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SiteAppearanceSettings": {
+      "title": "SiteAppearanceSettings",
+      "description": "Global default appearance settings published by the portfolio owner for public visitors.",
+      "type": "object",
+      "properties": {
+        "themeId": {
+          "type": "string",
+          "description": "Allowlisted theme identifier.",
+          "enum": [
+            "midnight-pro",
+            "obsidian",
+            "arctic-light",
+            "ocean-breeze",
+            "emerald-tech",
+            "royal-violet"
+          ]
+        },
+        "density": {
+          "type": "string",
+          "description": "Default layout spacing density.",
+          "enum": ["comfortable", "compact"]
+        },
+        "reducedMotion": {
+          "type": "boolean",
+          "description": "Whether reduced motion is enabled by default."
+        },
+        "ownerUid": {
+          "type": "string",
+          "description": "UID of the authorized owner who published the setting.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp."
+        }
+      },
+      "required": [
+        "themeId",
+        "density",
+        "reducedMotion",
+        "ownerUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Trusted administrator registry document keyed by Firebase Auth UID.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Verified administrator email address.",
+          "minLength": 5,
+          "maxLength": 180
+        },
+        "role": {
+          "type": "string",
+          "description": "Admin role identifier.",
+          "enum": ["owner"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when admin record was created."
+        }
+      },
+      "required": ["email", "role", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/projects/{projectId}": {
+      "schema": {
+        "$ref": "#/entities/PortfolioProject"
+      },
+      "description": "Stores portfolio projects. Public visitors may only read documents where status == 'published'. Only the verified owner admin may read drafts or create/update/delete projects."
+    },
+    "/project_media/{mediaId}": {
+      "schema": {
+        "$ref": "#/entities/ProjectMedia"
+      },
+      "description": "Stores persistent uploaded project thumbnails and gallery images. Public visitors may only read media where status == 'published'. Only the verified owner admin may upload, update, or delete media."
+    },
+    "/site_settings/{settingId}": {
+      "schema": {
+        "$ref": "#/entities/SiteAppearanceSettings"
+      },
+      "description": "Stores globally published appearance settings at /site_settings/appearance. Publicly readable via get; strictly writable only by verified owner admins."
+    },
+    "/admins/{adminId}": {
+      "schema": {
+        "$ref": "#/entities/AdminRecord"
+      },
+      "description": "Stores authorized owner UIDs. Strictly readable and writable only by verified owner admins."
+    }
+  }
+}
