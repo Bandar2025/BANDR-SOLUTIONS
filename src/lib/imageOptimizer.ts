@@ -12,7 +12,7 @@ export async function optimizeImageWithBrowserCompression(
   if (onProgress) onProgress(15);
 
   const options = {
-    maxSizeMB: 1.5,
+    maxSizeMB: 0.38, // 380 KB max binary guarantees Base64 string < 510,000 chars (well within 650k rule and 1MB Firestore limit)
     maxWidthOrHeight: maxWidth,
     useWebWorker: true,
     fileType: 'image/webp',
@@ -29,7 +29,7 @@ export async function optimizeImageWithBrowserCompression(
   } catch {
     // Fallback to JPEG if WebP compression is unsupported
     const fallbackOptions = {
-      maxSizeMB: 1.5,
+      maxSizeMB: 0.38,
       maxWidthOrHeight: maxWidth,
       useWebWorker: true,
       fileType: 'image/jpeg',
