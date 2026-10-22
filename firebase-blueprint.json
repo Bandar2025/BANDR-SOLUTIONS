@@ -327,6 +327,68 @@
         }
       },
       "required": ["email", "role", "createdAt"]
+    },
+    "CommunityPost": {
+      "title": "CommunityPost",
+      "description": "Engineering community updates and technical forum posts published by Bandr Solutions.",
+      "type": "object",
+      "properties": {
+        "titleEn": {
+          "type": "string",
+          "description": "Post title in English.",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "titleAr": {
+          "type": "string",
+          "description": "Post title in Arabic.",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "contentEn": {
+          "type": "string",
+          "description": "Post content in English.",
+          "minLength": 1,
+          "maxLength": 5000
+        },
+        "contentAr": {
+          "type": "string",
+          "description": "Post content in Arabic.",
+          "minLength": 1,
+          "maxLength": 5000
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Optional post image URL or data URI.",
+          "minLength": 0,
+          "maxLength": 500000
+        },
+        "category": {
+          "type": "string",
+          "description": "Post category.",
+          "enum": ["announcement", "tech_tip", "case_study", "update"]
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server publication timestamp."
+        },
+        "authorName": {
+          "type": "string",
+          "description": "Author display name.",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "titleEn",
+        "titleAr",
+        "contentEn",
+        "contentAr",
+        "category",
+        "publishedAt",
+        "authorName"
+      ]
     }
   },
   "firestore": {
@@ -353,6 +415,12 @@
         "$ref": "#/entities/AdminRecord"
       },
       "description": "Stores authorized owner UIDs. Strictly readable and writable only by verified owner admins."
+    },
+    "/community_posts/{postId}": {
+      "schema": {
+        "$ref": "#/entities/CommunityPost"
+      },
+      "description": "Stores community updates and tech forum posts. Publicly readable by all visitors; strictly writable only by verified owner admins."
     }
   }
 }

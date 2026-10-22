@@ -1,43 +1,22 @@
-# Bandr Solutions Portfolio — Advanced AI Image Editing, Executive Presentation & Community Updates
+# Implementation Plan - Multiple Project Galleries, Full Editing & Automatic Gemini AI Image Framing
 
-Upgrade the Bandr Solutions portfolio website with server-side AI image editing via `@google/genai`, client-side image compression, executive-focused project takeaway metrics, enhanced professional bio, and a fully managed Community Updates / Forum feed.
+## User Requirements
+1. **Multiple Project Photos & Gallery Carousel**: Enable adding and managing multiple gallery images per project, displayed via an image carousel slider with interactive thumbnails in project details.
+2. **Full Project Details Editing**: Comprehensive editing interface in the admin dashboard for all project fields (bilingual titles, descriptions, engineering contributions, category, technologies, URLs, featured status, case study status).
+3. **Automatic Gemini AI Image Framing & Enhancement**: Automatic AI-powered smart aspect ratio framing and professional color/composition enhancement on uploaded project images.
 
-## User Review & Critical Decisions
+## Proposed Changes
 
-> [!IMPORTANT]
-> - **AI Image Editing**: Server-side endpoint using `gemini-3.1-flash-lite-image` to enhance or transform uploaded project images based on admin text prompts.
-> - **Image Compression**: Client-side canvas compression ensures uploaded images load instantly and never impact performance.
-> - **Executive Takeaways**: Project cards display clean business impact metrics and executive value summaries for corporate clients and recruiters.
-> - **Community Updates Feed**: Firestore-backed forum and update publishing tool managed directly from the Admin Dashboard.
+### 1. Backend & AI Enhancement (`server.ts`)
+- Enhance `/api/gemini/edit-image` or add automatic cropping/framing instruction when uploading images so Gemini AI formats the image into a clean 16:9 professional product mockup presentation.
 
-- **Confirmed Decision 1**: Text prompt box to enhance or transform uploaded project images via Gemini AI.
-- **Confirmed Decision 2**: Dedicated updates feed page and home section managed from the Admin Dashboard.
-- **Confirmed Decision 3**: Clear executive takeaway badges and impact metrics on project cards.
+### 2. Gallery Management & Compression (`src/lib/imageOptimizer.ts` & `src/lib/portfolioService.ts`)
+- Support uploading multiple media records linked to a project in Firestore (`project_media`).
+- Automatic client-side compression + server-side Gemini AI smart cropping.
 
----
+### 3. Admin Dashboard (`src/components/AdminDashboard.tsx`)
+- Add robust multi-image uploader with progress and AI smart framing toggle.
+- Expand project edit modal to cover all project attributes.
 
-## 1. Overview & Core Concept
-
-- **What It Does**: Empowers the portfolio owner to optimize, compress, and AI-edit project images, presents professional projects with executive impact metrics, showcases a detailed verified bio, and provides a dynamic Community Updates forum feed.
-- **Target Audience**: Enterprise clients, recruiters, tech companies, and general visitors.
-- **Key Value**: Exceptional visual presentation, lightning-fast performance, and transparent communication of technical achievements.
-
----
-
-## 2. User Experience & Visual Design
-
-- **Executive Project Highlights**: Each project card features key business impact metrics (e.g. `+140% Scalability`, `Enterprise-Grade SLA`) and a concise 1-line executive takeaway.
-- **Admin AI Image Studio**: Integrated into the project editor modal, allowing admins to upload images, compress them automatically, and apply AI edits with a text prompt.
-- **Community Updates / Forum**: A dedicated page and section where published announcements, engineering tips, and updates are displayed with rich formatting and image support.
-
----
-
-## 3. Technical Architecture & Data Strategy
-
-- **Server-Side AI Editing (`/api/gemini/edit-image`)**:
-  - Express backend endpoint receiving base64 image data and a text prompt.
-  - Calls `@google/genai` (`gemini-3.1-flash-lite-image`) and returns the edited base64 image.
-- **Firestore Collections**:
-  - `/projects/{projectId}`: Existing projects with enhanced fields for executive metrics and galleries.
-  - `/community_posts/{postId}`: New collection for community updates and forum posts.
-- **Security**: Firestore rules ensure only the authorized owner (`bandr246899@gmail.com`) can create/edit community posts and projects.
+### 4. Project Detail Modal (`src/components/ProjectDetailModal.tsx`)
+- Implement a sleek image carousel slider with thumbnail strip for multi-image project galleries.

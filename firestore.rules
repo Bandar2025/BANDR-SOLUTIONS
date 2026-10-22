@@ -213,6 +213,38 @@ service cloud.firestore {
         data.createdAt is timestamp;
     }
 
+    // Validation Blueprint: CommunityPost
+    function isValidCommunityPost(data) {
+      return data.keys().hasAll([
+        'titleEn',
+        'titleAr',
+        'contentEn',
+        'contentAr',
+        'imageUrl',
+        'category',
+        'publishedAt',
+        'authorName'
+      ]) &&
+      data.keys().hasOnly([
+        'titleEn',
+        'titleAr',
+        'contentEn',
+        'contentAr',
+        'imageUrl',
+        'category',
+        'publishedAt',
+        'authorName'
+      ]) &&
+      data.titleEn is string && data.titleEn.size() >= 1 && data.titleEn.size() <= 200 &&
+      data.titleAr is string && data.titleAr.size() >= 1 && data.titleAr.size() <= 200 &&
+      data.contentEn is string && data.contentEn.size() >= 1 && data.contentEn.size() <= 5000 &&
+      data.contentAr is string && data.contentAr.size() >= 1 && data.contentAr.size() <= 5000 &&
+      (data.imageUrl == null || (data.imageUrl is string && data.imageUrl.size() <= 500000)) &&
+      data.category is string && data.category in ['announcement', 'tech_tip', 'case_study', 'update'] &&
+      data.publishedAt is timestamp &&
+      data.authorName is string && data.authorName.size() >= 1 && data.authorName.size() <= 100;
+    }
+
     // Collection 1: /projects/{projectId}
     match /projects/{projectId} {
       // Single-document read: Public can ONLY read published projects; Admin can read published & draft
@@ -344,6 +376,29 @@ service cloud.firestore {
         isValidAdminRecord(incoming()) &&
         incoming().createdAt == request.time;
       allow update, delete: if false;
+    }
+
+    // Collection 5: /community_posts/{postId}
+    match /community_posts/{postId} {
+      allow get, list: if isValidId(postId) || true;
+      allow create: if isAdmin() &&
+        isValidId(postId) &&
+        isValidCommunityPost(incoming()) &&
+        incoming().publishedAt == request.time;
+      allow update: if isAdmin() &&
+        isValidId(postId) &&
+        isValidCommunityPost(incoming()) &&
+        incoming().publishedAt == existing().publishedAt &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'titleEn',
+          'titleAr',
+          'contentEn',
+          'contentAr',
+          'imageUrl',
+          'category',
+          'authorName'
+        ]);
+      allow delete: if isAdmin() && isValidId(postId);
     }
   }
 }
