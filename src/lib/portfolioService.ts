@@ -20,6 +20,7 @@ import {
   ProjectItem,
   RECOVERABLE_INITIAL_PROJECTS_BACKUP,
 } from '../data/portfolioData';
+import { optimizeImageWithBrowserCompression } from './imageOptimizer';
 
 export interface FirestoreProjectRecord {
   slug: string;
@@ -731,7 +732,7 @@ export async function validateImageMagicBytes(
  */
 export async function processAndOptimizeImageFile(
   file: File,
-  maxWidth = 1280,
+  maxWidth = 1920,
   onProgress?: (pct: number) => void
 ): Promise<{
   dataUrl: string;
@@ -740,55 +741,15 @@ export async function processAndOptimizeImageFile(
 }> {
   if (onProgress) onProgress(15);
   await validateImageMagicBytes(file);
-  if (onProgress) onProgress(35);
+  if (onProgress) onProgress(30);
 
-  const rawDataUrl = await new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () =>
-      typeof reader.result === 'string'
-        ? resolve(reader.result)
-        : reject(new Error('Failed to read file.'));
-    reader.onerror = () => reject(new Error('Error reading image file.'));
-    reader.readAsDataURL(file);
+  const res = await optimizeImageWithBrowserCompression(file, Math.max(maxWidth, 1920), (p) => {
+    if (onProgress) onProgress(30 + Math.round(p * 0.7));
   });
-
-  if (onProgress) onProgress(60);
-
-  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error('Failed to decode image dimensions.'));
-    image.src = rawDataUrl;
-  });
-
-  const scale = img.width > maxWidth ? maxWidth / img.width : 1;
-  const targetW = Math.max(1, Math.round(img.width * scale));
-  const targetH = Math.max(1, Math.round(img.height * scale));
-
-  const canvas = document.createElement('canvas');
-  canvas.width = targetW;
-  canvas.height = targetH;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error('Canvas 2D context unavailable.');
-  ctx.drawImage(img, 0, 0, targetW, targetH);
-
-  let outputMime: 'image/webp' | 'image/jpeg' = 'image/webp';
-  let compressedDataUrl = canvas.toDataURL('image/webp', 0.82);
-  if (!compressedDataUrl.startsWith('data:image/webp')) {
-    outputMime = 'image/jpeg';
-    compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
-  }
-
-  // If still > 380KB, step down quality slightly to ensure fast responsive load & rule compliance
-  if (compressedDataUrl.length > 380000) {
-    compressedDataUrl = canvas.toDataURL(outputMime, 0.65);
-  }
-
-  if (onProgress) onProgress(90);
 
   return {
-    dataUrl: compressedDataUrl,
-    mimeType: outputMime,
+    dataUrl: res.dataUrl,
+    mimeType: res.mimeType,
     safeFileName: sanitizeFileName(file.name),
   };
 }

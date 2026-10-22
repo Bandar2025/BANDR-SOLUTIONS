@@ -1,46 +1,64 @@
-export async function compressImageFile(
+import imageCompression from 'browser-image-compression';
+
+export async function optimizeImageWithBrowserCompression(
   file: File,
-  maxWidth = 1200,
-  maxHeight = 1200,
-  quality = 0.85
-): Promise<string> {
+  maxWidth = 1920,
+  onProgress?: (pct: number) => void
+): Promise<{
+  dataUrl: string;
+  mimeType: 'image/webp' | 'image/jpeg';
+  safeFileName: string;
+}> {
+  if (onProgress) onProgress(15);
+
+  const options = {
+    maxSizeMB: 1.5,
+    maxWidthOrHeight: maxWidth,
+    useWebWorker: true,
+    fileType: 'image/webp',
+    onProgress: (p: number) => {
+      if (onProgress) {
+        onProgress(Math.round(15 + p * 0.75));
+      }
+    },
+  };
+
+  let compressedFile: File;
+  try {
+    compressedFile = await imageCompression(file, options);
+  } catch {
+    // Fallback to JPEG if WebP compression is unsupported
+    const fallbackOptions = {
+      maxSizeMB: 1.5,
+      maxWidthOrHeight: maxWidth,
+      useWebWorker: true,
+      fileType: 'image/jpeg',
+    };
+    compressedFile = await imageCompression(file, fallbackOptions);
+  }
+
+  if (onProgress) onProgress(90);
+
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.readAsDataURL(file);
     reader.onload = (event) => {
-      const img = new Image();
-      img.src = event.target?.result as string;
-      img.onload = () => {
-        let width = img.width;
-        let height = img.height;
-
-        if (width > maxWidth || height > maxHeight) {
-          if (width / height > maxWidth / maxHeight) {
-            height = Math.round((height * maxWidth) / width);
-            width = maxWidth;
-          } else {
-            width = Math.round((width * maxHeight) / height);
-            height = maxHeight;
-          }
-        }
-
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-
-        const ctx = canvas.getContext('2d');
-        if (!ctx) {
-          reject(new Error('Failed to create canvas context'));
-          return;
-        }
-
-        ctx.drawImage(img, 0, 0, width, height);
-
-        const dataUrl = canvas.toDataURL('image/jpeg', quality);
-        resolve(dataUrl);
-      };
-      img.onerror = (error) => reject(error);
+      const dataUrl = event.target?.result as string;
+      if (!dataUrl) {
+        reject(new Error('Failed to read compressed image data URL.'));
+        return;
+      }
+      const mimeType =
+        compressedFile.type === 'image/webp' ? 'image/webp' : 'image/jpeg';
+      if (onProgress) onProgress(100);
+      resolve({
+        dataUrl,
+        mimeType,
+        safeFileName: file.name
+          ? file.name.replace(/[^a-zA-Z0-9_\-\.]+/g, '_')
+          : `optimized_${Date.now()}.webp`,
+      });
     };
-    reader.onerror = (error) => reject(error);
+    reader.onerror = () => reject(new Error('Error reading compressed image file.'));
+    reader.readAsDataURL(compressedFile);
   });
 }

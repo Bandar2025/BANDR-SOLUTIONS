@@ -58,6 +58,7 @@ import {
 } from '../lib/themeSystem';
 import { ProjectVisualPreview } from './ProjectVisualPreview';
 import { ThemeSettingsCenter } from './ThemeSettingsCenter';
+import { ImageCropModal } from './ImageCropModal';
 
 interface AdminDashboardProps {
   lang: Language;
@@ -207,6 +208,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     null
   );
   const [deletingProject, setDeletingProject] = useState(false);
+
+  // Crop modal state for react-easy-crop & browser-image-compression
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [cropModalImageSrc, setCropModalImageSrc] = useState<string | null>(null);
+  const [cropModalFileName, setCropModalFileName] = useState('');
+  const [cropModalTarget, setCropModalTarget] = useState<'thumbnail' | 'gallery' | null>(null);
 
   const thumbnailFileInputRef = useRef<HTMLInputElement>(null);
   const galleryFileInputRef = useRef<HTMLInputElement>(null);
@@ -372,35 +379,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     openEditorForProject(draftProject, true);
   };
 
-  // Handle Main Thumbnail Selection
-  const handleSelectThumbnailFile = async (
+  // Handle Main Thumbnail Selection (opens ImageCropModal for manual cropping / fine-tuning)
+  const handleSelectThumbnailFile = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files?.[0];
     if (!file || !editingProject) return;
 
     setImageError(null);
-    setUploadProgress(10);
-
-    try {
-      const optimized = await processAndOptimizeImageFile(file, 1280, (pct) => {
-        setUploadProgress(pct);
-      });
-      setPendingThumbnailPreview(optimized.dataUrl);
-      setUploadProgress(null);
-    } catch (err) {
-      setUploadProgress(null);
-      setImageError(
-        err instanceof Error
-          ? err.message
-          : isAr
-          ? 'فشل التحقق من ملف الصورة.'
-          : 'Image validation failed.'
-      );
-    } finally {
-      if (thumbnailFileInputRef.current) {
-        thumbnailFileInputRef.current.value = '';
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const src = event.target?.result as string;
+      if (src) {
+        setCropModalImageSrc(src);
+        setCropModalFileName(file.name);
+        setCropModalTarget('thumbnail');
+        setCropModalOpen(true);
       }
+    };
+    reader.onerror = () => setImageError('Failed to read image file.');
+    reader.readAsDataURL(file);
+
+    if (thumbnailFileInputRef.current) {
+      thumbnailFileInputRef.current.value = '';
     }
   };
 
@@ -428,42 +429,84 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     });
   };
 
-  // Handle Gallery Image Selection
-  const handleSelectGalleryFile = async (
+  // Handle Gallery Image Selection (opens ImageCropModal for manual cropping / fine-tuning)
+  const handleSelectGalleryFile = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files?.[0];
     if (!file || !editingProject) return;
 
     setImageError(null);
-    setUploadProgress(10);
-
-    try {
-      const optimized = await processAndOptimizeImageFile(file, 1280, (pct) => {
-        setUploadProgress(pct);
-      });
-      setPendingGalleryFile({
-        file,
-        previewDataUrl: optimized.dataUrl,
-        mimeType: optimized.mimeType,
-        altAr: editingProject.nameAr || 'لقطة شاشة للمشروع',
-        altEn: editingProject.nameEn || 'Project screenshot',
-      });
-      setUploadProgress(null);
-    } catch (err) {
-      setUploadProgress(null);
-      setImageError(
-        err instanceof Error
-          ? err.message
-          : isAr
-          ? 'فشل التحقق من ملف الصورة.'
-          : 'Image validation failed.'
-      );
-    } finally {
-      if (galleryFileInputRef.current) {
-        galleryFileInputRef.current.value = '';
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const src = event.target?.result as string;
+      if (src) {
+        setCropModalImageSrc(src);
+        setCropModalFileName(file.name);
+        setCropModalTarget('gallery');
+        setCropModalOpen(true);
       }
+    };
+    reader.onerror = () => setImageError('Failed to read image file.');
+    reader.readAsDataURL(file);
+
+    if (galleryFileInputRef.current) {
+      galleryFileInputRef.current.value = '';
     }
+  };
+
+  const handleCropComplete = async (
+    resultDataUrl: string,
+    mimeType: 'image/webp' | 'image/jpeg',
+    fileName: string
+  ) => {
+    if (cropModalTarget === 'thumbnail') {
+      setPendingThumbnailPreview(resultDataUrl);
+      setStatusBanner({
+        type: 'success',
+        message: isAr
+          ? 'تم قص وضغط الصورة الرئيسية بنجاح. اضغط على اعتماد المعاينة ثم حفظ المشروع.'
+          : 'Main thumbnail cropped & compressed successfully. Click Confirm Preview then Save Project.',
+      });
+    } else if (cropModalTarget === 'gallery') {
+      if (!authUser || !editingProject) return;
+      setUploadProgress(15);
+      fetch(resultDataUrl)
+        .then((res) => res.blob())
+        .then(async (blob) => {
+          const file = new File([blob], fileName, { type: mimeType });
+          try {
+            setUploadProgress(50);
+            const newItem = await uploadProjectGalleryMedia(
+              file,
+              editingProject.id,
+              editingProject.nameAr || 'صورة معرض',
+              editingProject.nameEn || 'Gallery image',
+              editingProject.status || 'draft',
+              authUser,
+              (pct) => setUploadProgress(50 + Math.round(pct * 0.5))
+            );
+            setGalleryItems((prev) => [...prev, newItem]);
+            setEditingProject({
+              ...editingProject,
+              galleryMediaIds: [...(editingProject.galleryMediaIds || []), newItem.id],
+            });
+            setUploadProgress(null);
+            setStatusBanner({
+              type: 'success',
+              message: isAr
+                ? 'تم قص وضغط ورفع صورة المعرض الجديدة بنجاح إلى Firebase.'
+                : 'New gallery image cropped, compressed, and uploaded successfully to Firebase.',
+            });
+          } catch (err) {
+            setUploadProgress(null);
+            setImageError(err instanceof Error ? err.message : 'Failed to upload gallery image');
+          }
+        });
+    }
+    setCropModalOpen(false);
+    setCropModalImageSrc(null);
+    setCropModalTarget(null);
   };
 
   const persistEditingProjectToFirestore = async (
@@ -2059,6 +2102,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Image Cropping & Fine-Tuning Modal */}
+      {cropModalOpen && cropModalImageSrc && (
+        <ImageCropModal
+          imageSrc={cropModalImageSrc}
+          isOpen={cropModalOpen}
+          onClose={() => {
+            setCropModalOpen(false);
+            setCropModalImageSrc(null);
+            setCropModalTarget(null);
+          }}
+          onCropped={handleCropComplete}
+          lang={lang}
+          fileName={cropModalFileName}
+        />
       )}
     </div>
   );
