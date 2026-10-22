@@ -443,6 +443,7 @@ export default function App() {
         lang={lang}
         onClose={() => setSelectedProject(null)}
         isAdminPreview={currentPath === '/admin'}
+        onInquireService={handleInquireService}
       />
 
       {/* Visitor Personal Appearance & Themes Modal */}

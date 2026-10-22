@@ -1,22 +1,48 @@
-# Implementation Plan - Multiple Project Galleries, Full Editing & Automatic Gemini AI Image Framing
+# BANDR SOLUTIONS — خطة التنفيذ المعتمدة (Master Implementation Plan)
 
-## User Requirements
-1. **Multiple Project Photos & Gallery Carousel**: Enable adding and managing multiple gallery images per project, displayed via an image carousel slider with interactive thumbnails in project details.
-2. **Full Project Details Editing**: Comprehensive editing interface in the admin dashboard for all project fields (bilingual titles, descriptions, engineering contributions, category, technologies, URLs, featured status, case study status).
-3. **Automatic Gemini AI Image Framing & Enhancement**: Automatic AI-powered smart aspect ratio framing and professional color/composition enhancement on uploaded project images.
+## الهدف
+تحويل معرض أعمال Bandr Solutions إلى منصة أعمال متكاملة واحترافية تعرض المشاريع الحقيقية والخدمات التخصصية، مع مدير صور متقدم يدعم رفع صور متعددة، سلايدر تفاعلي، عارض Lightbox، وتجربة مستخدم رفيعة المستوى باللغتين العربية والإنجليزية.
 
-## Proposed Changes
+---
 
-### 1. Backend & AI Enhancement (`server.ts`)
-- Enhance `/api/gemini/edit-image` or add automatic cropping/framing instruction when uploading images so Gemini AI formats the image into a clean 16:9 professional product mockup presentation.
+## خطة المراحل والتنفيذ الفعلي
 
-### 2. Gallery Management & Compression (`src/lib/imageOptimizer.ts` & `src/lib/portfolioService.ts`)
-- Support uploading multiple media records linked to a project in Firestore (`project_media`).
-- Automatic client-side compression + server-side Gemini AI smart cropping.
+### المرحلة 1: الخدمات المهنية والذكية ونموذج طلب الخدمة
+- **الملفات المستهدفة**:
+  - `src/data/portfolioData.ts`: توسيع بنية `ServiceItem` لتشمل التصنيفات الستة والمخرجات المتوقعة، وتوفير `SERVICE_CATEGORIES` و 18+ خدمة مهنية دقيقة وموثقة.
+  - `src/components/ServicesSection.tsx`: تصميم واجهة تصنيف تفاعلية (تبويبات للتصنيفات الستة)، عرض بطاقات الخدمات مع المخرجات المتوقعة والرموز التعبيرية/الأيقونات، وتوفير نموذج طلب خدمة تفاعلي متكامل (Service Inquiry Form) مع فحص المدخلات ورسائل النجاح والخطأ وخيار نسخ الملخص أو فتح البريد المباشر.
 
-### 3. Admin Dashboard (`src/components/AdminDashboard.tsx`)
-- Add robust multi-image uploader with progress and AI smart framing toggle.
-- Expand project edit modal to cover all project attributes.
+### المرحلة 2: مدير الصور الاحترافي في لوحة الإدارة
+- **الملفات المستهدفة**:
+  - `src/components/AdminDashboard.tsx`:
+    - دعم اختيار ملفات متعددة دفعة واحدة (`multiple`).
+    - طابور رفع ومعالجة يوضح الحجم الأصلي وبعد الضغط ونسبة التقدم لكل صورة.
+    - إعادة ترتيب صور المعرض، حذف أي صورة منفردة، وتعيين أي صورة صورةً رئيسية (`Set as Main Thumbnail`).
+    - تحرير النص البديل (Alt Text) بالعربية والإنجليزية لكل صورة.
+    - حفظ آمن بدون فقدان وسائط المعرض الحالية.
+  - `src/lib/portfolioService.ts`: دعم تحديث ترتيب وسائط المعرض، وحذف الوسائط المرتبطة بدون كسر المستند الأب.
 
-### 4. Project Detail Modal (`src/components/ProjectDetailModal.tsx`)
-- Implement a sleek image carousel slider with thumbnail strip for multi-image project galleries.
+### المرحلة 3: سلايدر صور بطاقات المشاريع التلقائي
+- **الملفات المستهدفة**:
+  - `src/components/ProjectVisualPreview.tsx` & `src/components/ProjectCard.tsx`:
+    - إضافة دعم عرض سلايدر يتنقل كل 5 ثوانٍ عند توفر صور متعددة للمشروع.
+    - مؤشرات نقطية (Dots) وأسهم للتنقل اليدوي وإمكانية الإيقاف المؤقت/الاستئناف.
+    - إيقاف الحركة التلقائية فورياً عند تمرير المؤشر (Hover) أو التركيز بلوحة المفاتيح.
+    - احترام إعداد `prefers-reduced-motion` وتنظيف المؤقتات لمنع تسرب الذاكرة.
+    - استخدام `object-fit: contain` داخل حاوية داكنة أنيقة للقطات الشاشة للحفاظ على قراءة نصوص الواجهة بوضوح.
+
+### المرحلة 4: صفحة تفاصيل المشروع وعارض الصور المكبر (Lightbox)
+- **الملفات المستهدفة**:
+  - `src/components/ProjectDetailModal.tsx`:
+    - صورة رئيسية واضحة مع شريط مصغرات تفاعلي سريع.
+    - معرض شبكي لجميع صور المشروع.
+    - عارض منبثق فائق الدقة (Full-Screen Lightbox) مع أسهم التنقل ودعم لوحة المفاتيح (`Escape`, `ArrowLeft`, `ArrowRight`).
+    - إعادة ترتيب أقسام التفاصيل: النبذة التنفيذية، المشكلة، الحل، الميزات الرئيسية، التقنيات، النتائج، وحالة المشروع.
+
+### المرحلة 5: تحسين تجربة المعرض والرسائل الموجهة للزوار
+- استبدال الرسائل الداخلية والمربكة (مثل "لم يتم التحقق من الوظائف بعد") برسائل مهنية واضحة وموثقة للزوار في `ProjectCard.tsx` و `portfolioData.ts`.
+- تحسين الحالات الفارغة والمسافات والتسلسل الهرمي.
+
+### المرحلة 6: الاختبارات والتحقق الأمني
+- تشغيل اختبارات TypeScript والبناء `npm run lint` و `npm run build`.
+- التأكد من عدم وجود أخطاء في الكود أو تسرب صلاحيات.

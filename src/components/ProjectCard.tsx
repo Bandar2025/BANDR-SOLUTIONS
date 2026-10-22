@@ -67,11 +67,31 @@ export const ProjectCard: React.FC<ProjectCardProps> = React.memo(
           </div>
 
           <div className="space-y-4 pt-3 border-t theme-border">
-            {/* Neutral Link Verification Summary */}
-            <div className="text-xs theme-text-muted leading-snug">
-              {isAr
-                ? project.verification.statusSummaryAr
-                : project.verification.statusSummaryEn}
+            {/* Professional Verification Status Indicator */}
+            <div className="flex items-center gap-1.5 text-xs theme-text-muted leading-snug">
+              <span
+                className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                  project.isCaseStudyOnly
+                    ? 'bg-blue-400'
+                    : project.genuineScreenshotPath
+                    ? 'bg-emerald-400'
+                    : 'bg-teal-400'
+                }`}
+                aria-hidden="true"
+              />
+              <span className="truncate">
+                {project.isCaseStudyOnly
+                  ? isAr
+                    ? 'دراسة حالة هندسية موثقة'
+                    : 'Documented Case Study'
+                  : project.genuineScreenshotPath
+                  ? isAr
+                    ? 'واجهة حقيقية موثقة بلقطات الشاشة'
+                    : 'Verified Genuine Interface'
+                  : isAr
+                  ? project.verification.statusSummaryAr
+                  : project.verification.statusSummaryEn}
+              </span>
             </div>
 
             {/* Card Actions */}

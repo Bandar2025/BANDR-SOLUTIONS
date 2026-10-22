@@ -141,15 +141,39 @@ export interface SkillGroup {
   }[];
 }
 
+export type ServiceCategory =
+  | 'software-development'
+  | 'ai-automation'
+  | 'reports-data'
+  | 'research-studies'
+  | 'professional-docs'
+  | 'design-quality';
+
+export interface ServiceCategoryMeta {
+  id: ServiceCategory;
+  index: string;
+  labelAr: string;
+  labelEn: string;
+  shortDescAr: string;
+  shortDescEn: string;
+  iconName: string;
+}
+
 export interface ServiceItem {
   id: string;
   index: string;
+  category: ServiceCategory;
+  categoryLabelAr: string;
+  categoryLabelEn: string;
   titleAr: string;
   titleEn: string;
   descriptionAr: string;
   descriptionEn: string;
   scopePointsAr: string[];
   scopePointsEn: string[];
+  expectedDeliverablesAr: string[];
+  expectedDeliverablesEn: string[];
+  iconKey?: string;
 }
 
 export type PhoneDisplayMode = 'click-to-call' | 'visible' | 'hidden';
@@ -1115,108 +1139,701 @@ export const TECHNICAL_SKILLS_INVENTORY: SkillGroup[] = [
   },
 ];
 
+export const SERVICE_CATEGORIES_DATA: ServiceCategoryMeta[] = [
+  {
+    id: 'software-development',
+    index: '01',
+    labelAr: 'تطوير البرمجيات والأنظمة',
+    labelEn: 'Software & Systems',
+    shortDescAr: 'تصميم وبناء المواقع، المتاجر الإلكترونية، أنظمة الإدارة المتكاملة، ولوحات التحكم.',
+    shortDescEn: 'Building web applications, digital storefronts, ERP systems, and API architectures.',
+    iconName: 'Code2',
+  },
+  {
+    id: 'ai-automation',
+    index: '02',
+    labelAr: 'الذكاء الاصطناعي والأتمتة',
+    labelEn: 'AI & Automation',
+    shortDescAr: 'دمج نماذج الذكاء الاصطناعي، بناء المساعدين الأذكياء، وهندسة تكامل الأنظمة وسير العمل.',
+    shortDescEn: 'LLM integrations, custom AI assistants, automated pipelines, and workflow orchestration.',
+    iconName: 'Bot',
+  },
+  {
+    id: 'reports-data',
+    index: '03',
+    labelAr: 'التقارير وتحليل البيانات',
+    labelEn: 'Reports & Data Analysis',
+    shortDescAr: 'تحليل البيانات، إعداد التقارير الموثقة، وبناء لوحات المؤشرات والرسوم البيانية.',
+    shortDescEn: 'Data cleaning, analytical reports, KPI dashboards, and performance benchmarking.',
+    iconName: 'BarChart3',
+  },
+  {
+    id: 'research-studies',
+    index: '04',
+    labelAr: 'الأبحاث والدراسات',
+    labelEn: 'Research & Studies',
+    shortDescAr: 'المساعدة في إعداد الدراسات التقنية، مراجعة الأدبيات، وتنظيم وتوثيق المراجع.',
+    shortDescEn: 'Technical exploratory research, literature review synthesis, and citation formatting.',
+    iconName: 'BookMarked',
+  },
+  {
+    id: 'professional-docs',
+    index: '05',
+    labelAr: 'المستندات المهنية والتعليمية',
+    labelEn: 'Professional Docs',
+    shortDescAr: 'صياغة السير الذاتية، خطابات التقديم، المقترحات الفنية، والأدلة التعليمية المتقنة.',
+    shortDescEn: 'CV optimization, tailored cover letters, technical proposals, and training manuals.',
+    iconName: 'FileText',
+  },
+  {
+    id: 'design-quality',
+    index: '06',
+    labelAr: 'التصميم والجودة التقنية',
+    labelEn: 'Design & Quality Assurance',
+    shortDescAr: 'تصميم واجهات UI/UX، تدقيق إمكانية الوصول، فحص الأداء، واختبار البرمجيات.',
+    shortDescEn: 'Responsive UI/UX design, accessibility auditing, QA testing, and performance audits.',
+    iconName: 'CheckCircle2',
+  },
+];
+
 export const SERVICES_DATA: ServiceItem[] = [
+  // ==========================================
+  // Category 1: Software & Systems Development
+  // ==========================================
   {
     id: 'web-design-dev',
     index: '01',
-    titleAr: 'تصميم وتطوير المواقع',
-    titleEn: 'Website Design and Development',
+    category: 'software-development',
+    categoryLabelAr: 'تطوير البرمجيات والأنظمة',
+    categoryLabelEn: 'Software & Systems',
+    iconKey: 'Globe',
+    titleAr: 'تصميم وتطوير مواقع وتطبيقات الويب',
+    titleEn: 'Web Application Design & Development',
     descriptionAr:
-      'بناء مواقع ويب عصرية ومتجاوبة بالكامل باللغتين العربية والإنجليزية، مع التركيز على وضوح الهوية وسرعة التصفح.',
+      'بناء مواقع وتطبيقات ويب عصرية ومتجاوبة بالكامل باللغتين العربية والإنجليزية، مع التركيز على وضوح المعمارية وسرعة التصفح.',
     descriptionEn:
-      'Building modern, responsive bilingual websites focused on structural clarity, accessibility, and clean code architecture.',
+      'Building modern, responsive bilingual web applications focused on structural clarity, fast loading, and clean architecture.',
     scopePointsAr: [
-      'تطوير تطبيقات الصفحة الواحدة (SPA) والمواقع التعريفية بـ React.js و Tailwind CSS',
-      'دعم كامل لتخطيطات العربية (RTL) والإنجليزية (LTR)',
-      'ربط الواجهات الأمامية مع خدمات RESTful APIs والأنظمة الخلفية',
+      'تطوير تطبيقات الصفحة الواحدة (SPA) والمنصات التفاعلية بـ React.js و Tailwind CSS',
+      'دعم كامل للتخطيطات ثنائية الاتجاه: العربية (RTL) والإنجليزية (LTR)',
+      'تكامل احترافي مع واجهات البرمجة RESTful APIs والخدمات الخلفية',
     ],
     scopePointsEn: [
-      'Single-page applications (SPA) and corporate websites with React.js & Tailwind CSS',
-      'Complete Arabic RTL and English LTR localization architecture',
-      'Frontend integration with RESTful APIs and backend services',
+      'Single-page applications (SPA) and interactive platforms with React.js & Tailwind CSS',
+      'Full bilingual RTL/LTR architectural support across all devices',
+      'Seamless integration with RESTful APIs and modern backend endpoints',
+    ],
+    expectedDeliverablesAr: [
+      'كود مصدري منظم وموثق ومبني بأحدث معايير TypeScript',
+      'واجهات تفاعلية متجاوبة 100% مع الهواتف والكمبيوتر',
+      'تهيئة محركات البحث (SEO) وتحسين سرعة التحميل الأولى',
+    ],
+    expectedDeliverablesEn: [
+      'Clean, documented TypeScript source codebase adhering to best practices',
+      'Fully responsive UI optimized for mobile, tablet, and desktop',
+      'Basic SEO metadata configuration and initial load performance tuning',
     ],
   },
   {
     id: 'ecommerce-dev',
     index: '02',
-    titleAr: 'تطوير المتاجر الإلكترونية',
-    titleEn: 'E-Commerce Website Development',
+    category: 'software-development',
+    categoryLabelAr: 'تطوير البرمجيات والأنظمة',
+    categoryLabelEn: 'Software & Systems',
+    iconKey: 'ShoppingCart',
+    titleAr: 'إنشاء وتطوير المتاجر الإلكترونية',
+    titleEn: 'E-Commerce Storefront Development',
     descriptionAr:
-      'تطوير واجهات المتاجر الرقمية وتجارب التسوق الإلكتروني المصممة لعرض المنتجات بوضوح على جميع الأجهزة.',
+      'تطوير واجهات المتاجر الرقمية وتجارب التسوق المصممة لعرض المنتجات بوضوح، مع تصنيف مرن وتجربة سلة شراء سلسة.',
     descriptionEn:
-      'Creating digital storefronts and e-commerce interfaces structured for clear product discovery across mobile and desktop.',
+      'Developing digital storefronts and catalog browsing experiences engineered for intuitive product discovery and checkout.',
     scopePointsAr: [
-      'تصميم واجهات عرض المنتجات والتصنيفات المتجاوبة مع الجوال أولاً',
-      'تنظيم هيكل البيانات وتجربة المستخدم في المتاجر الرقمية',
-      'تهيئة الواجهات للتكامل مع أنظمة إدارة المخزون والطلبات',
+      'تصميم واجهات عرض المنتجات، التصنيفات، وسلة الشراء المتوافقة مع الجوال أولاً',
+      'تنظيم هيكل البيانات وتجربة التصفح المريح والفلاتر الذكية',
+      'تهيئة الواجهات للربط مع بوابات الدفع وأنظمة إدارة المخزون',
     ],
     scopePointsEn: [
-      'Mobile-first product catalogs and category filtering interfaces',
-      'Structured digital storefront user experience and layout engineering',
-      'Storefront readiness for inventory and catalog backend services',
+      'Mobile-first product catalog, product filtering, and shopping cart layouts',
+      'Structured catalog data schemas and intuitive navigation flows',
+      'Frontend readiness for payment gateways and inventory tracking integrations',
+    ],
+    expectedDeliverablesAr: [
+      'واجهة متجر إلكتروني تفاعلية متكاملة مع سلة المشتريات',
+      'لوحة استعراض الطلبات والمنتجات سهلة التحديث',
+      'تجربة شراء سريعة ومهيأة للربط مع بوابات الدفع',
+    ],
+    expectedDeliverablesEn: [
+      'Complete interactive storefront interface with stateful cart management',
+      'Product and order catalog viewer ready for backend binding',
+      'Streamlined checkout flow structured for payment gateway connection',
     ],
   },
   {
-    id: 'ui-ux-design',
+    id: 'management-erp-systems',
     index: '03',
-    titleAr: 'تصميم واجهات وتجربة المستخدم',
-    titleEn: 'UI/UX Design',
+    category: 'software-development',
+    categoryLabelAr: 'تطوير البرمجيات والأنظمة',
+    categoryLabelEn: 'Software & Systems',
+    iconKey: 'Layers',
+    titleAr: 'بناء أنظمة الإدارة والمحاسبة والمخزون',
+    titleEn: 'ERP, Inventory & Administrative Systems',
     descriptionAr:
-      'تصميم واجهات رقمية تجمع بين الوضوح البصري، التباين المريح للقراءة، وسهولة الوصول للمستخدمين.',
+      'تطوير أنظمة إدارة الأعمال، المحاسبة المزدوجة، إدارة المستودعات، والمنصات الإدارية للمؤسسات التعليمية والصحية.',
     descriptionEn:
-      'Designing structured user interfaces with clear typographic hierarchy, accessible contrast, and intuitive navigation flows.',
+      'Engineering enterprise management platforms, double-entry accounting interfaces, inventory trackers, and institutional portals.',
     scopePointsAr: [
-      'بناء أنظمة تصميم متسقة تدعم الوضعين الداكن والفاتح',
-      'تحسين مسارات التفاعل وسهولة الوصول عبر لوحة المفاتيح والشاشات المختلفة',
-      'تصميم لوحات التحكم للأنظمة التعليمية والصحية والمحاسبية',
+      'بناء شاشات قيود المحاسبة وسندات القبض والصرف وإدارة الدليل المحاسبي',
+      'إدارة الصلاحيات متعددة الأدوار (RBAC) لحماية بيانات المؤسسة',
+      'أنظمة إدارة الطلاب والمدارس وبوابات السجلات الصحية والعيادات',
     ],
     scopePointsEn: [
-      'Cohesive dark and light design systems with clear visual hierarchy',
-      'Accessible keyboard navigation and responsive layout adaptation',
-      'Dashboard UI structuring for educational, healthcare, and enterprise platforms',
+      'Accounting journal entry screens, voucher management, and chart of accounts',
+      'Role-based access control (RBAC) securing organizational data boundaries',
+      'School academic platforms and healthcare clinic record management portals',
+    ],
+    expectedDeliverablesAr: [
+      'لوحة نظام إدارية متكاملة تدعم الأذونات المتعددة للمستخدمين',
+      'شاشات إدارة السجلات والجداول مع ميزات البحث والتصدير',
+      'توثيق معمارية قواعد البيانات والتدفقات الإجرائية للنظام',
+    ],
+    expectedDeliverablesEn: [
+      'Comprehensive administrative management portal with multi-role permissions',
+      'Data ledger management screens with search, filter, and export capabilities',
+      'Documented database schema and business logic workflows',
+    ],
+  },
+  {
+    id: 'dashboards-apis',
+    index: '04',
+    category: 'software-development',
+    categoryLabelAr: 'تطوير البرمجيات والأنظمة',
+    categoryLabelEn: 'Software & Systems',
+    iconKey: 'Database',
+    titleAr: 'تطوير لوحات التحكم وقواعد البيانات وواجهات API',
+    titleEn: 'Dashboards, Databases & API Development',
+    descriptionAr:
+      'بناء لوحات تحكم متقدمة لإدارة المحتوى والعمليات، مع هندسة قواعد البيانات وتطوير نقاط النهاية الآمنة والسريعة.',
+    descriptionEn:
+      'Building administrative control panels, structured database architectures, and secure RESTful API endpoints.',
+    scopePointsAr: [
+      'تصميم نماذج وقواعد البيانات (PostgreSQL, Firestore, MongoDB)',
+      'هندسة واجهات برمجة RESTful سريعة ومحمية بالمصادقة',
+      'لوحات تحكم إدارية تفاعلية للتحكم بالمحتوى والمستخدمين لحظياً',
+    ],
+    scopePointsEn: [
+      'Database schema modeling and optimization (PostgreSQL, Firestore, MongoDB)',
+      'Secure, high-performance RESTful API endpoints with authentication guards',
+      'Real-time administrative dashboards for operational and content management',
+    ],
+    expectedDeliverablesAr: [
+      'واجهات برمجة موثقة مع آليات المصادقة والتحقق من صحة المدخلات',
+      'لوحة تحكم إدارية مريحة لإدارة البيانات والمستخدمين',
+      'مخطط هيكلة قاعدة البيانات مع قواعد أمان مشددة',
+    ],
+    expectedDeliverablesEn: [
+      'Documented API endpoints with authentication and payload validation',
+      'Administrative dashboard for user and record management',
+      'Optimized database schema with strict security access rules',
     ],
   },
   {
     id: 'digital-prototyping',
-    index: '04',
-    titleAr: 'بناء النماذج الأولية للمنتجات الرقمية',
-    titleEn: 'Digital Product Prototyping',
+    index: '05',
+    category: 'software-development',
+    categoryLabelAr: 'تطوير البرمجيات والأنظمة',
+    categoryLabelEn: 'Software & Systems',
+    iconKey: 'Cpu',
+    titleAr: 'بناء النماذج الأولية للمنتجات الرقمية (MVP)',
+    titleEn: 'Digital Product Prototyping (MVP)',
     descriptionAr:
-      'تحويل أفكار المشاريع والأنظمة التقنية إلى نماذج أولية تفاعلية قابلة للاستعراض والتحقق قبل التوسع.',
+      'تحويل أفكار المشاريع والأنظمة التقنية إلى نماذج أولية تفاعلية وقابلة للاستعراض السريع للتحقق من الجدوى قبل الاستثمار الكامل.',
     descriptionEn:
-      'Translating product concepts into interactive web prototypes and functional MVP interfaces for early validation.',
+      'Translating innovative product concepts into interactive functional MVP prototypes for early user validation and feedback.',
     scopePointsAr: [
-      'بناء نماذج أولية تفاعلية للمنصات الخدمية والتطبيقات الذكية',
-      'ربط نماذج الذكاء الاصطناعي والرؤية الحاسوبية في بيئات العرض الأولية',
-      'توثيق النطاق التقني وهيكلة قواعد البيانات للمشاريع الجديدة',
+      'بناء نماذج تفاعلية قابلة للنقر والاستعراض المباشر خلال فترات وجيزة',
+      'التحقق من رحلة المستخدم الرئيسية (Core User Journey) وتصميم التدفقات',
+      'توثيق النطاق التقني وهيكلة المتطلبات للمراحل التطويرية اللاحقة',
     ],
     scopePointsEn: [
-      'Interactive web prototypes for SaaS, healthcare, and educational concepts',
-      'Prototyping AI, LLM, and computer-vision workflows in web interfaces',
-      'Database schema planning and endpoint architecture structuring',
+      'Interactive, clickable prototypes deployed for immediate stakeholder review',
+      'Validation of core user journeys and interaction workflows',
+      'Technical scope specification and milestone roadmap for future scale',
+    ],
+    expectedDeliverablesAr: [
+      'تطبيق نموذج أولي يعمل ومتاح عبر رابط مباشر للاستعراض',
+      'ملف توثيق المعمارية التقنية والتوصيات الفنية للتوسع',
+    ],
+    expectedDeliverablesEn: [
+      'Live, deployed prototype link ready for stakeholder review and testing',
+      'Architecture documentation and technical recommendations for production',
+    ],
+  },
+
+  // ==========================================
+  // Category 2: AI & Automation
+  // ==========================================
+  {
+    id: 'ai-llm-integration',
+    index: '06',
+    category: 'ai-automation',
+    categoryLabelAr: 'الذكاء الاصطناعي والأتمتة',
+    categoryLabelEn: 'AI & Automation',
+    iconKey: 'Sparkles',
+    titleAr: 'دمج نماذج الذكاء الاصطناعي في التطبيقات',
+    titleEn: 'AI & Large Language Model Integration',
+    descriptionAr:
+      'ربط وتوظيف نماذج الذكاء الاصطناعي التوليدي ونماذج اللغة (Gemini, Claude, GPT) داخل تطبيقات الويب لتقديم ميزات ذكية وتفاعلية.',
+    descriptionEn:
+      'Integrating generative AI and LLM APIs (Gemini, Claude, GPT) into web apps to deliver context-aware smart capabilities.',
+    scopePointsAr: [
+      'تكامل واجهات Gemini SDK و OpenAI في الخوادم الخلفية دون كشف المفاتيح للعميل',
+      'دعم الاستجابات اللحظية المتدفقة (Streaming Responses) لتقليل زمن الانتظار',
+      'معالجة وتلخيص النصوص واستخراج البيانات المنظمة بتنسيق JSON دقيق',
+    ],
+    scopePointsEn: [
+      'Server-side SDK integration ensuring zero client-side API key exposure',
+      'Streaming responses for immediate interactive feedback and minimal latency',
+      'Text extraction, smart summarization, and guaranteed structured JSON output',
+    ],
+    expectedDeliverablesAr: [
+      'نقطة نهاية خادم آمنة تتواصل مع نموذج الذكاء الاصطناعي المحدد',
+      'واجهة مستخدم تفاعلية تعرض المخرجات بسلاسة مع دعم التدفق اللحظي',
+      'ضوابط حماية من الأخطاء وقيود استهلاك الموارد',
+    ],
+    expectedDeliverablesEn: [
+      'Secure server proxy endpoint communicating with the chosen AI model',
+      'Interactive UI seamlessly rendering streaming tokens and structured output',
+      'Robust error handling, rate limiting, and timeout fallback mechanisms',
     ],
   },
   {
-    id: 'web-maintenance',
-    index: '05',
-    titleAr: 'تحسين المواقع وصيانتها',
-    titleEn: 'Website Improvements and Maintenance',
+    id: 'custom-ai-assistants',
+    index: '07',
+    category: 'ai-automation',
+    categoryLabelAr: 'الذكاء الاصطناعي والأتمتة',
+    categoryLabelEn: 'AI & Automation',
+    iconKey: 'Bot',
+    titleAr: 'تصميم مساعدين وروبوتات محادثة ذكية متخصصة',
+    titleEn: 'Custom AI Assistants & Specialized Chatbots',
     descriptionAr:
-      'مراجعة الأكواد البرمجية، تحسين سرعة التحميل والتوافق مع الهواتف، وإصلاح المشكلات التقنية في المواقع القائمة.',
+      'بناء مساعدين رقميين وروبوتات دردشة ذكية مخصصة لمجال عملك، قادرة على الإجابة على استفسارات المستخدمين بالاستناد لبياناتك الخاصة.',
     descriptionEn:
-      'Codebase auditing, responsive layout refinement, performance optimization, and ongoing technical maintenance.',
+      'Designing specialized conversational agents and assistants trained on your business guidelines and knowledge base.',
     scopePointsAr: [
-      'مراجعة الكود البرمجي (Code Validation) وتحسين هيكلة المكونات',
-      'إصلاح مشكلات التجاوب وتوافق RTL/LTR على الهواتف الذكية',
-      'تحسين استعلامات قواعد البيانات وأداء الواجهات الأمامية والخلفية',
+      'تخصيص تعليمات النظام (System Instructions) وتحديد سلوك وشخصية المساعد',
+      'ربط المساعد بقاعدة معرفية ومستندات مرجعية للإجابة الدقيقة دون هلوسة',
+      'توفير واجهة محادثة عربية وإنجليزية أنيقة مع حفظ سياق الحوار',
     ],
     scopePointsEn: [
-      'Code validation, component refactoring, and layout stabilization',
-      'Fixing RTL/LTR alignment and responsive behavior across mobile browsers',
-      'Database query optimization and frontend rendering improvements',
+      'Custom system instructions tuning ensuring accurate tone and scope boundaries',
+      'Knowledge-base grounded responses minimizing hallucination',
+      'Elegant bilingual conversational interface with persistent chat history',
+    ],
+    expectedDeliverablesAr: [
+      'مساعد محادثة متكامل يمكن تضمينه في موقعك أو تطبيقه',
+      'دليل إرشادي لتحديث قاعدة المعرفة وتعليمات النظام دورياً',
+    ],
+    expectedDeliverablesEn: [
+      'Embeddable conversational assistant interface for web apps',
+      'Operating guide for ongoing knowledge base updates and prompt tuning',
+    ],
+  },
+  {
+    id: 'workflow-automation',
+    index: '08',
+    category: 'ai-automation',
+    categoryLabelAr: 'الذكاء الاصطناعي والأتمتة',
+    categoryLabelEn: 'AI & Automation',
+    iconKey: 'Zap',
+    titleAr: 'أتمتة المهام وسير العمل والعمليات المتكررة',
+    titleEn: 'Workflow & Repetitive Task Automation',
+    descriptionAr:
+      'تحويل المهام اليدوية والعمليات الروتينية إلى مسارات عمل مؤتمتة تنفذ ذاتياً، لتقليل الأخطاء البشرية وتوفير الوقت والجهد.',
+    descriptionEn:
+      'Automating manual workflows, scheduled routines, and repetitive data processing to eliminate errors and save operational time.',
+    scopePointsAr: [
+      'أتمتة إرسال الإشعارات والتقارير المجدولة وتحديث السجلات تلقائياً',
+      'بناء مشغلات أحداث (Event-driven Webhooks) للربط بين المنصات المختلفة',
+      'معالجة البيانات والملفات تلقائياً فور رفعها دون تدخل يدوي',
+    ],
+    scopePointsEn: [
+      'Automated scheduled reporting, notifications, and periodic data synchronization',
+      'Event-driven webhook pipelines bridging disparate external tools',
+      'Automated background file processing and transformation pipelines',
+    ],
+    expectedDeliverablesAr: [
+      'سكريبتات ومسارات أتمتة تعمل بموثوقية مع سجل تشغيل مفصل',
+      'آليات مراقبة وتنبيه في حال حدوث أي توقف أو فشل في التنفيذ',
+    ],
+    expectedDeliverablesEn: [
+      'Reliable automation scripts with comprehensive execution logging',
+      'Status monitoring and alerting alerts on process exceptions',
+    ],
+  },
+  {
+    id: 'api-orchestration',
+    index: '09',
+    category: 'ai-automation',
+    categoryLabelAr: 'الذكاء الاصطناعي والأتمتة',
+    categoryLabelEn: 'AI & Automation',
+    iconKey: 'Network',
+    titleAr: 'بناء تكاملات بين الأنظمة والخدمات الخارجية',
+    titleEn: 'System Integrations & API Orchestration',
+    descriptionAr:
+      'الربط البرمجي بين أدواتك ومنصاتك المختلفة (سحابة، دفع، بريد، قواعد بيانات) لتنسيق تدفق البيانات بسلاسة وأمان.',
+    descriptionEn:
+      'Connecting disparate services and external platforms (cloud, payment, mail, storage) into unified, secure data workflows.',
+    scopePointsAr: [
+      'الربط مع خدمات الدفع، التخزين السحابي، وواجهات خدمات الرسائل والبريد',
+      'توحيد صيغ البيانات المتبادلة بين الأنظمة المختلفة (Data Serialization)',
+      'حماية عمليات الربط وإدارة رموز المصادقة والـ API Tokens بأمان',
+    ],
+    scopePointsEn: [
+      'Integration with cloud storage, payment providers, and messaging webhooks',
+      'Data format normalization and payload transformation across services',
+      'Token management and secret protection following security best practices',
+    ],
+    expectedDeliverablesAr: [
+      'تكامل برمجي موثوق بين الأنظمة المستهدفة مع معالجة كافة حالات الخطأ',
+      'توثيق نقاط الربط والمفاتيح والمتغيرات البيئية اللازمة',
+    ],
+    expectedDeliverablesEn: [
+      'Robust API integration pipeline with graceful degradation handling',
+      'Integration reference guide covering endpoints and environment setup',
+    ],
+  },
+
+  // ==========================================
+  // Category 3: Reports & Data Analysis
+  // ==========================================
+  {
+    id: 'structured-reports',
+    index: '10',
+    category: 'reports-data',
+    categoryLabelAr: 'التقارير وتحليل البيانات',
+    categoryLabelEn: 'Reports & Data Analysis',
+    iconKey: 'FileSpreadsheet',
+    titleAr: 'إعداد تقارير إدارية وتقنية منظمة',
+    titleEn: 'Structured Technical & Administrative Reports',
+    descriptionAr:
+      'إعداد تقارير إدارية وتقنية مفصلة مبنية على بيانات واقعية، توضح مجريات المشاريع وتوثق القرارات المعمارية والنتائج التشغيلية.',
+    descriptionEn:
+      'Authoring structured administrative and technical reports grounded in verifiable data, documenting project architecture and outcomes.',
+    scopePointsAr: [
+      'صياغة تقارير التدقيق الفني ومراجعة البنية التحتية البرمجية',
+      'توثيق مصادر البيانات، الفرضيات، والقيود التشغيلية بنزاهة وشفافية',
+      'تنظيم المعلومات في جداول ومخططات تسهل اتخاذ القرارات الإدارية',
+    ],
+    scopePointsEn: [
+      'Technical architecture auditing and infrastructure review documentation',
+      'Transparent disclosure of data sources, assumptions, and constraints',
+      'Data synthesis into clear executive tables and decision-making summaries',
+    ],
+    expectedDeliverablesAr: [
+      'تقرير فني منظم بصيغة PDF أو Markdown جاهز للمشاركة والعرض',
+      'ملخص تنفيذي يركز على الأولويات والتوصيات الملموسة',
+    ],
+    expectedDeliverablesEn: [
+      'Structured technical report in PDF or Markdown ready for presentation',
+      'Executive summary highlighting priorities and actionable findings',
+    ],
+  },
+  {
+    id: 'data-cleaning-analysis',
+    index: '11',
+    category: 'reports-data',
+    categoryLabelAr: 'التقارير وتحليل البيانات',
+    categoryLabelEn: 'Reports & Data Analysis',
+    iconKey: 'Filter',
+    titleAr: 'تنظيف البيانات وتحليلها وتلخيصها',
+    titleEn: 'Data Cleaning, Transformation & Summarization',
+    descriptionAr:
+      'معالجة مجموعات البيانات الأولية، إزالة القيم الشاذة، وتلخيص المؤشرات الأساسية لاستخراج رؤى واضحة دون أي استنتاجات مضللة.',
+    descriptionEn:
+      'Preprocessing raw datasets, handling outliers, and aggregating key metrics into actionable, accurate analytical summaries.',
+    scopePointsAr: [
+      'تنقية الجداول ومعالجة القيم المفقودة والمتكررة باستخدام Python و Pandas',
+      'استخراج المؤشرات الإحصائية الرئيسية وتحويل البيانات إلى صيغ قياسية',
+      'إعداد مجموعات بيانات نظيفة وجاهزة للاستخدام في التدريب أو العرض',
+    ],
+    scopePointsEn: [
+      'Table scrubbing and null-value handling using Python and Pandas pipelines',
+      'Descriptive statistics extraction and standardized data format validation',
+      'Clean dataset outputs prepared for downstream modeling or reporting',
+    ],
+    expectedDeliverablesAr: [
+      'مجموعة بيانات نظيفة ومنظمة بصيغ Excel أو CSV أو JSON',
+      'ملخص إحصائي يوضح خصائص البيانات ونقاط القوة والقيود',
+    ],
+    expectedDeliverablesEn: [
+      'Scrubbed, normalized dataset delivered in CSV, Excel, or JSON formats',
+      'Statistical summary report detailing data distribution and limitations',
+    ],
+  },
+  {
+    id: 'kpi-dashboards',
+    index: '12',
+    category: 'reports-data',
+    categoryLabelAr: 'التقارير وتحليل البيانات',
+    categoryLabelEn: 'Reports & Data Analysis',
+    iconKey: 'LineChart',
+    titleAr: 'إنشاء الجداول والمؤشرات ولوحات المعلومات (Dashboards)',
+    titleEn: 'KPI Dashboards & Data Visualization',
+    descriptionAr:
+      'تصميم لوحات معلومات تفاعلية تعرض مؤشرات الأداء الحقيقية والرسوم البيانية التوضيحية لمتابعة العمليات التقنية والتجارية بسهولة.',
+    descriptionEn:
+      'Designing visual KPI dashboards and interactive charts tracking operational and business metrics with high legibility.',
+    scopePointsAr: [
+      'تصميم مخططات بيانية واضحة وسريعة القراءة مع الالتزام بالتباين المريح',
+      'عرض الأرقام الحقيقية الموثقة مع تجنب المؤشرات الوهمية أو غير الدقيقة',
+      'لوحات معلومات تتكيف مع شاشات الهواتف وأجهزة سطح المكتب بسلاسة',
+    ],
+    scopePointsEn: [
+      'Legible visual chart components maintaining high accessible contrast',
+      'Truthful metric presentation strictly avoiding fabricated progress indicators',
+      'Responsive dashboard layout adapting across mobile and desktop screens',
+    ],
+    expectedDeliverablesAr: [
+      'لوحة معلومات برمجية تفاعلية مربوطة بمصادر البيانات الحقيقية',
+      'مكونات رسومية جاهزة لإعادة الاستخدام في تقارير دورية',
+    ],
+    expectedDeliverablesEn: [
+      'Interactive dashboard UI integrated with authentic data endpoints',
+      'Reusable visualization components for recurring performance monitoring',
+    ],
+  },
+
+  // ==========================================
+  // Category 4: Research & Studies
+  // ==========================================
+  {
+    id: 'tech-research-assistance',
+    index: '13',
+    category: 'research-studies',
+    categoryLabelAr: 'الأبحاث والدراسات',
+    categoryLabelEn: 'Research & Studies',
+    iconKey: 'Search',
+    titleAr: 'المساعدة في إعداد الأبحاث التقنية والدراسات',
+    titleEn: 'Technical Research & Exploratory Studies',
+    descriptionAr:
+      'المساعدة في البحث المكتبي المنظم واستكشاف أحدث الممارسات والتقنيات البرمجية، وتقديم ملخصات موضوعية تدعم التخطيط الأكاديمي والمهني.',
+    descriptionEn:
+      'Assisting in structured desk research, synthesizing emerging technical literature, and authoring objective study briefs.',
+    scopePointsAr: [
+      'جمع المصادر الموثوقة والمقالات العلمية والتقنية المحكمة ذات الصلة',
+      'تلخيص الدراسات واستخلاص الفروق والنتائج دون ادعاء تجارب لم تُجرَ',
+      'هيكلة موضوعات البحث وتقديم مقارنات مبنية على أدلة مثبتة',
+    ],
+    scopePointsEn: [
+      'Curating peer-reviewed technical papers and authentic engineering resources',
+      'Literature summarization strictly distinguishing factual evidence from inference',
+      'Research structuring with evidence-based technical framework comparisons',
+    ],
+    expectedDeliverablesAr: [
+      'ملف بحث مكتبي منظم يتضمن مراجعة المصادر والمقارنة التحليلية',
+      'قائمة مصادر موثقة وفق المعايير الأكاديمية المعتمدة',
+    ],
+    expectedDeliverablesEn: [
+      'Structured technical research brief synthesizing literature and comparisons',
+      'Verified bibliography formatted according to target standard guidelines',
+    ],
+  },
+  {
+    id: 'citation-management',
+    index: '14',
+    category: 'research-studies',
+    categoryLabelAr: 'الأبحاث والدراسات',
+    categoryLabelEn: 'Research & Studies',
+    iconKey: 'BookOpen',
+    titleAr: 'تنظيم وتوثيق المراجع الأكاديمية والمهنية',
+    titleEn: 'Citation Formatting & Reference Management',
+    descriptionAr:
+      'تنسيق المراجع وقوائم المصادر وفق الأنماط المعتمدة (APA, IEEE, Harvard) مع التحقق من صحة الروابط وبيانات النشر بدقة وأمانة.',
+    descriptionEn:
+      'Formatting citations and reference bibliographies adhering to target styles (APA, IEEE, Harvard) with source URL verification.',
+    scopePointsAr: [
+      'تنسيق الاقتباسات داخل النص وقائمة المراجع في نهاية البحث أو التقرير',
+      'التحقق من صحة أسماء المؤلفين وسنوات النشر وعناوين الدوريات',
+      'تنظيم مكتبة المراجع لتسهيل التعديل والتحديث المستقبلي',
+    ],
+    scopePointsEn: [
+      'In-text citation and end-of-document reference list alignment',
+      'Author name, publication date, and journal metadata verification',
+      'Bibliography categorization facilitating ongoing document updates',
+    ],
+    expectedDeliverablesAr: [
+      'قائمة مراجع منسقة وخالية من الأخطاء التنسيقية بصيغة Word أو Markdown',
+    ],
+    expectedDeliverablesEn: [
+      'Polished, style-compliant bibliography file formatted in Word or Markdown',
+    ],
+  },
+
+  // ==========================================
+  // Category 5: Professional & Educational Docs
+  // ==========================================
+  {
+    id: 'professional-cv-optimization',
+    index: '15',
+    category: 'professional-docs',
+    categoryLabelAr: 'المستندات المهنية والتعليمية',
+    categoryLabelEn: 'Professional Docs',
+    iconKey: 'UserCheck',
+    titleAr: 'إنشاء السيرة الذاتية وتحسينها وفق الوظيفة',
+    titleEn: 'Professional CV Crafting & Job-Targeted Optimization',
+    descriptionAr:
+      'صياغة سيرة ذاتية هندسية ومهنية متوافقة مع أنظمة الفرز الآلي (ATS)، تبرز مهاراتك وخبراتك الحقيقية دون أي تزييف أو ادعاءات غير موثقة.',
+    descriptionEn:
+      'Crafting ATS-friendly engineering and professional CVs highlighting verified achievements without fabrication.',
+    scopePointsAr: [
+      'تنظيم الهيكل المهني: الملخص، الخبرات، المشاريع، المهارات، والتعليم',
+      'صياغة نقاط الإنجاز بصيغة أفعال قوية موجهة للأثر والنتائج الملموسة',
+      'مواءمة الكلمات المفتاحية مع متطلبات الوظيفة المستهدفة بدقة',
+    ],
+    scopePointsEn: [
+      'Structural formatting: Profile, Work History, Projects, Skills, and Education',
+      'Impact-focused bullet points utilizing active accomplishment verbs',
+      'Targeted keyword alignment matching job descriptions and ATS requirements',
+    ],
+    expectedDeliverablesAr: [
+      'نسخة سيرة ذاتية جاهزة بصيغة PDF وأخرى قابلة للتحرير بـ Word',
+      'توجيهات مخصصة لكيفية تكييف السيرة لكل فرصة عمل جديدة',
+    ],
+    expectedDeliverablesEn: [
+      'Polished CV provided in both ATS-tested PDF and editable Word formats',
+      'Personalized guidance on tailoring the document for specific job roles',
+    ],
+  },
+  {
+    id: 'cover-letters-proposals',
+    index: '16',
+    category: 'professional-docs',
+    categoryLabelAr: 'المستندات المهنية والتعليمية',
+    categoryLabelEn: 'Professional Docs',
+    iconKey: 'Send',
+    titleAr: 'صياغة خطابات التقديم والمقترحات المهنية',
+    titleEn: 'Cover Letters & Professional Proposals',
+    descriptionAr:
+      'كتابة خطابات تقديم مقنعة وعروض عمل ومراسلات رسمية بالعربية والإنجليزية تعبر عن قيمتك المهنية بأسلوب رصين ومباشر.',
+    descriptionEn:
+      'Writing tailored cover letters, client outreach messages, and project proposals communicating professional value clearly.',
+    scopePointsAr: [
+      'صياغة خطاب تقديم مخصص يربط بين مهارات المتقدم ومتطلبات الجهة',
+      'إعداد مقترحات المشاريع التقنية (Technical Proposals) بأسلوب مقنع ومنظم',
+      'مراسلات مهنية ورسمية موجهة لمسؤولي التوظيف والعملاء المحتملين',
+    ],
+    scopePointsEn: [
+      'Tailored cover letters linking candidate experience to company needs',
+      'Structured technical proposals outlining milestones, deliverables, and scope',
+      'Professional outreach copy for recruiters, hiring managers, and prospective clients',
+    ],
+    expectedDeliverablesAr: [
+      'خطاب تقديم ومقترح مهني مصاغ بعناية وجاهز للإرسال المباشر',
+    ],
+    expectedDeliverablesEn: [
+      'Carefully tailored cover letter and project proposal text ready for dispatch',
+    ],
+  },
+  {
+    id: 'educational-guides',
+    index: '17',
+    category: 'professional-docs',
+    categoryLabelAr: 'المستندات المهنية والتعليمية',
+    categoryLabelEn: 'Professional Docs',
+    iconKey: 'GraduationCap',
+    titleAr: 'إعداد التقارير التعليمية والأدلة التدريبية والملخصات',
+    titleEn: 'Educational Guides, Training Manuals & Summaries',
+    descriptionAr:
+      'إعداد محتوى تعليمي تقني مبسط، أدلة استخدام للأنظمة (User Manuals)، وملخصات تدريبية تسهل نقل المعرفة وفهم الأنظمة المعقدة.',
+    descriptionEn:
+      'Authoring step-by-step developer documentation, user manuals, and structured educational guides simplifying technical workflows.',
+    scopePointsAr: [
+      'كتابة أدلة خطوة بخطوة (Step-by-step) لتشغيل واستخدام الأنظمة البرمجية',
+      'إعداد شروحات توضيحية للمفاهيم الهندسية ومسارات التطوير',
+      'تنسيق لغوي وبصري متناسق يسهل القراءة والرجوع السريع للمعلومات',
+    ],
+    scopePointsEn: [
+      'Step-by-step software setup guides and end-user system manuals',
+      'Clear technical walkthroughs explaining architectural flows and best practices',
+      'Visual formatting with screenshots and callouts facilitating rapid learning',
+    ],
+    expectedDeliverablesAr: [
+      'دليل تعليمي أو تدريبي منظم بصيغة PDF أو Markdown مدعم بالأمثلة',
+    ],
+    expectedDeliverablesEn: [
+      'Comprehensive educational guide delivered in formatted PDF or Markdown',
+    ],
+  },
+
+  // ==========================================
+  // Category 6: Design & Technical Quality
+  // ==========================================
+  {
+    id: 'ui-ux-design-service',
+    index: '18',
+    category: 'design-quality',
+    categoryLabelAr: 'التصميم والجودة التقنية',
+    categoryLabelEn: 'Design & Quality Assurance',
+    iconKey: 'Palette',
+    titleAr: 'تصميم واجهات وتجربة المستخدم (UI/UX)',
+    titleEn: 'User Interface & Experience Design (UI/UX)',
+    descriptionAr:
+      'تصميم واجهات رقمية جذابة تجمع بين الوضوح البصري، التباين المريح للقراءة، والتنقل البديهي على جميع أحجام الشاشات.',
+    descriptionEn:
+      'Designing intuitive user interfaces balancing typographic elegance, comfortable contrast, and seamless navigation.',
+    scopePointsAr: [
+      'بناء أنظمة تصميم متسقة تدعم الوضعين الداكن والفاتح ومبادئ Zero-Pill',
+      'تحسين مسارات التفاعل وتسهيل الوصول عبر لوحة المفاتيح',
+      'تصميم لوحات التحكم للأنظمة التعليمية، الصحية، والمحاسبية بكفاءة عالية',
+    ],
+    scopePointsEn: [
+      'Cohesive dark and light design systems following strict typographic hierarchy',
+      'Streamlined interaction flows and full accessible keyboard navigation',
+      'Dashboard UI layouts crafted for high data-density enterprise applications',
+    ],
+    expectedDeliverablesAr: [
+      'مكونات واجهة مستخدم متناسقة وموثقة ومبنية بأحدث ممارسات CSS',
+      'مخطط تفاعلي واضح لرحلة المستخدم وتجربة التصفح المتكاملة',
+    ],
+    expectedDeliverablesEn: [
+      'Modular UI components documented and built with modern CSS variables',
+      'Cohesive user flow layouts optimized for high conversion and readability',
+    ],
+  },
+  {
+    id: 'quality-testing-audits',
+    index: '19',
+    category: 'design-quality',
+    categoryLabelAr: 'التصميم والجودة التقنية',
+    categoryLabelEn: 'Design & Quality Assurance',
+    iconKey: 'ShieldCheck',
+    titleAr: 'اختبار التطبيقات ومراجعة جودة الكود والأداء',
+    titleEn: 'Application QA Testing & Code Quality Audits',
+    descriptionAr:
+      'فحص التطبيقات لاكتشاف الأخطاء الوظيفية، مراجعة الكود البرمجي، وتحسين سرعة استجابة الموقع وتوافقه مع معايير الويب العالمية.',
+    descriptionEn:
+      'Rigorous functional QA testing, edge-case reproduction, code refactoring, and Web Vitals speed optimization.',
+    scopePointsAr: [
+      'اختبار الوظائف ومسارات المستخدمين واكتشاف الأخطاء البرمجية وتوثيقها',
+      'تدقيق التوافق مع الهواتف الذكية ومتصفحات الويب المختلفة ومعايير إمكانية الوصول',
+      'تحسين سرعة التحميل، ضغط الأصول، وتقليل حجم حزم الجافاسكربت',
+    ],
+    scopePointsEn: [
+      'Comprehensive functional testing and detailed reproducible bug logging',
+      'Cross-browser and mobile device compatibility verification',
+      'Page speed optimization, asset minification, and Core Web Vitals tuning',
+    ],
+    expectedDeliverablesAr: [
+      'تقرير فحص الجودة والأداء يتضمن قائمة المشكلات المكتشفة والحلول المقترحة',
+      'إصلاحات برمجية مباشرة للمشكلات المتفق عليها لتحسين مؤشرات الأداء',
+    ],
+    expectedDeliverablesEn: [
+      'Detailed QA audit report highlighting observed issues with step-by-step fixes',
+      'Targeted code optimizations boosting speed benchmarks and responsiveness',
     ],
   },
 ];
+
 
 export const UI_TRANSLATIONS = {
   ar: {

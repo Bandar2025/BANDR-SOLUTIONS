@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AlertTriangle,
+  ArrowDown,
+  ArrowUp,
   CheckCircle2,
+  Crop,
   Edit3,
   Eye,
   EyeOff,
@@ -50,8 +53,11 @@ import {
   toggleProjectPublishStatus,
   updateProjectGalleryMediaAlt,
   uploadProjectGalleryMedia,
+  uploadPreOptimizedGalleryMedia,
+  validateImageMagicBytes,
   verifyServerSideUnauthorizedRejection,
 } from '../lib/portfolioService';
+import { optimizeImageWithBrowserCompression } from '../lib/imageOptimizer';
 import {
   AppearancePreferences,
   GlobalPublishedAppearance,
@@ -59,6 +65,20 @@ import {
 import { ProjectVisualPreview } from './ProjectVisualPreview';
 import { ThemeSettingsCenter } from './ThemeSettingsCenter';
 import { ImageCropModal } from './ImageCropModal';
+
+export interface QueueImageItem {
+  id: string;
+  file: File;
+  previewUrl: string;
+  originalSize: number;
+  compressedSize?: number;
+  dataUrl?: string;
+  mimeType?: 'image/webp' | 'image/jpeg';
+  status: 'processing' | 'ready' | 'error';
+  error?: string;
+  altAr: string;
+  altEn: string;
+}
 
 interface AdminDashboardProps {
   lang: Language;
@@ -213,7 +233,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [cropModalImageSrc, setCropModalImageSrc] = useState<string | null>(null);
   const [cropModalFileName, setCropModalFileName] = useState('');
-  const [cropModalTarget, setCropModalTarget] = useState<'thumbnail' | 'gallery' | null>(null);
+  const [cropModalTarget, setCropModalTarget] = useState<
+    'thumbnail' | 'gallery' | 'queue_item' | null
+  >(null);
+  const [cropQueueItemId, setCropQueueItemId] = useState<string | null>(null);
+
+  // Multi-image upload queue state
+  const [multiUploadQueue, setMultiUploadQueue] = useState<QueueImageItem[]>([]);
+  const [uploadingQueue, setUploadingQueue] = useState(false);
 
   const thumbnailFileInputRef = useRef<HTMLInputElement>(null);
   const galleryFileInputRef = useRef<HTMLInputElement>(null);
@@ -429,30 +456,178 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     });
   };
 
-  // Handle Gallery Image Selection (opens ImageCropModal for manual cropping / fine-tuning)
-  const handleSelectGalleryFile = (
+  // Multi-image selection & queue processing
+  const handleSelectGalleryFiles = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const file = e.target.files?.[0];
-    if (!file || !editingProject) return;
+    const files = e.target.files;
+    if (!files || files.length === 0 || !editingProject) return;
 
     setImageError(null);
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const src = event.target?.result as string;
-      if (src) {
-        setCropModalImageSrc(src);
-        setCropModalFileName(file.name);
-        setCropModalTarget('gallery');
-        setCropModalOpen(true);
-      }
-    };
-    reader.onerror = () => setImageError('Failed to read image file.');
-    reader.readAsDataURL(file);
+    const selectedFiles = Array.from(files);
+
+    const newQueueItems: QueueImageItem[] = selectedFiles.map((file, idx) => ({
+      id: `queue_${Date.now()}_${idx}_${Math.random().toString(36).substring(2, 6)}`,
+      file,
+      previewUrl: URL.createObjectURL(file),
+      originalSize: file.size,
+      status: 'processing',
+      altAr: editingProject.nameAr || file.name.replace(/\.[^/.]+$/, ''),
+      altEn: editingProject.nameEn || file.name.replace(/\.[^/.]+$/, ''),
+    }));
+
+    setMultiUploadQueue((prev) => [...prev, ...newQueueItems]);
 
     if (galleryFileInputRef.current) {
       galleryFileInputRef.current.value = '';
     }
+
+    for (const qItem of newQueueItems) {
+      try {
+        await validateImageMagicBytes(qItem.file);
+        const res = await optimizeImageWithBrowserCompression(qItem.file, 1920);
+        const base64Length = res.dataUrl.length - (res.dataUrl.indexOf(',') + 1);
+        const approxBytes = Math.round((base64Length * 3) / 4);
+
+        setMultiUploadQueue((prev) =>
+          prev.map((item) =>
+            item.id === qItem.id
+              ? {
+                  ...item,
+                  status: 'ready',
+                  dataUrl: res.dataUrl,
+                  mimeType: res.mimeType,
+                  compressedSize: approxBytes,
+                }
+              : item
+          )
+        );
+      } catch (err: any) {
+        setMultiUploadQueue((prev) =>
+          prev.map((item) =>
+            item.id === qItem.id
+              ? {
+                  ...item,
+                  status: 'error',
+                  error: err.message || 'Validation/compression failed',
+                }
+              : item
+          )
+        );
+      }
+    }
+  };
+
+  const handleOpenCropForQueueItem = (item: QueueImageItem) => {
+    setCropModalImageSrc(item.dataUrl || item.previewUrl);
+    setCropModalFileName(item.file.name);
+    setCropModalTarget('queue_item');
+    setCropQueueItemId(item.id);
+    setCropModalOpen(true);
+  };
+
+  const handleRemoveQueueItem = (itemId: string) => {
+    setMultiUploadQueue((prev) => prev.filter((item) => item.id !== itemId));
+  };
+
+  const handleUploadAllQueuedImages = async () => {
+    if (!editingProject || !authUser) return;
+    const readyItems = multiUploadQueue.filter(
+      (item) => item.status === 'ready' && item.dataUrl
+    );
+    if (readyItems.length === 0) return;
+
+    setUploadingQueue(true);
+    setImageError(null);
+
+    try {
+      await persistEditingProjectToFirestore(editingProject);
+      const uploadedMediaItems: ProjectGalleryItem[] = [];
+      const newMediaIds: string[] = [...(editingProject.galleryMediaIds || [])];
+
+      for (const item of readyItems) {
+        const uploaded = await uploadPreOptimizedGalleryMedia(
+          item.dataUrl!,
+          item.mimeType || 'image/webp',
+          item.file.name,
+          editingProject.id,
+          item.altAr,
+          item.altEn,
+          editingProject.status === 'draft' ? 'draft' : 'published',
+          authUser
+        );
+        uploadedMediaItems.push(uploaded);
+        newMediaIds.push(uploaded.id);
+      }
+
+      const deduplicatedIds = Array.from(new Set(newMediaIds)).slice(0, 10);
+      const updatedProject: ProjectItem = {
+        ...editingProject,
+        galleryMediaIds: deduplicatedIds,
+      };
+
+      await persistEditingProjectToFirestore(updatedProject);
+      setEditingProject(updatedProject);
+      setGalleryItems((prev) => [...prev, ...uploadedMediaItems]);
+      setMultiUploadQueue((prev) =>
+        prev.filter((item) => !readyItems.some((r) => r.id === item.id))
+      );
+      setStatusBanner({
+        type: 'success',
+        message: isAr
+          ? `تم رفع وحفظ ${uploadedMediaItems.length} صور بنجاح إلى معرض هذا المشروع.`
+          : `Successfully uploaded and saved ${uploadedMediaItems.length} images to project gallery.`,
+      });
+    } catch (err: any) {
+      setImageError(err.message || 'Failed to upload queued images');
+    } finally {
+      setUploadingQueue(false);
+    }
+  };
+
+  const handleMoveGalleryItem = async (
+    index: number,
+    direction: 'up' | 'down'
+  ) => {
+    if (!editingProject || !galleryItems.length) return;
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= galleryItems.length) return;
+
+    const newItems = [...galleryItems];
+    const [moved] = newItems.splice(index, 1);
+    newItems.splice(targetIndex, 0, moved);
+
+    const newMediaIds = newItems.map((item) => item.id);
+    const updatedProject: ProjectItem = {
+      ...editingProject,
+      galleryMediaIds: newMediaIds,
+    };
+    setGalleryItems(newItems);
+    setEditingProject(updatedProject);
+    await persistEditingProjectToFirestore(updatedProject);
+    setStatusBanner({
+      type: 'success',
+      message: isAr
+        ? 'تم تحديث ترتيب صور المعرض بنجاح.'
+        : 'Gallery image order updated successfully.',
+    });
+  };
+
+  const handleSetAsMainThumbnail = async (item: ProjectGalleryItem) => {
+    if (!editingProject) return;
+    setPendingThumbnailPreview(item.dataUrl);
+    const updatedProject: ProjectItem = {
+      ...editingProject,
+      thumbnailUrl: item.dataUrl,
+    };
+    setEditingProject(updatedProject);
+    await persistEditingProjectToFirestore(updatedProject, item.dataUrl);
+    setStatusBanner({
+      type: 'success',
+      message: isAr
+        ? 'تم تعيين هذه الصورة كصورة رئيسية للمشروع بنجاح.'
+        : 'Set as main project thumbnail successfully.',
+    });
   };
 
   const handleCropComplete = async (
@@ -467,6 +642,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         message: isAr
           ? 'تم قص وضغط الصورة الرئيسية بنجاح. اضغط على اعتماد المعاينة ثم حفظ المشروع.'
           : 'Main thumbnail cropped & compressed successfully. Click Confirm Preview then Save Project.',
+      });
+    } else if (cropModalTarget === 'queue_item' && cropQueueItemId) {
+      const base64Length =
+        resultDataUrl.length - (resultDataUrl.indexOf(',') + 1);
+      const approxBytes = Math.round((base64Length * 3) / 4);
+
+      setMultiUploadQueue((prev) =>
+        prev.map((q) =>
+          q.id === cropQueueItemId
+            ? {
+                ...q,
+                status: 'ready',
+                dataUrl: resultDataUrl,
+                mimeType,
+                compressedSize: approxBytes,
+              }
+            : q
+        )
+      );
+      setCropQueueItemId(null);
+      setStatusBanner({
+        type: 'success',
+        message: isAr
+          ? 'تم تطبيق القص على الصورة في طابور الرفع.'
+          : 'Crop applied to image in upload queue.',
       });
     } else if (cropModalTarget === 'gallery') {
       if (!authUser || !editingProject) return;
@@ -489,7 +689,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             setGalleryItems((prev) => [...prev, newItem]);
             setEditingProject({
               ...editingProject,
-              galleryMediaIds: [...(editingProject.galleryMediaIds || []), newItem.id],
+              galleryMediaIds: [
+                ...(editingProject.galleryMediaIds || []),
+                newItem.id,
+              ],
             });
             setUploadProgress(null);
             setStatusBanner({
@@ -500,7 +703,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             });
           } catch (err) {
             setUploadProgress(null);
-            setImageError(err instanceof Error ? err.message : 'Failed to upload gallery image');
+            setImageError(
+              err instanceof Error
+                ? err.message
+                : 'Failed to upload gallery image'
+            );
           }
         });
     }
@@ -508,6 +715,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setCropModalImageSrc(null);
     setCropModalTarget(null);
   };
+
 
   const persistEditingProjectToFirestore = async (
     projectState: ProjectItem,
@@ -1860,100 +2068,191 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </p>
                     </div>
 
-                    <div>
+                    <div className="flex items-center gap-2">
                       <input
                         ref={galleryFileInputRef}
                         type="file"
+                        multiple
                         accept="image/png,image/jpeg,image/webp"
-                        onChange={handleSelectGalleryFile}
+                        onChange={handleSelectGalleryFiles}
                         className="hidden"
                       />
                       <button
                         type="button"
                         onClick={() => galleryFileInputRef.current?.click()}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl theme-btn-secondary text-xs font-semibold cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl theme-btn-primary text-xs font-semibold cursor-pointer shadow-xs"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>
                           {isAr
-                            ? 'إضافة صورة للمعرض'
-                            : 'Add Gallery Screenshot'}
+                            ? 'إضافة صور متعددة للمعرض'
+                            : 'Add Multiple Gallery Photos'}
                         </span>
                       </button>
                     </div>
                   </div>
 
-                  {/* Pending Gallery Image Preview Before Saving */}
-                  {pendingGalleryFile && (
-                    <div className="p-4 rounded-xl theme-bg-surface border theme-border space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold theme-text-primary">
-                          {isAr
-                            ? 'معاينة صورة المعرض قبل الحفظ'
-                            : 'Preview Gallery Image Before Saving'}
-                        </span>
-                        <span className="text-[11px] font-mono-tabular theme-accent-text">
-                          {pendingGalleryFile.mimeType}
-                        </span>
+                  {/* Multi-Image Upload Queue & Pre-upload Optimizer */}
+                  {multiUploadQueue.length > 0 && (
+                    <div className="p-4 rounded-2xl theme-bg-elevated border theme-border space-y-4">
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b theme-border pb-3">
+                        <div className="flex items-center gap-2">
+                          <ImageIcon className="w-4 h-4 theme-accent-text" />
+                          <span className="text-xs font-bold theme-text-primary">
+                            {isAr
+                              ? `طابور الصور المختارة قبل الرفع (${multiUploadQueue.length})`
+                              : `Selected Images Queue (${multiUploadQueue.length})`}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setMultiUploadQueue([])}
+                            className="px-2.5 py-1 rounded-lg theme-btn-secondary text-[11px] cursor-pointer"
+                          >
+                            {isAr ? 'تفريغ الطابور' : 'Clear Queue'}
+                          </button>
+                          <button
+                            type="button"
+                            disabled={
+                              uploadingQueue ||
+                              !multiUploadQueue.some((q) => q.status === 'ready')
+                            }
+                            onClick={handleUploadAllQueuedImages}
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all disabled:opacity-50 cursor-pointer shadow-xs"
+                          >
+                            {uploadingQueue ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                              <Upload className="w-3.5 h-3.5" />
+                            )}
+                            <span>
+                              {isAr
+                                ? 'رفع وحفظ جميع الصور الجاهزة للمعرض'
+                                : 'Upload All Ready Images to Gallery'}
+                            </span>
+                          </button>
+                        </div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
-                        <img
-                          src={pendingGalleryFile.previewDataUrl}
-                          alt="Pending upload preview"
-                          className="w-full aspect-[16/10] object-cover rounded-lg border theme-border"
-                        />
-                        <div className="sm:col-span-2 space-y-2">
-                          <input
-                            type="text"
-                            dir="rtl"
-                            placeholder="النص البديل بالعربية (Alt Text AR)"
-                            value={pendingGalleryFile.altAr}
-                            onChange={(e) =>
-                              setPendingGalleryFile({
-                                ...pendingGalleryFile,
-                                altAr: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-1.5 rounded-lg theme-input text-xs"
-                          />
-                          <input
-                            type="text"
-                            dir="ltr"
-                            placeholder="English Alt Text (Alt Text EN)"
-                            value={pendingGalleryFile.altEn}
-                            onChange={(e) =>
-                              setPendingGalleryFile({
-                                ...pendingGalleryFile,
-                                altEn: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-1.5 rounded-lg theme-input text-xs"
-                          />
-                          <div className="flex items-center gap-2 pt-1">
-                            <button
-                              type="button"
-                              onClick={handleConfirmGalleryUpload}
-                              className="px-3.5 py-1.5 rounded-lg theme-btn-primary text-xs font-bold cursor-pointer"
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto pe-1">
+                        {multiUploadQueue.map((item) => {
+                          const origKb = Math.round(item.originalSize / 1024);
+                          const compKb = item.compressedSize
+                            ? Math.round(item.compressedSize / 1024)
+                            : null;
+                          return (
+                            <div
+                              key={item.id}
+                              className="p-3 rounded-xl theme-bg-surface border theme-border space-y-2.5"
                             >
-                              {isAr
-                                ? 'حفظ ورفع للمعرض'
-                                : 'Save & Upload to Gallery'}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setPendingGalleryFile(null)}
-                              className="px-3 py-1.5 rounded-lg theme-btn-secondary text-xs font-semibold cursor-pointer"
-                            >
-                              {isAr ? 'إلغاء' : 'Cancel'}
-                            </button>
-                          </div>
-                        </div>
+                              <div className="flex gap-3 items-start">
+                                <img
+                                  src={item.dataUrl || item.previewUrl}
+                                  alt="Queue preview"
+                                  className="w-20 aspect-[16/10] object-cover rounded-lg border theme-border shrink-0"
+                                />
+                                <div className="flex-1 min-w-0 space-y-1">
+                                  <div className="flex items-center justify-between gap-1">
+                                    <span className="text-xs font-bold theme-text-primary truncate">
+                                      {item.file.name}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRemoveQueueItem(item.id)}
+                                      className="p-1 rounded text-red-400 hover:bg-red-950/40 cursor-pointer"
+                                      title={isAr ? 'إزالة من الطابور' : 'Remove from queue'}
+                                    >
+                                      <X className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+
+                                  <div className="flex items-center gap-2 text-[10px] font-mono-tabular">
+                                    <span className="theme-text-muted">
+                                      {origKb} KB
+                                    </span>
+                                    {compKb && (
+                                      <>
+                                        <span className="theme-accent-text">→</span>
+                                        <span className="text-emerald-400 font-bold">
+                                          {compKb} KB ({item.mimeType?.replace('image/', '')})
+                                        </span>
+                                      </>
+                                    )}
+                                  </div>
+
+                                  <div className="pt-0.5">
+                                    {item.status === 'processing' && (
+                                      <span className="inline-flex items-center gap-1 text-[10px] text-amber-400 font-medium">
+                                        <Loader2 className="w-3 h-3 animate-spin" />
+                                        <span>{isAr ? 'جاري فحص وضغط الصورة...' : 'Compressing...'}</span>
+                                      </span>
+                                    )}
+                                    {item.status === 'ready' && (
+                                      <span className="inline-flex items-center gap-1 text-[10px] text-emerald-400 font-bold">
+                                        <CheckCircle2 className="w-3 h-3" />
+                                        <span>{isAr ? 'جاهزة للرفع' : 'Ready to upload'}</span>
+                                      </span>
+                                    )}
+                                    {item.status === 'error' && (
+                                      <span className="inline-flex items-center gap-1 text-[10px] text-red-400 font-medium">
+                                        <AlertTriangle className="w-3 h-3" />
+                                        <span className="truncate">{item.error}</span>
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-2 pt-1 border-t theme-border">
+                                <input
+                                  type="text"
+                                  dir="rtl"
+                                  placeholder="نص بديل (عربي)"
+                                  value={item.altAr}
+                                  onChange={(e) =>
+                                    setMultiUploadQueue((prev) =>
+                                      prev.map((q) =>
+                                        q.id === item.id ? { ...q, altAr: e.target.value } : q
+                                      )
+                                    )
+                                  }
+                                  className="w-full px-2 py-1 rounded theme-input text-[11px]"
+                                />
+                                <input
+                                  type="text"
+                                  dir="ltr"
+                                  placeholder="Alt Text (EN)"
+                                  value={item.altEn}
+                                  onChange={(e) =>
+                                    setMultiUploadQueue((prev) =>
+                                      prev.map((q) =>
+                                        q.id === item.id ? { ...q, altEn: e.target.value } : q
+                                      )
+                                    )
+                                  }
+                                  className="w-full px-2 py-1 rounded theme-input text-[11px]"
+                                />
+                              </div>
+
+                              <div className="flex items-center justify-end gap-2 pt-1">
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenCropForQueueItem(item)}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg theme-btn-secondary text-[10px] font-semibold cursor-pointer"
+                                >
+                                  <Crop className="w-3 h-3" />
+                                  <span>{isAr ? 'قص وتعديل' : 'Crop & Tune'}</span>
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
 
-                  {/* Existing Gallery Images List */}
+                  {/* Existing Gallery Images List with Reordering & Main Selector */}
                   {loadingGallery ? (
                     <div className="text-xs theme-text-muted flex items-center gap-2 py-2">
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -1964,69 +2263,151 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </span>
                     </div>
                   ) : galleryItems.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {galleryItems.map((item) => (
-                        <div
-                          key={item.id}
-                          className="p-3 rounded-xl theme-bg-surface border theme-border flex gap-3 items-start"
-                        >
-                          <img
-                            src={item.dataUrl}
-                            alt={isAr ? item.altAr : item.altEn}
-                            loading="lazy"
-                            decoding="async"
-                            className="w-24 aspect-[16/10] object-cover rounded-lg border theme-border shrink-0"
-                          />
-                          <div className="flex-1 min-w-0 space-y-1.5">
-                            <input
-                              type="text"
-                              dir="rtl"
-                              defaultValue={item.altAr}
-                              onBlur={(e) =>
-                                handleUpdateGalleryAlt(
-                                  item.id,
-                                  e.target.value,
-                                  item.altEn
-                                )
-                              }
-                              className="w-full px-2 py-1 rounded theme-input text-[11px]"
-                              placeholder="Alt AR"
-                            />
-                            <input
-                              type="text"
-                              dir="ltr"
-                              defaultValue={item.altEn}
-                              onBlur={(e) =>
-                                handleUpdateGalleryAlt(
-                                  item.id,
-                                  item.altAr,
-                                  e.target.value
-                                )
-                              }
-                              className="w-full px-2 py-1 rounded theme-input text-[11px]"
-                              placeholder="Alt EN"
-                            />
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteGalleryImage(item.id)}
-                            className="p-1.5 rounded-lg text-red-400 hover:bg-red-950/40 cursor-pointer"
-                            title={isAr ? 'حذف الصورة' : 'Delete image'}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-[11px] theme-text-muted px-1">
+                        <span>
+                          {isAr
+                            ? 'يمكنك إعادة ترتيب الصور أو تعيين أي صورة كصورة رئيسية للمشروع:'
+                            : 'Reorder screenshots or designate any as the main project thumbnail:'}
+                        </span>
+                        <span className="font-mono-tabular">
+                          {galleryItems.length} / 10
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {galleryItems.map((item, idx) => {
+                          const isCurrentMain =
+                            editingProject.thumbnailUrl === item.dataUrl;
+
+                          return (
+                            <div
+                              key={item.id}
+                              className={`p-3 rounded-xl theme-bg-surface border transition-all space-y-2.5 ${
+                                isCurrentMain
+                                  ? 'border-blue-500 shadow-sm'
+                                  : 'theme-border'
+                              }`}
+                            >
+                              <div className="flex gap-3 items-start">
+                                <div className="relative shrink-0">
+                                  <img
+                                    src={item.dataUrl}
+                                    alt={isAr ? item.altAr : item.altEn}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="w-24 aspect-[16/10] object-cover rounded-lg border theme-border"
+                                  />
+                                  <span className="absolute top-1 start-1 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-mono-tabular text-white">
+                                    #{idx + 1}
+                                  </span>
+                                </div>
+
+                                <div className="flex-1 min-w-0 space-y-1.5">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-[11px] font-mono-tabular theme-text-muted truncate">
+                                      {item.fileName}
+                                    </span>
+                                    <div className="flex items-center gap-1">
+                                      {/* Move Up Button */}
+                                      <button
+                                        type="button"
+                                        disabled={idx === 0}
+                                        onClick={() => handleMoveGalleryItem(idx, 'up')}
+                                        className="p-1 rounded theme-btn-secondary disabled:opacity-30 cursor-pointer"
+                                        title={isAr ? 'تقديم الترتيب' : 'Move up'}
+                                      >
+                                        <ArrowUp className="w-3 h-3" />
+                                      </button>
+                                      {/* Move Down Button */}
+                                      <button
+                                        type="button"
+                                        disabled={idx === galleryItems.length - 1}
+                                        onClick={() => handleMoveGalleryItem(idx, 'down')}
+                                        className="p-1 rounded theme-btn-secondary disabled:opacity-30 cursor-pointer"
+                                        title={isAr ? 'تأخير الترتيب' : 'Move down'}
+                                      >
+                                        <ArrowDown className="w-3 h-3" />
+                                      </button>
+                                      {/* Delete Button */}
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDeleteGalleryImage(item.id)}
+                                        className="p-1 rounded text-red-400 hover:bg-red-950/40 cursor-pointer"
+                                        title={isAr ? 'حذف الصورة' : 'Delete image'}
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  <input
+                                    type="text"
+                                    dir="rtl"
+                                    defaultValue={item.altAr}
+                                    onBlur={(e) =>
+                                      handleUpdateGalleryAlt(
+                                        item.id,
+                                        e.target.value,
+                                        item.altEn
+                                      )
+                                    }
+                                    className="w-full px-2 py-1 rounded theme-input text-[11px]"
+                                    placeholder="Alt AR"
+                                  />
+                                  <input
+                                    type="text"
+                                    dir="ltr"
+                                    defaultValue={item.altEn}
+                                    onBlur={(e) =>
+                                      handleUpdateGalleryAlt(
+                                        item.id,
+                                        item.altAr,
+                                        e.target.value
+                                      )
+                                    }
+                                    className="w-full px-2 py-1 rounded theme-input text-[11px]"
+                                    placeholder="Alt EN"
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Card Action Row: Set as Main Thumbnail */}
+                              <div className="flex items-center justify-between pt-1 border-t theme-border text-xs">
+                                {isCurrentMain ? (
+                                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-400">
+                                    <Star className="w-3 h-3 fill-current" />
+                                    <span>{isAr ? 'الصورة الرئيسية الحالية' : 'Current Main Thumbnail'}</span>
+                                  </span>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleSetAsMainThumbnail(item)}
+                                    className="inline-flex items-center gap-1 text-[11px] font-medium theme-text-secondary hover:theme-accent-text cursor-pointer"
+                                  >
+                                    <Star className="w-3 h-3" />
+                                    <span>{isAr ? 'تعيين كصورة رئيسية' : 'Set as Main Thumbnail'}</span>
+                                  </button>
+                                )}
+                                <span className="text-[10px] font-mono-tabular theme-text-muted">
+                                  {item.mimeType.replace('image/', '')}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   ) : (
                     <p className="text-xs theme-text-muted italic">
                       {isAr
-                        ? 'لا توجد صور إضافية في معرض هذا المشروع حالياً.'
-                        : 'No additional gallery screenshots uploaded for this project yet.'}
+                        ? 'لا توجد صور إضافية في معرض هذا المشروع حالياً. يمكنك استخدام زر "إضافة صور متعددة" أعلاه لرفع لقطات شاشة متعددة.'
+                        : 'No additional gallery screenshots uploaded for this project yet. Use the "Add Multiple Gallery Photos" button above.'}
                     </p>
                   )}
                 </div>
               </div>
+
 
               {/* Sticky Form Footer */}
               <div className="flex items-center justify-end gap-3 pt-4 border-t theme-border">

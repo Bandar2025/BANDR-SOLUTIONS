@@ -743,7 +743,7 @@ export async function processAndOptimizeImageFile(
   await validateImageMagicBytes(file);
   if (onProgress) onProgress(30);
 
-  const res = await optimizeImageWithBrowserCompression(file, Math.max(maxWidth, 1920), (p) => {
+  const res = await optimizeImageWithBrowserCompression(file, Math.min(maxWidth || 1920, 1920), (p) => {
     if (onProgress) onProgress(30 + Math.round(p * 0.7));
   });
 
@@ -766,7 +766,7 @@ export async function uploadProjectGalleryMedia(
   user: User,
   onProgress?: (pct: number) => void
 ): Promise<ProjectGalleryItem> {
-  const processed = await processAndOptimizeImageFile(file, 1280, onProgress);
+  const processed = await processAndOptimizeImageFile(file, 1920, onProgress);
   const mediaId = sanitizeId(`media_${projectId}_${Date.now()}`);
   const path = `project_media/${mediaId}`;
 
@@ -786,6 +786,51 @@ export async function uploadProjectGalleryMedia(
   try {
     await setDoc(doc(db, 'project_media', mediaId), record);
     if (onProgress) onProgress(100);
+    return {
+      id: mediaId,
+      projectId: record.projectId,
+      fileName: record.fileName,
+      mimeType: record.mimeType,
+      dataUrl: record.dataUrl,
+      altAr: record.altAr,
+      altEn: record.altEn,
+      status: record.status,
+    };
+  } catch (error) {
+    handleFirestoreError(error, OperationType.CREATE, path);
+  }
+}
+
+export async function uploadPreOptimizedGalleryMedia(
+  dataUrl: string,
+  mimeType: 'image/jpeg' | 'image/png' | 'image/webp',
+  safeFileName: string,
+  projectId: string,
+  altAr: string,
+  altEn: string,
+  projectStatus: 'published' | 'draft',
+  user: User
+): Promise<ProjectGalleryItem> {
+  const mediaId = sanitizeId(
+    `media_${projectId}_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`
+  );
+  const path = `project_media/${mediaId}`;
+
+  const record = {
+    projectId: sanitizeId(projectId),
+    fileName: safeFileName,
+    mimeType,
+    dataUrl,
+    altAr: altAr.trim().slice(0, 300),
+    altEn: altEn.trim().slice(0, 300),
+    status: projectStatus,
+    ownerUid: user.uid,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  };
+
+  try {
+    await setDoc(doc(db, 'project_media', mediaId), record);
     return {
       id: mediaId,
       projectId: record.projectId,
