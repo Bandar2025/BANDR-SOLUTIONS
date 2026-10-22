@@ -88,6 +88,7 @@ export const Footer: React.FC<FooterProps> = React.memo(
                     { path: '/services', label: navT.services },
                     { path: '/about', label: navT.about },
                     { path: '/contact', label: navT.contact },
+                    { path: '/admin', label: isAr ? 'إدارة معرض الأعمال' : 'Portfolio Admin' },
                   ] as { path: RoutePath; label: string }[]
                 ).map((item) => (
                   <li key={item.path}>

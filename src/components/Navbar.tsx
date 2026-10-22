@@ -6,6 +6,7 @@ export type RoutePath =
   | '/'
   | '/projects'
   | '/services'
+  | '/community'
   | '/about'
   | '/contact'
   | '/admin'
@@ -20,6 +21,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = React.memo(
   ({ lang, onToggleLang, currentPath, onNavigate }) => {
+    const isAr = lang === 'ar';
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const t = UI_TRANSLATIONS[lang].nav;
 
@@ -27,6 +29,7 @@ export const Navbar: React.FC<NavbarProps> = React.memo(
       { path: '/', label: t.home },
       { path: '/projects', label: t.projects },
       { path: '/services', label: t.services },
+      { path: '/community', label: isAr ? 'المنتدى والتحديثات' : 'Community Updates' },
       { path: '/about', label: t.about },
       { path: '/contact', label: t.contact },
     ];

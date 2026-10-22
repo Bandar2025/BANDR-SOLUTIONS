@@ -13,6 +13,7 @@ import { ProfilesSection } from './components/ProfilesSection';
 import { ServicesSection } from './components/ServicesSection';
 import { AboutSection } from './components/AboutSection';
 import { ContactSection } from './components/ContactSection';
+import { CommunitySection } from './components/CommunitySection';
 import { Footer } from './components/Footer';
 import { ProjectDetailModal } from './components/ProjectDetailModal';
 import { ThemeSettingsCenter } from './components/ThemeSettingsCenter';
@@ -35,6 +36,7 @@ const VALID_ROUTES: RoutePath[] = [
   '/',
   '/projects',
   '/services',
+  '/community',
   '/about',
   '/contact',
   '/admin',
@@ -158,6 +160,7 @@ export default function App() {
         en: ' — Projects & Case Studies',
       },
       '/services': { ar: ' — الخدمات التقنية', en: ' — Services Offered' },
+      '/community': { ar: ' — المنتدى والتحديثات', en: ' — Community & Updates' },
       '/about': { ar: ' — نبذة والسيرة الذاتية', en: ' — About & CV' },
       '/contact': { ar: ' — تواصل معي', en: ' — Contact' },
       '/admin': {
@@ -267,11 +270,28 @@ export default function App() {
               lang={lang}
               onInquireService={handleInquireService}
             />
+            <CommunitySection lang={lang} />
             <AboutSection lang={lang} />
             <ContactSection
               lang={lang}
               preselectedService={preselectedService}
             />
+          </>
+        )}
+
+        {currentPath === '/community' && (
+          <>
+            <div className="theme-bg-surface py-12 border-b theme-border">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-2">
+                <div className="text-xs font-semibold theme-accent-text">
+                  {isAr ? 'منتدى التحديثات والرؤى التقنية' : 'Community Updates & Insights Forum'}
+                </div>
+                <h1 className="text-3xl sm:text-4xl font-extrabold theme-text-primary">
+                  {isAr ? 'تحديثات المنصة والمقالات الهندسية' : 'Platform Updates & Engineering Articles'}
+                </h1>
+              </div>
+            </div>
+            <CommunitySection lang={lang} />
           </>
         )}
 
