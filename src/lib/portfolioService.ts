@@ -145,6 +145,13 @@ function resolveCanonicalAuditOverrides(
   isCaseStudyOnly: boolean;
   nameAr: string;
   nameEn: string;
+  descriptionAr?: string;
+  descriptionEn?: string;
+  engineeringContributionAr?: string;
+  engineeringContributionEn?: string;
+  category?: Exclude<ProjectCategory, 'all'>;
+  categoryLabelAr?: string;
+  categoryLabelEn?: string;
   needsFirestorePatch: boolean;
 } {
   const rawUrl = data.url && data.url.trim().length > 0 ? data.url.trim() : null;
@@ -152,32 +159,128 @@ function resolveCanonicalAuditOverrides(
   let resolvedCaseStudyOnly = Boolean(data.isCaseStudyOnly);
   let resolvedNameAr = data.nameAr || baseline.nameAr;
   let resolvedNameEn = data.nameEn || baseline.nameEn;
+  let resolvedDescriptionAr: string | undefined = undefined;
+  let resolvedDescriptionEn: string | undefined = undefined;
+  let resolvedContributionAr: string | undefined = undefined;
+  let resolvedContributionEn: string | undefined = undefined;
+  let resolvedCategory: Exclude<ProjectCategory, 'all'> | undefined = undefined;
+  let resolvedCategoryLabelAr: string | undefined = undefined;
+  let resolvedCategoryLabelEn: string | undefined = undefined;
   let needsFirestorePatch = false;
 
   if (docId === 'integrated-school-management') {
-    if (!rawUrl || !rawUrl.includes('8f028adf-0856-41be-b51c-1b6b9e4e044d')) {
+    const isLegacySchool =
+      !data.nameEn?.includes('Al-Manara') ||
+      data.nameAr === 'نظام إدارة المدارس المتكامل' ||
+      !data.descriptionAr?.includes('مجمع منارة اليمن');
+
+    if (isLegacySchool || !rawUrl || !rawUrl.includes('8f028adf-0856-41be-b51c-1b6b9e4e044d')) {
       resolvedUrl = baseline.url;
       resolvedCaseStudyOnly = false;
+      resolvedNameAr = baseline.nameAr;
+      resolvedNameEn = baseline.nameEn;
+      resolvedDescriptionAr = baseline.descriptionAr;
+      resolvedDescriptionEn = baseline.descriptionEn;
+      resolvedContributionAr = baseline.engineeringContributionAr;
+      resolvedContributionEn = baseline.engineeringContributionEn;
+      resolvedCategory = baseline.category;
+      resolvedCategoryLabelAr = baseline.categoryLabelAr;
+      resolvedCategoryLabelEn = baseline.categoryLabelEn;
       needsFirestorePatch = true;
     }
   } else if (docId === 'lumen-yemeni') {
-    if (!rawUrl || !rawUrl.includes('lumen-of-yemeni.vercel.app')) {
+    const isLegacyLumen =
+      !data.nameEn?.includes('Creative & Productivity') ||
+      data.nameAr === 'Lumen of Yemeni AI Platform' ||
+      !data.descriptionAr?.includes('Lumen of Yemeni منصة رقمية');
+
+    if (isLegacyLumen || !rawUrl || !rawUrl.includes('lumen-of-yemeni.vercel.app')) {
       resolvedUrl = baseline.url;
       resolvedCaseStudyOnly = false;
+      resolvedNameAr = baseline.nameAr;
+      resolvedNameEn = baseline.nameEn;
+      resolvedDescriptionAr = baseline.descriptionAr;
+      resolvedDescriptionEn = baseline.descriptionEn;
+      resolvedContributionAr = baseline.engineeringContributionAr;
+      resolvedContributionEn = baseline.engineeringContributionEn;
+      resolvedCategory = baseline.category;
+      resolvedCategoryLabelAr = baseline.categoryLabelAr;
+      resolvedCategoryLabelEn = baseline.categoryLabelEn;
+      needsFirestorePatch = true;
+    }
+  } else if (docId === 'novaro') {
+    // Correct NOVARO -> Rufid Markets
+    const isLegacyNovaro =
+      !data.nameEn?.includes('Rufid') ||
+      data.nameEn?.toUpperCase().includes('NOVARO') ||
+      data.nameAr?.includes('نوفارو') ||
+      data.descriptionAr?.includes('نوفارو');
+
+    if (isLegacyNovaro) {
+      resolvedNameAr = baseline.nameAr;
+      resolvedNameEn = baseline.nameEn;
+      resolvedDescriptionAr = baseline.descriptionAr;
+      resolvedDescriptionEn = baseline.descriptionEn;
+      resolvedContributionAr = baseline.engineeringContributionAr;
+      resolvedContributionEn = baseline.engineeringContributionEn;
+      resolvedCategory = baseline.category;
+      resolvedCategoryLabelAr = baseline.categoryLabelAr;
+      resolvedCategoryLabelEn = baseline.categoryLabelEn;
       needsFirestorePatch = true;
     }
   } else if (docId === 'smart-accounting-warehouse') {
-    if (!rawUrl || resolvedCaseStudyOnly) {
+    // Correct Accounting -> FINB
+    const isLegacyAccounting =
+      !rawUrl ||
+      resolvedCaseStudyOnly ||
+      !data.nameEn?.includes('FINB') ||
+      data.nameEn === 'Smart Accounting & Warehouse Management Platform' ||
+      data.nameAr?.includes('المستودعات');
+
+    if (isLegacyAccounting) {
       resolvedUrl = baseline.url;
       resolvedCaseStudyOnly = false;
+      resolvedNameAr = baseline.nameAr;
+      resolvedNameEn = baseline.nameEn;
+      resolvedDescriptionAr = baseline.descriptionAr;
+      resolvedDescriptionEn = baseline.descriptionEn;
+      resolvedContributionAr = baseline.engineeringContributionAr;
+      resolvedContributionEn = baseline.engineeringContributionEn;
+      resolvedCategory = baseline.category;
+      resolvedCategoryLabelAr = baseline.categoryLabelAr;
+      resolvedCategoryLabelEn = baseline.categoryLabelEn;
       needsFirestorePatch = true;
     }
-    if (
-      data.nameEn === 'Smart Accounting & Warehouse Management Platform' ||
-      !data.nameEn
-    ) {
-      resolvedNameEn = baseline.nameEn;
+  } else if (docId === 'sehasquare') {
+    // Canonical Seha Square
+    const isMismatched =
+      !data.nameEn?.includes('Seha Square') || !data.nameAr?.includes('ساحة الصحة');
+
+    if (isMismatched) {
       resolvedNameAr = baseline.nameAr;
+      resolvedNameEn = baseline.nameEn;
+      resolvedDescriptionAr = baseline.descriptionAr;
+      resolvedDescriptionEn = baseline.descriptionEn;
+      resolvedContributionAr = baseline.engineeringContributionAr;
+      resolvedContributionEn = baseline.engineeringContributionEn;
+      needsFirestorePatch = true;
+    }
+  } else if (docId === 'hospital-management-system') {
+    // Hospital Management System must NOT have Seha Square title/description
+    const hasSehaSquareOverlap =
+      data.nameEn?.includes('Seha Square') ||
+      data.nameAr?.includes('ساحة الصحة') ||
+      !data.nameEn?.includes('Hospital Management System');
+
+    if (hasSehaSquareOverlap) {
+      resolvedNameAr = baseline.nameAr;
+      resolvedNameEn = baseline.nameEn;
+      resolvedDescriptionAr = baseline.descriptionAr;
+      resolvedDescriptionEn = baseline.descriptionEn;
+      resolvedContributionAr = baseline.engineeringContributionAr;
+      resolvedContributionEn = baseline.engineeringContributionEn;
+      resolvedUrl = baseline.url;
+      resolvedCaseStudyOnly = false;
       needsFirestorePatch = true;
     }
   }
@@ -187,12 +290,19 @@ function resolveCanonicalAuditOverrides(
     isCaseStudyOnly: resolvedCaseStudyOnly,
     nameAr: resolvedNameAr,
     nameEn: resolvedNameEn,
+    descriptionAr: resolvedDescriptionAr,
+    descriptionEn: resolvedDescriptionEn,
+    engineeringContributionAr: resolvedContributionAr,
+    engineeringContributionEn: resolvedContributionEn,
+    category: resolvedCategory,
+    categoryLabelAr: resolvedCategoryLabelAr,
+    categoryLabelEn: resolvedCategoryLabelEn,
     needsFirestorePatch,
   };
 }
 
 /**
- * Merges a Firestore document with the baseline project metadata (if it matches one of the 10 baseline IDs)
+ * Merges a Firestore document with the baseline project metadata (if it matches one of the baseline IDs)
  * or constructs a complete ProjectItem for newly created projects.
  */
 export function mapFirestoreRecordToProjectItem(
@@ -211,15 +321,21 @@ export function mapFirestoreRecordToProjectItem(
       slug: data.slug || baseline.slug,
       nameAr: canonical.nameAr,
       nameEn: canonical.nameEn,
-      descriptionAr: data.descriptionAr || baseline.descriptionAr,
-      descriptionEn: data.descriptionEn || baseline.descriptionEn,
+      descriptionAr: canonical.descriptionAr || data.descriptionAr || baseline.descriptionAr,
+      descriptionEn: canonical.descriptionEn || data.descriptionEn || baseline.descriptionEn,
       engineeringContributionAr:
-        data.engineeringContributionAr || baseline.engineeringContributionAr,
+        canonical.engineeringContributionAr ||
+        data.engineeringContributionAr ||
+        baseline.engineeringContributionAr,
       engineeringContributionEn:
-        data.engineeringContributionEn || baseline.engineeringContributionEn,
-      category: data.category || baseline.category,
-      categoryLabelAr: data.categoryLabelAr || baseline.categoryLabelAr,
-      categoryLabelEn: data.categoryLabelEn || baseline.categoryLabelEn,
+        canonical.engineeringContributionEn ||
+        data.engineeringContributionEn ||
+        baseline.engineeringContributionEn,
+      category: canonical.category || data.category || baseline.category,
+      categoryLabelAr:
+        canonical.categoryLabelAr || data.categoryLabelAr || baseline.categoryLabelAr,
+      categoryLabelEn:
+        canonical.categoryLabelEn || data.categoryLabelEn || baseline.categoryLabelEn,
       technologies: Array.isArray(data.technologies) ? data.technologies : baseline.technologies,
       technologiesSource:
         Array.isArray(data.technologies) && data.technologies.length > 0
@@ -308,7 +424,7 @@ export function mapFirestoreRecordToProjectItem(
 /**
  * Real-time subscription for public visitors.
  * Enforces `where('status', '==', 'published')` to match Firestore security rules.
- * If Firestore has not yet been seeded by the owner, returns the 10 verified baseline projects;
+ * If Firestore has not yet been seeded by the owner, returns the 12 verified baseline projects;
  * once seeded, returns the live published Firestore records merged idempotently with any newly added
  * canonical baseline record (such as `hospital-management-system`) sorted by displayOrder.
  */
@@ -407,8 +523,8 @@ export function subscribeAdminAllProjects(
 }
 
 /**
- * Idempotently migrates and synchronizes the 10 canonical baseline projects into Firestore.
- * - Creates any missing baseline project (e.g., `hospital-management-system`).
+ * Idempotently migrates and synchronizes the 12 canonical baseline projects into Firestore.
+ * - Creates any missing baseline project (e.g., `novaro-erp`, `tasour-digital-twin`, or `hospital-management-system`).
  * - Updates existing baseline projects ONLY if their URL/title matches a known legacy value
  *   (or if `forceRestoreAll` is true), preserving all uploaded thumbnails, galleries, alt text,
  *   sort order, featured flags, and draft/published status.
@@ -437,21 +553,39 @@ export async function migrateBaselineProjectsToFirestore(
           slug: sanitizeId(existingData.slug || item.slug || item.id),
           nameAr: audit.nameAr.slice(0, 200),
           nameEn: audit.nameEn.slice(0, 200),
-          descriptionAr: (existingData.descriptionAr || item.descriptionAr).slice(0, 2000),
-          descriptionEn: (existingData.descriptionEn || item.descriptionEn).slice(0, 2000),
+          descriptionAr: (
+            audit.descriptionAr ||
+            existingData.descriptionAr ||
+            item.descriptionAr
+          ).slice(0, 2000),
+          descriptionEn: (
+            audit.descriptionEn ||
+            existingData.descriptionEn ||
+            item.descriptionEn
+          ).slice(0, 2000),
           engineeringContributionAr: (
+            audit.engineeringContributionAr ||
             existingData.engineeringContributionAr ||
             item.engineeringContributionAr ||
             ''
           ).slice(0, 2000),
           engineeringContributionEn: (
+            audit.engineeringContributionEn ||
             existingData.engineeringContributionEn ||
             item.engineeringContributionEn ||
             ''
           ).slice(0, 2000),
-          category: existingData.category || item.category,
-          categoryLabelAr: (existingData.categoryLabelAr || labels.labelAr).slice(0, 120),
-          categoryLabelEn: (existingData.categoryLabelEn || labels.labelEn).slice(0, 120),
+          category: audit.category || existingData.category || item.category,
+          categoryLabelAr: (
+            audit.categoryLabelAr ||
+            existingData.categoryLabelAr ||
+            labels.labelAr
+          ).slice(0, 120),
+          categoryLabelEn: (
+            audit.categoryLabelEn ||
+            existingData.categoryLabelEn ||
+            labels.labelEn
+          ).slice(0, 120),
           technologies: (
             Array.isArray(existingData.technologies) && existingData.technologies.length > 0
               ? existingData.technologies

@@ -31,6 +31,55 @@ export interface ProjectDetailModalProps {
   onInquireService?: (serviceTitle: string) => void;
 }
 
+/**
+ * Splits a project title on ' — ' into a primary brand identity and a descriptive subtitle.
+ */
+function parseModalProjectTitle(rawTitle: string): {
+  primaryTitle: string;
+  subtitle: string | null;
+} {
+  const parts = rawTitle.split(/\s+—\s+/);
+  if (parts.length >= 2) {
+    return {
+      primaryTitle: parts[0].trim(),
+      subtitle: parts.slice(1).join(' — ').trim(),
+    };
+  }
+  return {
+    primaryTitle: rawTitle.trim(),
+    subtitle: null,
+  };
+}
+
+/**
+ * Splits a multi-paragraph project description into structured paragraphs,
+ * removing any redundant first line that merely duplicates the project title.
+ */
+function parseDescriptionParagraphs(
+  rawDesc: string,
+  rawTitle: string
+): string[] {
+  const paragraphs = rawDesc
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+
+  if (paragraphs.length === 0) return [rawDesc];
+
+  const normalizedTitle = rawTitle.toLowerCase().trim();
+  const firstPara = paragraphs[0];
+
+  if (
+    paragraphs.length > 1 &&
+    (firstPara.toLowerCase() === normalizedTitle ||
+      (firstPara.includes(' — ') && firstPara.length < 95))
+  ) {
+    return paragraphs.slice(1);
+  }
+
+  return paragraphs;
+}
+
 export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
   project,
   lang,
@@ -156,6 +205,11 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
 
   if (!project) return null;
 
+  const rawTitle = isAr ? project.nameAr : project.nameEn;
+  const rawDescription = isAr ? project.descriptionAr : project.descriptionEn;
+  const { primaryTitle, subtitle } = parseModalProjectTitle(rawTitle);
+  const descriptionParagraphs = parseDescriptionParagraphs(rawDescription, rawTitle);
+
   const v = project.verification;
 
   const formatUrlOpened = () => {
@@ -184,7 +238,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
         : 'Observed storefront title differed from NOVARO — awaiting owner confirmation';
     }
     if (v.interfaceObserved === 'not_applicable') {
-      return isAr ? 'موثق معمارياً في السيرة الذاتية' : 'Documented architecturally in CV';
+      return isAr ? 'موثق معمارياً' : 'Documented architecturally';
     }
     return isAr ? 'بانتظار المعاينة المباشرة' : 'Pending live browser inspection';
   };
@@ -239,9 +293,9 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
           onClick={(e) => e.stopPropagation()}
         >
           {/* Top Modal Header */}
-          <div className="flex items-center justify-between gap-4 px-6 py-4 theme-bg-elevated border-b theme-border shrink-0">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 text-xs theme-accent-text font-medium">
+          <div className="flex items-start justify-between gap-4 px-6 py-5 theme-bg-elevated border-b theme-border shrink-0">
+            <div className="min-w-0 space-y-1">
+              <div className="flex flex-wrap items-center gap-2 text-xs theme-accent-text font-semibold leading-normal">
                 <span>{isAr ? project.categoryLabelAr : project.categoryLabelEn}</span>
                 <span aria-hidden="true">·</span>
                 <span className="font-mono-tabular">{project.illustrativeTheme.domainCode}</span>
@@ -260,11 +314,19 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                   </>
                 )}
               </div>
+
               <h2
                 id="modal-project-title"
-                className="text-lg sm:text-xl font-bold theme-text-primary truncate mt-0.5"
+                className="font-display"
               >
-                {isAr ? project.nameAr : project.nameEn}
+                <span className="block text-xl sm:text-2xl font-extrabold theme-text-primary leading-[1.28] tracking-tight">
+                  {primaryTitle}
+                </span>
+                {subtitle && (
+                  <span className="block text-xs sm:text-sm font-medium theme-text-secondary mt-1 leading-[1.45]">
+                    {subtitle}
+                  </span>
+                )}
               </h2>
             </div>
 
@@ -369,16 +431,47 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
               </div>
             )}
 
-            {/* Primary Description & Engineering Role */}
-            <div className="space-y-3">
-              <p className="text-base theme-text-secondary leading-relaxed">
-                {isAr ? project.descriptionAr : project.descriptionEn}
-              </p>
-              <div className="p-4 rounded-xl theme-card-elevated">
-                <h3 className="text-xs font-semibold theme-text-muted mb-1">
+            {/* Structured Multi-Paragraph Description & Engineering Role */}
+            <div className="space-y-4">
+              <div className="space-y-3">
+                {descriptionParagraphs.map((para, idx) => {
+                  const isCallout =
+                    para.startsWith('الهدف:') ||
+                    para.startsWith('حالة المشروع:') ||
+                    para.startsWith('Project Objective:') ||
+                    para.startsWith('Project Status:');
+
+                  if (isCallout) {
+                    return (
+                      <div
+                        key={idx}
+                        className="p-3.5 rounded-xl theme-bg-elevated border theme-border text-xs sm:text-sm font-medium theme-text-primary leading-[1.72]"
+                      >
+                        {para}
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <p
+                      key={idx}
+                      className={
+                        idx === 0
+                          ? 'text-base sm:text-[16.5px] font-medium theme-text-primary leading-[1.78]'
+                          : 'text-sm sm:text-[15px] font-normal theme-text-secondary leading-[1.78]'
+                      }
+                    >
+                      {para}
+                    </p>
+                  );
+                })}
+              </div>
+
+              <div className="p-4 rounded-xl theme-card-elevated space-y-1.5">
+                <h3 className="text-xs font-semibold theme-accent-text tracking-wide">
                   {t.modalEngineeringRole}
                 </h3>
-                <p className="text-sm theme-text-primary">
+                <p className="text-sm sm:text-[14.5px] font-normal theme-text-primary leading-[1.7]">
                   {isAr
                     ? project.engineeringContributionAr
                     : project.engineeringContributionEn}
@@ -388,12 +481,12 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
 
             {/* Technologies */}
             <div>
-              <h3 className="text-sm font-bold theme-text-primary mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-bold theme-text-primary mb-2.5 flex items-center gap-2">
                 <FileCode2 className="w-4 h-4 theme-accent-text shrink-0" />
                 <span>{t.modalTechStack}</span>
               </h3>
               {project.technologies.length > 0 ? (
-                <div className="flex flex-wrap items-center gap-2 text-sm font-medium">
+                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-medium leading-relaxed">
                   {project.technologies.map((tech, idx) => (
                     <React.Fragment key={tech}>
                       {idx > 0 && <span className="theme-text-muted">·</span>}
@@ -402,31 +495,31 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                   ))}
                 </div>
               ) : (
-                <p className="text-xs theme-text-muted">{t.modalTechNotClaimed}</p>
+                <p className="text-xs theme-text-muted leading-relaxed">{t.modalTechNotClaimed}</p>
               )}
             </div>
 
-            {/* Engineering Case Study Deep Dive (For Projects #8 and #9) */}
+            {/* Engineering Case Study Deep Dive */}
             {project.caseStudy && (
               <div className="p-5 rounded-xl theme-card-elevated space-y-4">
                 <div className="flex items-center justify-between gap-2 border-b theme-border pb-3">
-                  <h3 className="text-base font-bold theme-text-primary">
+                  <h3 className="text-base font-bold theme-text-primary leading-snug">
                     {isAr
-                      ? 'تفاصيل دراسة الحالة الهندسية (من السيرة الذاتية)'
-                      : 'Engineering Case Study Architecture (CV)'}
+                      ? 'تفاصيل دراسة الحالة والمعمارية الهندسية'
+                      : 'Engineering Case Study & System Architecture'}
                   </h3>
-                  <span className="text-xs font-mono-tabular theme-accent-text font-bold">
-                    CV-VERIFIED
+                  <span className="text-xs font-mono-tabular theme-accent-text font-semibold">
+                    ARCHITECTURE
                   </span>
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-semibold theme-accent-text mb-1">
+                  <h4 className="text-xs font-semibold theme-accent-text mb-1.5">
                     {isAr
                       ? 'التحدي الهندسي ونطاق النظام'
                       : 'Engineering Problem & System Scope'}
                   </h4>
-                  <p className="text-sm theme-text-secondary leading-relaxed">
+                  <p className="text-sm font-normal theme-text-secondary leading-[1.75]">
                     {isAr
                       ? project.caseStudy.problemStatementAr
                       : project.caseStudy.problemStatementEn}
@@ -437,13 +530,13 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                   <h4 className="text-xs font-semibold theme-accent-text mb-2">
                     {isAr ? 'الطبقات المعمارية للنظام' : 'System Architecture Layers'}
                   </h4>
-                  <ul className="space-y-1.5 text-sm theme-text-secondary">
+                  <ul className="space-y-2 text-sm font-normal theme-text-secondary leading-[1.72]">
                     {(isAr
                       ? project.caseStudy.architectureLayersAr
                       : project.caseStudy.architectureLayersEn
                     ).map((layer, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <span className="font-mono-tabular theme-accent-text text-xs mt-1">
+                      <li key={idx} className="flex items-start gap-2.5">
+                        <span className="font-mono-tabular theme-accent-text text-xs font-semibold mt-1 shrink-0">
                           0{idx + 1}.
                         </span>
                         <span>{layer}</span>
@@ -455,16 +548,16 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                 <div>
                   <h4 className="text-xs font-semibold theme-accent-text mb-2">
                     {isAr
-                      ? 'المساهمات الهندسية الموثقة'
-                      : 'Documented Engineering Contributions'}
+                      ? 'المساهمات الهندسية'
+                      : 'Key Engineering Contributions'}
                   </h4>
-                  <ul className="space-y-1.5 text-sm theme-text-secondary">
+                  <ul className="space-y-2 text-sm font-normal theme-text-secondary leading-[1.72]">
                     {(isAr
                       ? project.caseStudy.keyEngineeringContributionsAr
                       : project.caseStudy.keyEngineeringContributionsEn
                     ).map((item, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 theme-accent-text shrink-0 mt-0.5" />
+                      <li key={idx} className="flex items-start gap-2.5">
+                        <CheckCircle2 className="w-4 h-4 theme-accent-text shrink-0 mt-1" />
                         <span>{item}</span>
                       </li>
                     ))}
@@ -487,28 +580,28 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div className="p-3 rounded-lg theme-bg-surface border theme-border">
-                  <div className="theme-text-muted mb-0.5">{t.modalUrlSupplied}</div>
-                  <div className="font-medium theme-text-primary break-all font-mono-tabular">
+                  <div className="theme-text-muted mb-1">{t.modalUrlSupplied}</div>
+                  <div className="font-medium theme-text-primary break-all font-mono-tabular leading-snug">
                     {v.suppliedUrl ||
                       (isAr ? 'غير مزود (دراسة حالة)' : 'None supplied (Case Study)')}
                   </div>
                 </div>
 
                 <div className="p-3 rounded-lg theme-bg-surface border theme-border">
-                  <div className="theme-text-muted mb-0.5">{t.modalUrlOpened}</div>
-                  <div className="font-medium theme-text-primary">{formatUrlOpened()}</div>
+                  <div className="theme-text-muted mb-1">{t.modalUrlOpened}</div>
+                  <div className="font-medium theme-text-primary leading-snug">{formatUrlOpened()}</div>
                 </div>
 
                 <div className="p-3 rounded-lg theme-bg-surface border theme-border">
-                  <div className="theme-text-muted mb-0.5">{t.modalInterfaceObserved}</div>
-                  <div className="font-medium theme-text-primary">
+                  <div className="theme-text-muted mb-1">{t.modalInterfaceObserved}</div>
+                  <div className="font-medium theme-text-primary leading-snug">
                     {formatInterfaceObserved()}
                   </div>
                 </div>
 
                 <div className="p-3 rounded-lg theme-bg-surface border theme-border">
-                  <div className="theme-text-muted mb-0.5">{t.modalWorkflowsTested}</div>
-                  <div className="font-medium theme-text-primary">
+                  <div className="theme-text-muted mb-1">{t.modalWorkflowsTested}</div>
+                  <div className="font-medium theme-text-primary leading-snug">
                     {v.workflowsTested
                       ? isAr
                         ? 'تم الاختبار'
@@ -520,8 +613,8 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                 </div>
 
                 <div className="p-3 rounded-lg theme-bg-surface border theme-border sm:col-span-2">
-                  <div className="theme-text-muted mb-0.5">{t.modalPublicAccess}</div>
-                  <div className="font-medium theme-text-primary">
+                  <div className="theme-text-muted mb-1">{t.modalPublicAccess}</div>
+                  <div className="font-medium theme-text-primary leading-snug">
                     {formatPublicAccess()}
                   </div>
                 </div>
@@ -541,14 +634,14 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                 </div>
               )}
 
-              <p className="text-xs theme-text-muted leading-relaxed">
+              <p className="text-xs theme-text-muted leading-[1.7]">
                 {isAr ? v.verificationNotesAr : v.verificationNotesEn}
               </p>
             </div>
 
             {/* Epistemic Separation: Verified Facts vs Unverified Boundaries */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl theme-card-elevated space-y-2">
+              <div className="p-4 rounded-xl theme-card-elevated space-y-2.5">
                 <h4 className="text-xs font-bold theme-text-primary flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 theme-accent-text shrink-0" />
                   <span>{t.modalVerifiedFacts}</span>
@@ -556,7 +649,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                 <ul className="space-y-1.5 text-xs theme-text-secondary">
                   {(isAr ? project.verifiedFactsAr : project.verifiedFactsEn).map(
                     (fact, i) => (
-                      <li key={i} className="leading-relaxed">
+                      <li key={i} className="leading-[1.7]">
                         • {fact}
                       </li>
                     )
@@ -564,12 +657,12 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                 </ul>
               </div>
 
-              <div className="p-4 rounded-xl theme-card-elevated space-y-2">
+              <div className="p-4 rounded-xl theme-card-elevated space-y-2.5">
                 <h4 className="text-xs font-bold theme-text-primary flex items-center gap-1.5">
                   <AlertCircle className="w-4 h-4 theme-text-muted shrink-0" />
                   <span>{t.modalUnverifiedScope}</span>
                 </h4>
-                <p className="text-xs theme-text-muted leading-relaxed">
+                <p className="text-xs theme-text-muted leading-[1.7]">
                   {isAr
                     ? project.unverifiedBoundariesAr
                     : project.unverifiedBoundariesEn}

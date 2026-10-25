@@ -124,6 +124,32 @@ export default function App() {
     }
   }, [activeThemeMode, activeDensity, activeReducedMotion]);
 
+  // Temporary Diagnostic Effect: Verify html data-theme attribute and computed CSS variables (--bg-primary, --bg-surface)
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+    const root = document.documentElement;
+    const body = document.body;
+    const computedRoot = window.getComputedStyle(root);
+    const computedBody = window.getComputedStyle(body);
+
+    const dataTheme = root.getAttribute('data-theme');
+    const bgPrimary = computedRoot.getPropertyValue('--bg-primary').trim();
+    const bgSurface = computedRoot.getPropertyValue('--bg-surface').trim();
+    const accentPrimary = computedRoot.getPropertyValue('--accent-primary').trim();
+
+    console.log('[App Theme Diagnostics]', {
+      htmlDataTheme: dataTheme,
+      htmlDataThemeMode: root.getAttribute('data-theme-mode'),
+      computedVars: {
+        '--bg-primary': bgPrimary,
+        '--bg-surface': bgSurface,
+        '--accent-primary': accentPrimary,
+      },
+      bodyComputedBackground: computedBody.backgroundColor,
+      status: dataTheme ? 'PASS: html data-theme attribute active' : 'FAIL: html data-theme attribute missing',
+    });
+  }, [activeThemeMode, activeDensity, activeReducedMotion]);
+
   const handleApplyPersonalPrefs = useCallback(
     (prefs: AppearancePreferences) => {
       savePersonalAppearance(prefs);
@@ -258,6 +284,16 @@ export default function App() {
               onNavigate={handleNavigate}
               onOpenAppearance={() => setAppearanceModalOpen(true)}
               reducedMotionActive={activeReducedMotion}
+              projects={projects}
+              onSelectProject={setSelectedProject}
+              activeThemeId={resolveEffectiveThemeId(activeThemeMode)}
+              onQuickSelectTheme={(themeId) =>
+                handleApplyPersonalPrefs({
+                  themeMode: themeId,
+                  density: activeDensity,
+                  reducedMotion: activeReducedMotion,
+                })
+              }
             />
             <ProjectsSection
               lang={lang}

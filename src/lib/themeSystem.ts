@@ -9,11 +9,11 @@ import { User } from 'firebase/auth';
 import { db, handleFirestoreError, OperationType } from './firebase';
 
 export type ThemeId =
-  | 'midnight-pro'
-  | 'obsidian'
   | 'arctic-light'
   | 'ocean-breeze'
   | 'emerald-tech'
+  | 'midnight-pro'
+  | 'obsidian'
   | 'royal-violet';
 
 export type ThemeModePreference = ThemeId | 'system';
@@ -39,43 +39,103 @@ export interface ThemePaletteDefinition {
 }
 
 export const ALLOWLISTED_THEME_IDS: readonly ThemeId[] = [
-  'midnight-pro',
-  'obsidian',
   'arctic-light',
   'ocean-breeze',
   'emerald-tech',
+  'midnight-pro',
+  'obsidian',
   'royal-violet',
 ] as const;
 
-export const DEFAULT_THEME_ID: ThemeId = 'midnight-pro';
+export const DEFAULT_THEME_ID: ThemeId = 'arctic-light';
 export const DEFAULT_DENSITY: ThemeDensity = 'comfortable';
 
 export const THEME_GALLERY: readonly ThemePaletteDefinition[] = [
   {
+    id: 'arctic-light',
+    isLight: true,
+    nameEn: 'Arctic Daylight (Default)',
+    nameAr: 'الإشراق النهاري الفاتح (الافتراضي)',
+    descriptionEn:
+      'Default bright daylight workspace — crisp white surfaces, soft alabaster canvas, and vibrant royal indigo accents.',
+    descriptionAr:
+      'الثيم الفاتح الافتراضي — خلفية نهارية ناصعة ومريحة للعين مع بطاقات بيضاء ولمسات أزرق ملكي واضحة.',
+    swatches: {
+      bgPrimary: '#F8FAFC',
+      bgSurface: '#FFFFFF',
+      bgElevated: '#EEF2FF',
+      accentPrimary: '#4F46E5',
+      accentSecondary: '#0891B2',
+      textPrimary: '#0F172A',
+      textMuted: '#64748B',
+      borderSubtle: '#E2E8F0',
+    },
+  },
+  {
+    id: 'ocean-breeze',
+    isLight: true,
+    nameEn: 'Sky & Turquoise Light',
+    nameAr: 'نسيم السماء والفيروز (فاتح)',
+    descriptionEn:
+      'Luminous sky-blue daylight palette paired with pure white cards and refreshing ocean-teal highlights.',
+    descriptionAr:
+      'ثيم نهاري مشرق بدرجات السماوي الفاتح والأبيض النقي مع لمسات فيروزية وبحرية هادئة.',
+    swatches: {
+      bgPrimary: '#F0F9FF',
+      bgSurface: '#FFFFFF',
+      bgElevated: '#E0F2FE',
+      accentPrimary: '#0284C7',
+      accentSecondary: '#0D9488',
+      textPrimary: '#0C4A6E',
+      textMuted: '#475569',
+      borderSubtle: '#BAE6FD',
+    },
+  },
+  {
+    id: 'emerald-tech',
+    isLight: true,
+    nameEn: 'Mint & Emerald Light',
+    nameAr: 'النعناع والزمرد التقني (فاتح)',
+    descriptionEn:
+      'Clean mint-white daylight environment with crisp emerald green accents and high-legibility typography.',
+    descriptionAr:
+      'واجهة فاتحة عصرية بخلفية نعناعية هادئة وبطاقات بيضاء مع لمسات زمردية تقنية مريحة للقراءة.',
+    swatches: {
+      bgPrimary: '#F2FBF7',
+      bgSurface: '#FFFFFF',
+      bgElevated: '#E6F7EF',
+      accentPrimary: '#059669',
+      accentSecondary: '#0284C7',
+      textPrimary: '#064E3B',
+      textMuted: '#475569',
+      borderSubtle: '#A7F3D0',
+    },
+  },
+  {
     id: 'midnight-pro',
     isLight: false,
-    nameEn: 'Midnight Pro',
-    nameAr: 'ميدنايت برو (Midnight Pro)',
+    nameEn: 'Midnight Pro (Dark)',
+    nameAr: 'ميدنايت برو (داكن)',
     descriptionEn:
-      'Default flagship theme — deep midnight navy with refined electric blue and cyan accents.',
+      'Deep midnight navy studio with electric indigo and cyan highlights.',
     descriptionAr:
-      'الثيم الافتراضي الرسمي — كحلي ليلي عميق مع لمسات أزرق كهربائي وسيان متوازنة.',
+      'ثيم ليلي داكن بدرجات الكحلي العميق مع إضاءات بنفسجية وسماوية.',
     swatches: {
-      bgPrimary: '#0B1020',
-      bgSurface: '#121A2B',
-      bgElevated: '#192338',
-      accentPrimary: '#5B8CFF',
-      accentSecondary: '#43D9D0',
-      textPrimary: '#F5F7FF',
-      textMuted: '#AAB5CA',
-      borderSubtle: '#22304A',
+      bgPrimary: '#0A0E1A',
+      bgSurface: '#111827',
+      bgElevated: '#172238',
+      accentPrimary: '#6366F1',
+      accentSecondary: '#22D3EE',
+      textPrimary: '#F5F7FA',
+      textMuted: '#94A3B8',
+      borderSubtle: '#1E293B',
     },
   },
   {
     id: 'obsidian',
     isLight: false,
-    nameEn: 'Obsidian',
-    nameAr: 'أوبسيديان (Obsidian)',
+    nameEn: 'Obsidian (Dark)',
+    nameAr: 'أوبسيديان (داكن)',
     descriptionEn:
       'Sophisticated near-black studio surface with restrained slate-silver and cobalt highlights.',
     descriptionAr:
@@ -92,74 +152,14 @@ export const THEME_GALLERY: readonly ThemePaletteDefinition[] = [
     },
   },
   {
-    id: 'arctic-light',
-    isLight: true,
-    nameEn: 'Arctic Light',
-    nameAr: 'آركتيك الفاتح (Arctic Light)',
-    descriptionEn:
-      'Clean crisp white and cool-gray daylight workspace with high-contrast cobalt typography.',
-    descriptionAr:
-      'واجهة نهارية مشرقة بخلفية بيضاء ورمادية باردة مع نصوص كحلية عالية الوضوح.',
-    swatches: {
-      bgPrimary: '#F8FAFC',
-      bgSurface: '#FFFFFF',
-      bgElevated: '#F1F5F9',
-      accentPrimary: '#2563EB',
-      accentSecondary: '#0D9488',
-      textPrimary: '#0F172A',
-      textMuted: '#475569',
-      borderSubtle: '#E2E8F0',
-    },
-  },
-  {
-    id: 'ocean-breeze',
-    isLight: false,
-    nameEn: 'Ocean Breeze',
-    nameAr: 'نسيم المحيط (Ocean Breeze)',
-    descriptionEn:
-      'Deep oceanic navy architecture paired with luminous sky blue and turquoise accents.',
-    descriptionAr:
-      'عمق أزرق محيطي متناسق مع إضاءات فيروزية وسماوية مريحة للعين.',
-    swatches: {
-      bgPrimary: '#071426',
-      bgSurface: '#0D213B',
-      bgElevated: '#152F52',
-      accentPrimary: '#38BDF8',
-      accentSecondary: '#2DD4BF',
-      textPrimary: '#F0F9FF',
-      textMuted: '#93C5FD',
-      borderSubtle: '#1E3A5F',
-    },
-  },
-  {
-    id: 'emerald-tech',
-    isLight: false,
-    nameEn: 'Emerald Tech',
-    nameAr: 'إيميرالد تك (Emerald Tech)',
-    descriptionEn:
-      'Refined emerald and mint-teal engineering palette on balanced dark slate-pine surfaces.',
-    descriptionAr:
-      'هوية تقنية باللون الزمردي والأخضر النعناعي على أسطح داكنة متوازنة.',
-    swatches: {
-      bgPrimary: '#081512',
-      bgSurface: '#0F231E',
-      bgElevated: '#16322B',
-      accentPrimary: '#10B981',
-      accentSecondary: '#34D399',
-      textPrimary: '#ECFDF5',
-      textMuted: '#A7F3D0',
-      borderSubtle: '#1F4239',
-    },
-  },
-  {
     id: 'royal-violet',
     isLight: false,
-    nameEn: 'Royal Violet',
-    nameAr: 'رويال فايوليت (Royal Violet)',
+    nameEn: 'Royal Violet (Dark)',
+    nameAr: 'رويال فايوليت (داكن)',
     descriptionEn:
       'Executive indigo-charcoal surfaces with accessible violet-blue and soft cyan highlights.',
     descriptionAr:
-      'تصميم ملكي بدرجات البنفسجي والأزرق النيلي مع تباين قياسي عالي الوضوح.',
+      'تصميم ملكي داكن بدرجات البنفسجي والأزرق النيلي مع تباين عالي الوضوح.',
     swatches: {
       bgPrimary: '#0E0B1E',
       bgSurface: '#16122E',
@@ -185,8 +185,9 @@ export interface GlobalPublishedAppearance {
   reducedMotion: boolean;
 }
 
-const PERSONAL_STORAGE_KEY = 'bandr_personal_appearance_v1';
-const GLOBAL_CACHE_STORAGE_KEY = 'bandr_global_appearance_cache_v1';
+const PERSONAL_STORAGE_KEY = 'bandr_personal_appearance_v3';
+const GLOBAL_CACHE_STORAGE_KEY = 'bandr_global_appearance_cache_v3';
+const APPEARANCE_SCHEMA_VERSION = 3;
 
 export function isValidThemeId(val: unknown): val is ThemeId {
   return (
@@ -205,9 +206,9 @@ export function isValidDensity(val: unknown): val is ThemeDensity {
 
 export function resolveSystemThemeId(): ThemeId {
   if (typeof window !== 'undefined' && window.matchMedia) {
-    return window.matchMedia('(prefers-color-scheme: light)').matches
-      ? 'arctic-light'
-      : 'midnight-pro';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'midnight-pro'
+      : 'arctic-light';
   }
   return DEFAULT_THEME_ID;
 }
@@ -311,8 +312,14 @@ export function applyAppearanceToDocument(
   effectiveThemeId: ThemeId,
   density: ThemeDensity,
   reducedMotion: boolean
-): void {
-  if (typeof document === 'undefined') return;
+): {
+  dataTheme: string;
+  bgPrimary: string;
+  accentPrimary: string;
+} {
+  if (typeof document === 'undefined') {
+    return { dataTheme: effectiveThemeId, bgPrimary: '', accentPrimary: '' };
+  }
   const safeTheme = isValidThemeId(effectiveThemeId)
     ? effectiveThemeId
     : DEFAULT_THEME_ID;
@@ -324,6 +331,20 @@ export function applyAppearanceToDocument(
   root.setAttribute('data-theme-mode', themeDef.isLight ? 'light' : 'dark');
   root.setAttribute('data-density', safeDensity);
   root.setAttribute('data-reduced-motion', reducedMotion ? 'true' : 'false');
+
+  let bgPrimary = '';
+  let accentPrimary = '';
+  if (typeof window !== 'undefined') {
+    const computed = window.getComputedStyle(root);
+    bgPrimary = computed.getPropertyValue('--bg-primary').trim();
+    accentPrimary = computed.getPropertyValue('--accent-primary').trim();
+  }
+
+  return {
+    dataTheme: safeTheme,
+    bgPrimary,
+    accentPrimary,
+  };
 }
 
 /**
@@ -348,8 +369,15 @@ export function subscribePublishedSiteAppearance(
         return;
       }
       const data = snap.data();
+      // Only honor Firestore theme if it was explicitly published under current v3 light-default schema
+      const effectiveThemeId: ThemeId =
+        data.schemaVersion === APPEARANCE_SCHEMA_VERSION &&
+        isValidThemeId(data.themeId)
+          ? data.themeId
+          : DEFAULT_THEME_ID;
+
       const validated: GlobalPublishedAppearance = {
-        themeId: isValidThemeId(data.themeId) ? data.themeId : DEFAULT_THEME_ID,
+        themeId: effectiveThemeId,
         density: isValidDensity(data.density) ? data.density : DEFAULT_DENSITY,
         reducedMotion: Boolean(data.reducedMotion),
       };
@@ -391,6 +419,7 @@ export async function publishGlobalSiteAppearance(
         themeId: safeThemeId,
         density: safeDensity,
         reducedMotion: safeReducedMotion,
+        schemaVersion: APPEARANCE_SCHEMA_VERSION,
         ownerUid: existingData.ownerUid,
         createdAt: existingData.createdAt,
         updatedAt: serverTimestamp(),
@@ -400,6 +429,7 @@ export async function publishGlobalSiteAppearance(
         themeId: safeThemeId,
         density: safeDensity,
         reducedMotion: safeReducedMotion,
+        schemaVersion: APPEARANCE_SCHEMA_VERSION,
         ownerUid: user.uid,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),

@@ -1,5 +1,5 @@
 import React, { useDeferredValue, useMemo, useState } from 'react';
-import { Search, X } from 'lucide-react';
+import { Search, X, Sparkles, ShoppingBag, Globe, Cpu } from 'lucide-react';
 import {
   Language,
   PROJECT_CATEGORIES,
@@ -38,6 +38,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = React.memo(
       [projects]
     );
 
+    // Filtered list when searching or filtering by specific category
     const filteredProjects = useMemo(() => {
       const q = deferredSearch.trim().toLowerCase();
       return publishedProjects.filter((p) => {
@@ -58,12 +59,13 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = React.memo(
       });
     }, [publishedProjects, selectedCategory, deferredSearch]);
 
-    const ecommerceProjects = useMemo(
+    // Grouping projects by category domain to guarantee 0 duplicates
+    const eCommerceProjects = useMemo(
       () => publishedProjects.filter((p) => p.category === 'e-commerce'),
       [publishedProjects]
     );
 
-    const webEdHealthProjects = useMemo(
+    const webPlatformsProjects = useMemo(
       () =>
         publishedProjects.filter(
           (p) =>
@@ -74,7 +76,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = React.memo(
       [publishedProjects]
     );
 
-    const engineeringCaseStudies = useMemo(
+    const systemsAndAiProjects = useMemo(
       () =>
         publishedProjects.filter(
           (p) =>
@@ -83,15 +85,19 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = React.memo(
       [publishedProjects]
     );
 
+    const isCategorizedView =
+      selectedCategory === 'all' && !deferredSearch.trim();
+
     return (
       <div className="theme-bg-primary">
-        {/* Main Filterable Portfolio Gallery */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 theme-section-spacing">
-          <div className="max-w-3xl space-y-3 mb-10">
-            <div className="text-xs font-semibold theme-accent-text tracking-wide">
-              {t.sectionKicker}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+          {/* Section Header */}
+          <div className="max-w-3xl space-y-3 mb-8">
+            <div className="inline-flex items-center gap-2 text-xs font-semibold theme-accent-text tracking-wide">
+              <Sparkles className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+              <span>{t.sectionKicker}</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight theme-text-primary">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight theme-text-primary">
               {t.sectionTitle}
             </h2>
             <p className="text-sm sm:text-base theme-text-secondary leading-relaxed">
@@ -99,7 +105,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = React.memo(
             </p>
           </div>
 
-          {/* Interactive Category Filter Controls & Deferred Search Bar */}
+          {/* Category Filter Tabs & Search Control */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8 pb-5 border-b theme-border">
             <div
               role="tablist"
@@ -114,7 +120,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = React.memo(
                     type="button"
                     role="tab"
                     aria-selected={active}
-                    onClick={() => setSelectedCategory(cat.id)}
+                    onClick={() => {
+                      setSelectedCategory(cat.id);
+                      setSearchQuery('');
+                    }}
                     className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                       active
                         ? 'theme-btn-primary shadow-xs'
@@ -168,127 +177,153 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = React.memo(
             </div>
           </div>
 
-          {/* Filtered Project Cards Grid */}
-          {filteredProjects.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 theme-grid-gap">
-              {filteredProjects.map((project, idx) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  lang={lang}
-                  onSelectProject={onSelectProject}
-                  priorityLoading={idx < 2}
-                />
-              ))}
+          {/* Single Filtered Grid View when searching or selecting specific category */}
+          {!isCategorizedView && (
+            <div>
+              {filteredProjects.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 theme-grid-gap">
+                  {filteredProjects.map((project, idx) => (
+                    <ProjectCard
+                      key={`filtered-${project.id}`}
+                      project={project}
+                      lang={lang}
+                      onSelectProject={onSelectProject}
+                      priorityLoading={idx < 2}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-2xl theme-card text-center py-12 space-y-3">
+                  <p className="text-sm font-semibold theme-text-primary">
+                    {isAr
+                      ? 'لا توجد مشاريع مطابقة لمعايير البحث أو التصفية الحالية.'
+                      : 'No projects match the current filter or search query.'}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedCategory('all');
+                      setSearchQuery('');
+                    }}
+                    className="px-4 py-2 rounded-xl theme-btn-secondary text-xs font-semibold cursor-pointer"
+                  >
+                    {isAr ? 'إعادة ضبط التصفية' : 'Reset Filters'}
+                  </button>
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="rounded-2xl theme-card text-center py-12 space-y-3">
-              <p className="text-sm font-semibold theme-text-primary">
-                {isAr
-                  ? 'لا توجد مشاريع مطابقة لمعايير البحث أو التصفية الحالية.'
-                  : 'No projects match the current filter or search query.'}
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedCategory('all');
-                  setSearchQuery('');
-                }}
-                className="px-4 py-2 rounded-xl theme-btn-secondary text-xs font-semibold cursor-pointer"
-              >
-                {isAr ? 'إعادة ضبط التصفية' : 'Reset Filters'}
-              </button>
+          )}
+
+          {/* Categorized Non-Repeating Showcase when Viewing "All" Categories */}
+          {isCategorizedView && (
+            <div className="space-y-16">
+              {/* Category Section 1: E-Commerce */}
+              {eCommerceProjects.length > 0 && (
+                <section className="space-y-6">
+                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b theme-border">
+                    <div className="space-y-1">
+                      <div className="inline-flex items-center gap-2 text-xs font-mono-tabular theme-accent-text">
+                        <ShoppingBag className="w-4 h-4 shrink-0" aria-hidden="true" />
+                        <span>01. {isAr ? 'المتاجر الإلكترونية والتجارة الرقمية' : 'E-Commerce & Digital Stores'}</span>
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-extrabold theme-text-primary">
+                        {t.ecommerceTitle}
+                      </h3>
+                      <p className="text-xs sm:text-sm theme-text-secondary">
+                        {t.ecommerceSubtitle}
+                      </p>
+                    </div>
+                    <span className="text-xs font-mono-tabular px-3 py-1 rounded-full theme-card-elevated theme-text-muted">
+                      {eCommerceProjects.length} {isAr ? 'مشاريع' : 'projects'}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 theme-grid-gap">
+                    {eCommerceProjects.map((project, idx) => (
+                      <ProjectCard
+                        key={`cat-ecom-${project.id}`}
+                        project={project}
+                        lang={lang}
+                        onSelectProject={onSelectProject}
+                        priorityLoading={idx < 2}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Category Section 2: Web, Education & Healthcare Platforms */}
+              {webPlatformsProjects.length > 0 && (
+                <section className="space-y-6">
+                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b theme-border">
+                    <div className="space-y-1">
+                      <div className="inline-flex items-center gap-2 text-xs font-mono-tabular theme-accent-text">
+                        <Globe className="w-4 h-4 shrink-0" aria-hidden="true" />
+                        <span>02. {isAr ? 'منصات الويب والتعليم والصحة' : 'Web, EdTech & Healthcare Platforms'}</span>
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-extrabold theme-text-primary">
+                        {t.webAndPlatformsTitle}
+                      </h3>
+                      <p className="text-xs sm:text-sm theme-text-secondary">
+                        {t.webAndPlatformsSubtitle}
+                      </p>
+                    </div>
+                    <span className="text-xs font-mono-tabular px-3 py-1 rounded-full theme-card-elevated theme-text-muted">
+                      {webPlatformsProjects.length} {isAr ? 'مشاريع' : 'projects'}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 theme-grid-gap">
+                    {webPlatformsProjects.map((project, idx) => (
+                      <ProjectCard
+                        key={`cat-web-${project.id}`}
+                        project={project}
+                        lang={lang}
+                        onSelectProject={onSelectProject}
+                        priorityLoading={idx < 2}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Category Section 3: Engineering Case Studies & AI/ERP Systems */}
+              {systemsAndAiProjects.length > 0 && (
+                <section className="space-y-6">
+                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b theme-border">
+                    <div className="space-y-1">
+                      <div className="inline-flex items-center gap-2 text-xs font-mono-tabular theme-accent-text">
+                        <Cpu className="w-4 h-4 shrink-0" aria-hidden="true" />
+                        <span>03. {isAr ? 'الأنظمة المحاسبية والذكاء الاصطناعي' : 'ERP Accounting & AI Systems'}</span>
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-extrabold theme-text-primary">
+                        {t.caseStudiesTitle}
+                      </h3>
+                      <p className="text-xs sm:text-sm theme-text-secondary">
+                        {t.caseStudiesSubtitle}
+                      </p>
+                    </div>
+                    <span className="text-xs font-mono-tabular px-3 py-1 rounded-full theme-card-elevated theme-text-muted">
+                      {systemsAndAiProjects.length} {isAr ? 'مشاريع' : 'projects'}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 theme-grid-gap">
+                    {systemsAndAiProjects.map((project, idx) => (
+                      <ProjectCard
+                        key={`cat-sys-${project.id}`}
+                        project={project}
+                        lang={lang}
+                        onSelectProject={onSelectProject}
+                        priorityLoading={idx < 2}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
             </div>
           )}
         </section>
-
-        {/* Dedicated Domain Breakdowns */}
-        {showDedicatedDomainBreakdowns &&
-          selectedCategory === 'all' &&
-          !deferredSearch.trim() && (
-            <div className="border-t theme-border theme-bg-surface">
-              {/* C. Dedicated E-Commerce Section */}
-              <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 border-b theme-border">
-                <div className="max-w-2xl space-y-2 mb-8">
-                  <div className="text-xs font-mono-tabular theme-accent-text">
-                    {isAr
-                      ? '01. المتاجر الإلكترونية والتجارة الرقمية'
-                      : '01. E-Commerce & Digital Stores'}
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-bold theme-text-primary">
-                    {t.ecommerceTitle}
-                  </h3>
-                  <p className="text-sm theme-text-secondary">
-                    {t.ecommerceSubtitle}
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 theme-grid-gap">
-                  {ecommerceProjects.map((project) => (
-                    <ProjectCard
-                      key={`ecom-${project.id}`}
-                      project={project}
-                      lang={lang}
-                      onSelectProject={onSelectProject}
-                    />
-                  ))}
-                </div>
-              </section>
-
-              {/* D. Dedicated Web, Education & Healthcare Section */}
-              <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 border-b theme-border">
-                <div className="max-w-2xl space-y-2 mb-8">
-                  <div className="text-xs font-mono-tabular theme-accent-text">
-                    {isAr
-                      ? '02. منصات الويب والتعليم والصحة'
-                      : '02. Web, EdTech & Healthcare Platforms'}
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-bold theme-text-primary">
-                    {t.webAndPlatformsTitle}
-                  </h3>
-                  <p className="text-sm theme-text-secondary">
-                    {t.webAndPlatformsSubtitle}
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 theme-grid-gap">
-                  {webEdHealthProjects.map((project) => (
-                    <ProjectCard
-                      key={`web-${project.id}`}
-                      project={project}
-                      lang={lang}
-                      onSelectProject={onSelectProject}
-                    />
-                  ))}
-                </div>
-              </section>
-
-              {/* Documented Engineering Case Studies (From CV) */}
-              <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-                <div className="max-w-2xl space-y-2 mb-8">
-                  <div className="text-xs font-mono-tabular theme-accent-text">
-                    {isAr
-                      ? '03. دراسات الحالة الهندسية الموثقة'
-                      : '03. Documented Engineering Case Studies'}
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-bold theme-text-primary">
-                    {t.caseStudiesTitle}
-                  </h3>
-                  <p className="text-sm theme-text-secondary">
-                    {t.caseStudiesSubtitle}
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 theme-grid-gap">
-                  {engineeringCaseStudies.map((project) => (
-                    <ProjectCard
-                      key={`cs-${project.id}`}
-                      project={project}
-                      lang={lang}
-                      onSelectProject={onSelectProject}
-                    />
-                  ))}
-                </div>
-              </section>
-            </div>
-          )}
       </div>
     );
   }

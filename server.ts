@@ -25,8 +25,13 @@ const ai = new GoogleGenAI({
 app.post('/api/gemini/edit-image', async (req, res) => {
   try {
     const { imageBase64, mimeType, prompt } = req.body;
-    if (!imageBase64 || !prompt) {
-      return res.status(400).json({ error: 'Missing imageBase64 or prompt' });
+    if (!imageBase64 || typeof imageBase64 !== 'string' || !prompt || typeof prompt !== 'string') {
+      return res.status(400).json({ error: 'Missing or invalid imageBase64 or prompt' });
+    }
+
+    if (!process.env.GEMINI_API_KEY) {
+      console.error('Server GEMINI_API_KEY is not set');
+      return res.status(503).json({ error: 'AI image service is currently unconfigured' });
     }
 
     const cleanBase64 = imageBase64.replace(/^data:image\/[a-z]+;base64,/, '');
@@ -59,11 +64,28 @@ app.post('/api/gemini/edit-image', async (req, res) => {
       }
     }
 
-    res.json({ success: true, editedImageUrl, message: messageText });
+    return res.json({ success: true, editedImageUrl, message: messageText });
   } catch (err: any) {
-    console.error('Gemini image edit error:', err);
-    res.status(500).json({ error: err.message || 'Image editing failed' });
+    // Securely log details on server console without exposing secrets to client
+    console.error('Gemini image edit server error:', err?.message || err);
+
+    const errMsg = String(err?.message || '');
+    if (errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('RESOURCE_EXHAUSTED')) {
+      return res.status(429).json({
+        error: 'AI image processing quota exceeded. Please try again later.',
+      });
+    }
+
+    // Never leak internal credentials, stack traces, or upstream error payloads
+    return res.status(500).json({
+      error: 'An internal error occurred while processing the image.',
+    });
   }
+});
+
+// Explicit 404 for unhandled API routes (ensures API callers don't receive HTML)
+app.all('/api/*', (_req, res) => {
+  res.status(404).json({ error: 'API endpoint not found' });
 });
 
 async function startServer() {
