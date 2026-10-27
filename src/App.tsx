@@ -66,12 +66,11 @@ export default function App() {
     resolveRoutePath(window.location.pathname)
   );
 
-  // Appearance & Themes State (Personal Local Override + Published Global Default)
+  // Appearance & Themes State (Strictly Admin-Controlled Global Theme + Admin Preview inside /admin)
   const [personalPrefs, setPersonalPrefs] =
     useState<AppearancePreferences | null>(() => loadPersonalAppearance());
   const [globalPublished, setGlobalPublished] =
     useState<GlobalPublishedAppearance>(() => loadCachedGlobalAppearance());
-  const [appearanceModalOpen, setAppearanceModalOpen] = useState(false);
 
   // Live published portfolio projects (synced from Firestore with baseline fallback)
   const [projects, setProjects] = useState<ProjectItem[]>(PROJECTS_DATA);
@@ -98,11 +97,17 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  // Synchronize effective theme, density, and reduced-motion to <html>
-  const activeThemeMode = personalPrefs?.themeMode ?? globalPublished.themeId;
-  const activeDensity = personalPrefs?.density ?? globalPublished.density;
-  const activeReducedMotion =
-    personalPrefs?.reducedMotion ?? globalPublished.reducedMotion;
+  // Only allow preview override while inside /admin; public routes strictly use globalPublished
+  const isAdminRoute = currentPath === '/admin';
+  const activeThemeMode = isAdminRoute
+    ? personalPrefs?.themeMode ?? globalPublished.themeId
+    : globalPublished.themeId;
+  const activeDensity = isAdminRoute
+    ? personalPrefs?.density ?? globalPublished.density
+    : globalPublished.density;
+  const activeReducedMotion = isAdminRoute
+    ? personalPrefs?.reducedMotion ?? globalPublished.reducedMotion
+    : globalPublished.reducedMotion;
 
   useEffect(() => {
     const applyCurrent = () => {
@@ -122,32 +127,6 @@ export default function App() {
       mq.addEventListener('change', handleSystemChange);
       return () => mq.removeEventListener('change', handleSystemChange);
     }
-  }, [activeThemeMode, activeDensity, activeReducedMotion]);
-
-  // Temporary Diagnostic Effect: Verify html data-theme attribute and computed CSS variables (--bg-primary, --bg-surface)
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof document === 'undefined') return;
-    const root = document.documentElement;
-    const body = document.body;
-    const computedRoot = window.getComputedStyle(root);
-    const computedBody = window.getComputedStyle(body);
-
-    const dataTheme = root.getAttribute('data-theme');
-    const bgPrimary = computedRoot.getPropertyValue('--bg-primary').trim();
-    const bgSurface = computedRoot.getPropertyValue('--bg-surface').trim();
-    const accentPrimary = computedRoot.getPropertyValue('--accent-primary').trim();
-
-    console.log('[App Theme Diagnostics]', {
-      htmlDataTheme: dataTheme,
-      htmlDataThemeMode: root.getAttribute('data-theme-mode'),
-      computedVars: {
-        '--bg-primary': bgPrimary,
-        '--bg-surface': bgSurface,
-        '--accent-primary': accentPrimary,
-      },
-      bodyComputedBackground: computedBody.backgroundColor,
-      status: dataTheme ? 'PASS: html data-theme attribute active' : 'FAIL: html data-theme attribute missing',
-    });
   }, [activeThemeMode, activeDensity, activeReducedMotion]);
 
   const handleApplyPersonalPrefs = useCallback(
@@ -282,18 +261,9 @@ export default function App() {
             <HeroSection
               lang={lang}
               onNavigate={handleNavigate}
-              onOpenAppearance={() => setAppearanceModalOpen(true)}
               reducedMotionActive={activeReducedMotion}
               projects={projects}
               onSelectProject={setSelectedProject}
-              activeThemeId={resolveEffectiveThemeId(activeThemeMode)}
-              onQuickSelectTheme={(themeId) =>
-                handleApplyPersonalPrefs({
-                  themeMode: themeId,
-                  density: activeDensity,
-                  reducedMotion: activeReducedMotion,
-                })
-              }
             />
             <ProjectsSection
               lang={lang}
@@ -470,7 +440,6 @@ export default function App() {
         projects={projects}
         onNavigate={handleNavigate}
         onSelectProjectId={handleSelectProjectId}
-        onOpenAppearance={() => setAppearanceModalOpen(true)}
       />
 
       {/* Accessible Project Details & Case Study Modal */}
@@ -481,31 +450,6 @@ export default function App() {
         isAdminPreview={currentPath === '/admin'}
         onInquireService={handleInquireService}
       />
-
-      {/* Visitor Personal Appearance & Themes Modal */}
-      {appearanceModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/80 overflow-y-auto"
-          role="dialog"
-          aria-modal="true"
-          aria-label={isAr ? 'المظهر والثيمات' : 'Appearance & Themes'}
-          onClick={() => setAppearanceModalOpen(false)}
-        >
-          <div
-            className="max-w-5xl w-full max-h-[90vh] overflow-y-auto my-auto rounded-2xl shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <ThemeSettingsCenter
-              lang={lang}
-              personalPrefs={personalPrefs}
-              globalPublished={globalPublished}
-              onApplyPersonalPrefs={handleApplyPersonalPrefs}
-              onResetPersonalToGlobal={handleResetPersonalToGlobal}
-              onCloseModal={() => setAppearanceModalOpen(false)}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

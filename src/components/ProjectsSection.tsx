@@ -110,7 +110,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = React.memo(
             <div
               role="tablist"
               aria-label={t.filterLabel}
-              className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-xl theme-card-elevated"
+              className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl tech-nav-dock"
             >
               {PROJECT_CATEGORIES.map((cat) => {
                 const active = selectedCategory === cat.id;
@@ -124,13 +124,17 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = React.memo(
                       setSelectedCategory(cat.id);
                       setSearchQuery('');
                     }}
-                    className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
-                      active
-                        ? 'theme-btn-primary shadow-xs'
-                        : 'theme-text-secondary hover:theme-text-primary'
+                    className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                      active ? 'tech-nav-btn-active' : 'tech-nav-btn'
                     }`}
                   >
-                    {isAr ? cat.labelAr : cat.labelEn}
+                    <span>{isAr ? cat.labelAr : cat.labelEn}</span>
+                    {active && (
+                      <span
+                        className="w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_#67e8f9] shrink-0"
+                        aria-hidden="true"
+                      />
+                    )}
                   </button>
                 );
               })}

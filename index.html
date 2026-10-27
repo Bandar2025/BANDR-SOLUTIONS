@@ -39,18 +39,19 @@
       rel="stylesheet"
     />
 
-    <!-- Zero-FOUC Theme & Language Initialization Script (Allowlist Validated) -->
+    <!-- Zero-FOUC Theme & Language Initialization Script (Admin-Controlled Global Theme) -->
     <script>
       (function () {
         try {
           var allowedThemes = [
             'midnight-pro',
             'obsidian',
+            'royal-violet',
             'arctic-light',
             'ocean-breeze',
-            'emerald-tech',
-            'royal-violet'
+            'emerald-tech'
           ];
+          var lightThemes = ['arctic-light', 'ocean-breeze', 'emerald-tech'];
           var root = document.documentElement;
           var savedLang = window.localStorage.getItem('bandr_solutions_lang');
           if (savedLang === 'ar' || savedLang === 'en') {
@@ -58,28 +59,12 @@
             root.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
           }
 
-          var personalRaw = window.localStorage.getItem('bandr_personal_appearance_v1');
-          var globalRaw = window.localStorage.getItem('bandr_global_appearance_cache_v1');
+          var globalRaw = window.localStorage.getItem('bandr_global_appearance_cache_v4');
           var themeId = 'midnight-pro';
           var density = 'comfortable';
           var reducedMotion = false;
 
-          if (personalRaw) {
-            var p = JSON.parse(personalRaw);
-            if (p && p.themeMode === 'system') {
-              themeId = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
-                ? 'arctic-light'
-                : 'midnight-pro';
-            } else if (p && allowedThemes.indexOf(p.themeMode) !== -1) {
-              themeId = p.themeMode;
-            }
-            if (p && (p.density === 'comfortable' || p.density === 'compact')) {
-              density = p.density;
-            }
-            if (p && typeof p.reducedMotion === 'boolean') {
-              reducedMotion = p.reducedMotion;
-            }
-          } else if (globalRaw) {
+          if (globalRaw) {
             var g = JSON.parse(globalRaw);
             if (g && allowedThemes.indexOf(g.themeId) !== -1) {
               themeId = g.themeId;
@@ -93,7 +78,7 @@
           }
 
           root.setAttribute('data-theme', themeId);
-          root.setAttribute('data-theme-mode', themeId === 'arctic-light' ? 'light' : 'dark');
+          root.setAttribute('data-theme-mode', lightThemes.indexOf(themeId) !== -1 ? 'light' : 'dark');
           root.setAttribute('data-density', density);
           root.setAttribute('data-reduced-motion', reducedMotion ? 'true' : 'false');
         } catch (e) {

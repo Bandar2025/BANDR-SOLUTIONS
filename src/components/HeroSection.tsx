@@ -1,16 +1,17 @@
-import React, { Suspense, lazy, useEffect, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight,
   ArrowLeft,
   Layers,
-  Palette,
   ExternalLink,
-  Sparkles,
   ShoppingBag,
   Globe,
   Cpu,
   ShieldCheck,
-  Sun,
+  Box,
+  Database,
+  Activity,
+  Eye,
 } from 'lucide-react';
 import {
   Language,
@@ -20,32 +21,26 @@ import {
   UI_TRANSLATIONS,
 } from '../data/portfolioData';
 import { HeroStaticEmblem } from './HeroStaticEmblem';
+import { ProjectVisualPreview } from './ProjectVisualPreview';
 import { RoutePath } from './Navbar';
-import { THEME_GALLERY, ThemeId } from '../lib/themeSystem';
 
 const LazyHeroScene3D = lazy(() => import('./HeroScene3D'));
 
 interface HeroSectionProps {
   lang: Language;
   onNavigate: (path: RoutePath) => void;
-  onOpenAppearance?: () => void;
   reducedMotionActive?: boolean;
   projects?: ProjectItem[];
   onSelectProject?: (project: ProjectItem) => void;
-  activeThemeId?: ThemeId;
-  onQuickSelectTheme?: (themeId: ThemeId) => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = React.memo(
   ({
     lang,
     onNavigate,
-    onOpenAppearance,
     reducedMotionActive = false,
     projects = PROJECTS_DATA,
     onSelectProject,
-    activeThemeId = 'arctic-light',
-    onQuickSelectTheme,
   }) => {
     const isAr = lang === 'ar';
     const t = UI_TRANSLATIONS[lang].hero;
@@ -54,9 +49,23 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(
     const [osReducedMotion, setOsReducedMotion] = useState(false);
     const [activeShowcaseIdx, setActiveShowcaseIdx] = useState(0);
 
-    const featuredList = projects
-      .filter((p) => p.status !== 'draft')
-      .slice(0, 4);
+    // Prioritize smart AI, Digital Twin, E-Commerce & ERP projects in the Hero Holo-Stage
+    const featuredList = useMemo(() => {
+      const published = projects.filter((p) => p.status !== 'draft');
+      const priorityIds = [
+        'ai-fire-automation-embedded',
+        'tasour-digital-twin',
+        'rufid-markets',
+        'finb-accounting',
+        'novaro-erp',
+        'fresh',
+      ];
+      const prioritized = priorityIds
+        .map((id) => published.find((p) => p.id === id))
+        .filter((p): p is ProjectItem => Boolean(p));
+      const others = published.filter((p) => !priorityIds.includes(p.id));
+      return [...prioritized, ...others].slice(0, 6);
+    }, [projects]);
 
     useEffect(() => {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -84,133 +93,261 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(
 
     const activeFeatured = featuredList[activeShowcaseIdx] || featuredList[0];
 
+    const smartCapabilities = [
+      {
+        icon: Cpu,
+        labelAr: 'الذكاء الاصطناعي و IoT',
+        labelEn: 'AI & Embedded IoT',
+      },
+      {
+        icon: Box,
+        labelAr: 'التوأم الرقمي الصناعي 3D',
+        labelEn: '3D Digital Twin',
+      },
+      {
+        icon: Database,
+        labelAr: 'الأنظمة المحاسبية و ERP',
+        labelEn: 'Enterprise Cloud ERP',
+      },
+      {
+        icon: ShoppingBag,
+        labelAr: 'المتاجر والمنصات الذكية',
+        labelEn: 'Smart E-Commerce',
+      },
+    ];
+
     return (
       <section className="relative theme-bg-primary border-b theme-border overflow-hidden">
-        {/* Soft luminous daylight architectural grid & ambient glow */}
+        {/* Layer 1: Architectural Tech Grid */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             backgroundImage:
               'linear-gradient(to right, var(--grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px)',
-            backgroundSize: '48px 48px',
+            backgroundSize: '44px 44px',
           }}
           aria-hidden="true"
         />
+
+        {/* Layer 2: Ambient Cyber-Indigo & Cyan Radial Glows */}
         <div
-          className="absolute -top-32 start-1/4 w-[520px] h-[520px] rounded-full pointer-events-none blur-3xl opacity-35"
+          className="absolute -top-40 start-1/5 w-[620px] h-[620px] rounded-full pointer-events-none blur-3xl opacity-50"
           style={{
             background:
               'radial-gradient(circle, var(--accent-soft) 0%, transparent 70%)',
           }}
           aria-hidden="true"
         />
+        <div
+          className="absolute -bottom-40 end-1/6 w-[540px] h-[540px] rounded-full pointer-events-none blur-3xl opacity-35"
+          style={{
+            background:
+              'radial-gradient(circle, rgba(6, 182, 212, 0.16) 0%, transparent 70%)',
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Layer 3: Smart Technology Geometric Circuitry & Neural Nodes SVG Backdrop */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none opacity-30"
+          viewBox="0 0 1440 800"
+          fill="none"
+          preserveAspectRatio="xMidYMid slice"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="heroCircuitGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="var(--accent-primary)" stopOpacity="0.65" />
+              <stop offset="50%" stopColor="var(--accent-secondary)" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="var(--accent-primary)" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="heroCircuitGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="var(--accent-secondary)" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="var(--accent-primary)" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+
+          {/* Left/Top Isometric Circuit Pathways */}
+          <path
+            d="M-20 140 H180 L230 190 H420 L460 150 H640"
+            stroke="url(#heroCircuitGrad1)"
+            strokeWidth="1.5"
+            strokeDasharray="6 6"
+          />
+          <path
+            d="M80 0 V90 L130 140 V280 L190 340 H360"
+            stroke="url(#heroCircuitGrad1)"
+            strokeWidth="1.2"
+          />
+          <circle cx="180" cy="140" r="4" fill="var(--accent-primary)" />
+          <circle cx="230" cy="190" r="4" fill="var(--accent-secondary)" />
+          <circle cx="420" cy="190" r="3.5" fill="var(--accent-primary)" />
+          <circle cx="190" cy="340" r="4" fill="var(--accent-secondary)" />
+
+          {/* Right/Center Orbital Tech Rings & Hexagon Geometry */}
+          <g transform="translate(1120, 230)">
+            <circle
+              cx="0"
+              cy="0"
+              r="185"
+              stroke="url(#heroCircuitGrad2)"
+              strokeWidth="1.2"
+              strokeDasharray="10 8"
+            />
+            <circle
+              cx="0"
+              cy="0"
+              r="130"
+              stroke="url(#heroCircuitGrad1)"
+              strokeWidth="1"
+            />
+            <polygon
+              points="0,-90 78,-45 78,45 0,90 -78,45 -78,-45"
+              stroke="url(#heroCircuitGrad2)"
+              strokeWidth="1.5"
+              fill="none"
+            />
+            <circle cx="0" cy="-90" r="4" fill="var(--accent-secondary)" />
+            <circle cx="78" cy="45" r="4" fill="var(--accent-primary)" />
+            <circle cx="-78" cy="45" r="4" fill="var(--accent-secondary)" />
+          </g>
+
+          {/* Bottom Data Bus Trace */}
+          <path
+            d="M1460 660 H1180 L1130 610 H890 L850 650 H620"
+            stroke="url(#heroCircuitGrad2)"
+            strokeWidth="1.5"
+          />
+          <circle cx="1180" cy="660" r="4" fill="var(--accent-secondary)" />
+          <circle cx="1130" cy="610" r="4" fill="var(--accent-primary)" />
+          <circle cx="890" cy="610" r="3.5" fill="var(--accent-secondary)" />
+        </svg>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-14 sm:py-16 lg:py-20 space-y-12">
-          {/* Quick Light & Dark Theme Switcher Strip at Top of Hero */}
-          {onQuickSelectTheme && (
-            <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl theme-bg-surface border theme-border shadow-xs">
-              <div className="flex items-center gap-2 text-xs font-bold theme-text-primary">
-                <Sun className="w-4 h-4 theme-accent-text shrink-0" />
-                <span>
-                  {isAr
-                    ? 'اختر ألوان الواجهة المفضلة (ثيمات نهارية فاتحة وجديدة):'
-                    : 'Choose Interface Palette (New Bright Daylight Themes):'}
-                </span>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-1.5">
-                {THEME_GALLERY.map((themeItem) => {
-                  const isCurrent = activeThemeId === themeItem.id;
-                  return (
-                    <button
-                      key={themeItem.id}
-                      type="button"
-                      onClick={() => onQuickSelectTheme(themeItem.id)}
-                      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer border ${
-                        isCurrent
-                          ? 'theme-btn-primary border-transparent shadow-xs'
-                          : 'theme-bg-elevated theme-text-secondary border-[var(--border-subtle)] hover:theme-text-primary'
-                      }`}
-                    >
-                      <span
-                        className="w-3 h-3 rounded-full border border-black/15 shrink-0"
-                        style={{ backgroundColor: themeItem.swatches.accentPrimary }}
-                      />
-                      <span>{isAr ? themeItem.nameAr.split(' (')[0] : themeItem.nameEn.split(' (')[0]}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Main 2-Column Hero Split */}
+          {/* Main 2-Column Smart Engineering Hero Split */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
-            {/* Primary Column: Editorial Brand Typography & Actions */}
-            <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
-              <div className="space-y-5">
-                {/* Brand Kicker & Monogram */}
-                <div className="inline-flex items-center gap-3 text-xs sm:text-sm font-semibold theme-accent-text">
-                  <span className="w-8 h-8 rounded-xl theme-btn-primary font-extrabold flex items-center justify-center font-display shrink-0 shadow-xs">
+            {/* Primary Column: Smart Tech Identity, Interactive Domain Matrix & Actions */}
+            <div className="lg:col-span-7 flex flex-col justify-between space-y-7">
+              <div className="space-y-6">
+                {/* Engineered Smart Architecture Kicker */}
+                <div className="inline-flex items-center gap-3 px-3.5 py-2 rounded-2xl tech-nav-dock w-fit">
+                  <span className="w-8 h-8 rounded-xl theme-btn-primary font-extrabold flex items-center justify-center font-display shrink-0 shadow-xs text-xs">
                     {OWNER_PROFILE.monogram}
                   </span>
-                  <span>{t.kicker}</span>
+                  <div className="flex items-center gap-2 text-xs sm:text-sm font-bold theme-text-primary">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee] shrink-0" />
+                    <span>
+                      {isAr
+                        ? 'منظومة الهندسة البرمجية والمشاريع الذكية المتكاملة'
+                        : 'Intelligent Systems, AI & Full-Stack Engineering Lab'}
+                    </span>
+                  </div>
                 </div>
 
-                {/* Hero Headline */}
+                {/* High-Impact Smart Headline */}
                 <h1
-                  className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight theme-text-primary leading-[1.2]"
+                  className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight theme-text-primary leading-[1.22]"
                   style={{ textWrap: 'balance' }}
                 >
-                  {t.headline}
+                  {isAr ? (
+                    <>
+                      هندسة وتطوير{' '}
+                      <span
+                        className="bg-clip-text text-transparent"
+                        style={{
+                          backgroundImage:
+                            'linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)',
+                        }}
+                      >
+                        الأنظمة الذكية والمنصات الرقمية
+                      </span>{' '}
+                      بمعايير تقنية متقدمة
+                    </>
+                  ) : (
+                    <>
+                      Engineering{' '}
+                      <span
+                        className="bg-clip-text text-transparent"
+                        style={{
+                          backgroundImage:
+                            'linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)',
+                        }}
+                      >
+                        Intelligent Systems & Smart Platforms
+                      </span>{' '}
+                      Built for Real-World Scale
+                    </>
+                  )}
                 </h1>
 
-                {/* Supporting Text */}
-                <p className="text-base sm:text-lg theme-text-secondary max-w-2xl leading-[1.75]">
+                {/* Supporting Narrative */}
+                <p className="text-base sm:text-lg theme-text-secondary max-w-2xl leading-[1.8]">
                   {t.subtext}
                 </p>
 
-                {/* Primary, Secondary & Appearance CTAs */}
+                {/* Interactive Smart Tech Capability Matrix Buttons */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+                  {smartCapabilities.map((cap, idx) => {
+                    const CapIcon = cap.icon;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => onNavigate('/projects')}
+                        className="group flex items-center gap-2.5 p-2.5 rounded-xl tech-nav-btn text-start cursor-pointer"
+                      >
+                        <span className="w-8 h-8 rounded-lg theme-bg-elevated theme-accent-text flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                          <CapIcon className="w-4 h-4" />
+                        </span>
+                        <span className="text-xs font-bold theme-text-primary leading-snug line-clamp-2">
+                          {isAr ? cap.labelAr : cap.labelEn}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Primary & Secondary Engineered Tech CTAs */}
                 <div className="flex flex-wrap items-center gap-3.5 pt-2">
                   <button
                     type="button"
                     onClick={() => onNavigate('/projects')}
-                    className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl theme-btn-primary text-sm font-semibold cursor-pointer whitespace-nowrap shadow-sm"
+                    className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl tech-nav-btn-active text-sm font-bold cursor-pointer whitespace-nowrap"
                   >
-                    <span>{t.primaryCta}</span>
+                    <Cpu className="w-4 h-4 shrink-0" aria-hidden="true" />
+                    <span>
+                      {isAr
+                        ? 'استكشف معرض المشاريع الذكية'
+                        : 'Explore Smart Projects Showcase'}
+                    </span>
                     <ArrowIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
                   </button>
 
                   <button
                     type="button"
+                    onClick={() => onNavigate('/services')}
+                    className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl tech-nav-btn text-sm font-bold cursor-pointer whitespace-nowrap"
+                  >
+                    <Layers className="w-4 h-4 theme-accent-text shrink-0" />
+                    <span>
+                      {isAr ? 'الخدمات والحلول الهندسية' : 'Engineering Services'}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
                     onClick={() => onNavigate('/contact')}
-                    className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl theme-btn-secondary text-sm font-semibold cursor-pointer whitespace-nowrap"
+                    className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl tech-nav-btn text-sm font-bold cursor-pointer whitespace-nowrap"
                   >
                     <span>{t.secondaryCta}</span>
                   </button>
-
-                  {onOpenAppearance && (
-                    <button
-                      type="button"
-                      onClick={onOpenAppearance}
-                      className="inline-flex items-center gap-2 px-4 py-3.5 rounded-xl theme-btn-secondary text-xs font-semibold cursor-pointer whitespace-nowrap"
-                    >
-                      <Palette
-                        className="w-4 h-4 theme-accent-text shrink-0"
-                        aria-hidden="true"
-                      />
-                      <span>
-                        {isAr ? 'تخصيص المظهر (6 ثيمات)' : 'Customize Theme (6)'}
-                      </span>
-                    </button>
-                  )}
                 </div>
               </div>
 
-              {/* Verified Identity Strip */}
-              <div className="pt-6 border-t theme-border flex flex-wrap items-center gap-x-3 gap-y-2 text-xs theme-text-muted">
-                <span className="inline-flex items-center gap-1.5 theme-text-primary font-semibold">
-                  <Layers
+              {/* Verified Architecture Specs Strip */}
+              <div className="pt-6 border-t theme-border flex flex-wrap items-center gap-x-4 gap-y-2 text-xs theme-text-muted">
+                <span className="inline-flex items-center gap-1.5 theme-text-primary font-bold">
+                  <Activity
                     className="w-3.5 h-3.5 theme-accent-text shrink-0"
                     aria-hidden="true"
                   />
@@ -221,15 +358,15 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(
                   {isAr ? OWNER_PROFILE.locationAr : OWNER_PROFILE.locationEn}
                 </span>
                 <span aria-hidden="true">·</span>
-                <span className="font-mono-tabular theme-accent-text font-semibold">
+                <span className="font-mono-tabular theme-accent-text font-bold">
                   {isAr
-                    ? `${projects.length} مشروعاً تقنياً وهندسياً`
-                    : `${projects.length} Software & Engineering Projects`}
+                    ? `${projects.length} مشروعاً ذكياً ومنظومة برمجية`
+                    : `${projects.length} Smart Systems & Production Platforms`}
                 </span>
               </div>
             </div>
 
-            {/* Secondary Column: Interactive Live Featured Project Spotlight Card */}
+            {/* Secondary Column: Interactive Smart Project Holo-Stage */}
             <div className="lg:col-span-5 flex flex-col justify-between">
               {enable3D && !effectiveReducedMotion ? (
                 <Suspense
@@ -239,7 +376,7 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(
                       canEnable3D={false}
                       reasonNote={
                         isAr
-                          ? 'جارٍ تهيئة المجسم ثلاثي الأبعاد...'
+                          ? 'جارٍ تهيئة المجسم الهندسي ثلاثي الأبعاد...'
                           : 'Initializing 3D architectural emblem...'
                       }
                     />
@@ -251,13 +388,33 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(
                   />
                 </Suspense>
               ) : activeFeatured ? (
-                <div className="w-full h-full rounded-2xl theme-bg-surface border theme-border shadow-md overflow-hidden flex flex-col justify-between p-5 space-y-4">
-                  {/* Spotlight Top Bar */}
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-bold theme-accent-text">
-                      <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                <div className="relative w-full h-full rounded-2xl tech-hud-card overflow-hidden flex flex-col justify-between p-5 space-y-4">
+                  {/* Geometric Tech Corner Brackets */}
+                  <span
+                    className="absolute top-2.5 left-2.5 w-3 h-3 border-t-2 border-l-2 border-[var(--accent-secondary)] opacity-70 pointer-events-none"
+                    aria-hidden="true"
+                  />
+                  <span
+                    className="absolute top-2.5 right-2.5 w-3 h-3 border-t-2 border-r-2 border-[var(--accent-primary)] opacity-70 pointer-events-none"
+                    aria-hidden="true"
+                  />
+                  <span
+                    className="absolute bottom-2.5 left-2.5 w-3 h-3 border-b-2 border-l-2 border-[var(--accent-primary)] opacity-70 pointer-events-none"
+                    aria-hidden="true"
+                  />
+                  <span
+                    className="absolute bottom-2.5 right-2.5 w-3 h-3 border-b-2 border-r-2 border-[var(--accent-secondary)] opacity-70 pointer-events-none"
+                    aria-hidden="true"
+                  />
+
+                  {/* Spotlight Top Selector Bar */}
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="inline-flex items-center gap-2 text-xs font-extrabold theme-accent-text">
+                      <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]" />
                       <span>
-                        {isAr ? 'استعراض سريع للمشاريع البارزة' : 'Featured Project Spotlight'}
+                        {isAr
+                          ? 'منصة العرض الذكي للمشاريع المختارة'
+                          : 'Smart Project Holo-Showcase'}
                       </span>
                     </span>
 
@@ -267,10 +424,11 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(
                           key={proj.id}
                           type="button"
                           onClick={() => setActiveShowcaseIdx(idx)}
-                          className={`px-2 py-1 rounded-md text-[11px] font-mono-tabular font-bold transition-colors cursor-pointer ${
+                          aria-label={isAr ? proj.nameAr : proj.nameEn}
+                          className={`px-2.5 py-1 rounded-lg text-[11px] font-mono-tabular font-bold transition-all cursor-pointer ${
                             activeShowcaseIdx === idx
-                              ? 'theme-btn-primary'
-                              : 'theme-bg-elevated theme-text-muted hover:theme-text-primary'
+                              ? 'tech-nav-btn-active'
+                              : 'tech-nav-btn'
                           }`}
                         >
                           0{idx + 1}
@@ -279,32 +437,36 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(
                     </div>
                   </div>
 
-                  {/* Featured Project Preview Image */}
+                  {/* Interactive Project Visual Preview with Auto-Slideshow */}
                   <div
-                    onClick={() => onSelectProject && onSelectProject(activeFeatured)}
-                    className="relative w-full aspect-[16/10] rounded-xl theme-bg-elevated border theme-border overflow-hidden cursor-pointer group"
+                    onClick={() =>
+                      onSelectProject && onSelectProject(activeFeatured)
+                    }
+                    className="relative w-full rounded-xl overflow-hidden cursor-pointer group border theme-border"
                   >
-                    {activeFeatured.genuineScreenshotPath ? (
-                      <img
-                        src={activeFeatured.genuineScreenshotPath}
-                        alt={isAr ? activeFeatured.nameAr : activeFeatured.nameEn}
-                        className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center p-4 text-center text-xs theme-text-muted">
-                        {isAr ? activeFeatured.nameAr : activeFeatured.nameEn}
-                      </div>
-                    )}
+                    <ProjectVisualPreview
+                      project={activeFeatured}
+                      lang={lang}
+                      aspectRatioClass="aspect-[16/10]"
+                      fitMode="cover"
+                      enableSlideshow={true}
+                    />
                   </div>
 
-                  {/* Featured Project Info */}
-                  <div className="space-y-1.5">
-                    <div className="text-xs font-semibold theme-accent-text">
-                      {isAr
-                        ? activeFeatured.categoryLabelAr
-                        : activeFeatured.categoryLabelEn}
+                  {/* Featured Project Info & Tech Stack */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-2 text-xs">
+                      <span className="font-bold theme-accent-text">
+                        {isAr
+                          ? activeFeatured.categoryLabelAr
+                          : activeFeatured.categoryLabelEn}
+                      </span>
+                      <span className="font-mono-tabular text-[11px] theme-text-muted">
+                        {activeFeatured.technologies.slice(0, 3).join(' · ')}
+                      </span>
                     </div>
-                    <h2 className="text-base sm:text-lg font-bold theme-text-primary line-clamp-1">
+
+                    <h2 className="text-base sm:text-lg font-extrabold theme-text-primary line-clamp-1">
                       {isAr ? activeFeatured.nameAr : activeFeatured.nameEn}
                     </h2>
                     <p className="text-xs sm:text-sm theme-text-secondary line-clamp-2 leading-relaxed">
@@ -314,14 +476,19 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(
                     </p>
                   </div>
 
-                  {/* Spotlight Footer Actions */}
+                  {/* Spotlight Engineered Footer Actions */}
                   <div className="pt-3 border-t theme-border flex items-center justify-between gap-2">
                     <button
                       type="button"
-                      onClick={() => onSelectProject && onSelectProject(activeFeatured)}
-                      className="px-3.5 py-2 rounded-lg theme-btn-secondary text-xs font-semibold cursor-pointer"
+                      onClick={() =>
+                        onSelectProject && onSelectProject(activeFeatured)
+                      }
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl tech-nav-btn text-xs font-bold cursor-pointer"
                     >
-                      {isAr ? 'عرض تفاصيل المشروع' : 'View Project Details'}
+                      <Eye className="w-3.5 h-3.5 theme-accent-text" />
+                      <span>
+                        {isAr ? 'استعراض الدراسة الهندسية' : 'Case Study & Specs'}
+                      </span>
                     </button>
 
                     <div className="flex items-center gap-2">
@@ -329,9 +496,14 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(
                         <button
                           type="button"
                           onClick={() => setEnable3D(true)}
-                          className="px-2.5 py-2 rounded-lg theme-bg-elevated theme-text-muted hover:theme-text-primary text-[11px] font-semibold cursor-pointer border theme-border"
+                          className="px-2.5 py-2 rounded-xl tech-nav-btn text-[11px] font-mono-tabular font-bold cursor-pointer"
+                          title={
+                            isAr
+                              ? 'تفعيل المجسم الهندسي ثلاثي الأبعاد'
+                              : 'Enable 3D Architectural Core'
+                          }
                         >
-                          3D
+                          3D CORE
                         </button>
                       )}
                       {activeFeatured.url && (
@@ -339,9 +511,9 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(
                           href={activeFeatured.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg theme-btn-primary text-xs font-semibold"
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl tech-nav-btn-active text-xs font-bold"
                         >
-                          <span>{isAr ? 'زيارة الموقع' : 'Visit Live'}</span>
+                          <span>{isAr ? 'زيارة المنصة' : 'Live System'}</span>
                           <ExternalLink className="w-3.5 h-3.5" />
                         </a>
                       )}
@@ -358,86 +530,111 @@ export const HeroSection: React.FC<HeroSectionProps> = React.memo(
             </div>
           </div>
 
-          {/* Full-Width 4-Column Domain Summary Strip */}
+          {/* Full-Width 4-Pillar Smart Engineering Architecture Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-            <div className="p-4 rounded-2xl theme-bg-surface border theme-border shadow-xs flex items-start gap-3.5">
-              <div className="w-10 h-10 rounded-xl theme-bg-elevated flex items-center justify-center shrink-0">
-                <ShoppingBag className="w-5 h-5 theme-accent-text" />
-              </div>
-              <div className="space-y-0.5">
-                <div className="text-xs font-mono-tabular font-bold theme-accent-text">
-                  01 · E-COMMERCE
-                </div>
-                <div className="text-sm font-bold theme-text-primary">
-                  {isAr ? 'المتاجر والأسواق الرقمية' : 'E-Commerce & Marketplaces'}
-                </div>
-                <p className="text-xs theme-text-secondary">
-                  {isAr
-                    ? 'رفيد ماركتس، متجر فرش، وباويرا جلوبال'
-                    : 'Rufid Markets, FRESH, Pawera Global'}
-                </p>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-2xl theme-bg-surface border theme-border shadow-xs flex items-start gap-3.5">
-              <div className="w-10 h-10 rounded-xl theme-bg-elevated flex items-center justify-center shrink-0">
-                <Globe className="w-5 h-5 theme-accent-text" />
-              </div>
-              <div className="space-y-0.5">
-                <div className="text-xs font-mono-tabular font-bold theme-accent-text">
-                  02 · WEB & PLATFORMS
-                </div>
-                <div className="text-sm font-bold theme-text-primary">
-                  {isAr ? 'منصات الأعمال والتعليم والصحة' : 'Web, EdTech & HealthTech'}
-                </div>
-                <p className="text-xs theme-text-secondary">
-                  {isAr
-                    ? 'إنجازك التقني، منارة اليمن، ساحة الصحة، ولومن'
-                    : 'ENJAZAK, Al-Manara, Seha Square, Lumen'}
-                </p>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-2xl theme-bg-surface border theme-border shadow-xs flex items-start gap-3.5">
-              <div className="w-10 h-10 rounded-xl theme-bg-elevated flex items-center justify-center shrink-0">
+            <button
+              type="button"
+              onClick={() => onNavigate('/projects')}
+              className="p-4 rounded-2xl tech-hud-card flex items-start gap-3.5 text-start cursor-pointer group"
+            >
+              <div className="w-11 h-11 rounded-xl theme-bg-elevated border theme-border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                 <Cpu className="w-5 h-5 theme-accent-text" />
               </div>
-              <div className="space-y-0.5">
-                <div className="text-xs font-mono-tabular font-bold theme-accent-text">
-                  03 · ERP & AI SYSTEMS
+              <div className="space-y-1">
+                <div className="text-[11px] font-mono-tabular font-bold theme-accent-text">
+                  01 · AI, IOT & DIGITAL TWIN
                 </div>
-                <div className="text-sm font-bold theme-text-primary">
-                  {isAr ? 'الأنظمة المحاسبية والذكاء الاصطناعي' : 'Accounting ERP & AI IoT'}
-                </div>
-                <p className="text-xs theme-text-secondary">
+                <div className="text-sm font-extrabold theme-text-primary">
                   {isAr
-                    ? 'نظام FINB المحاسبي، FIREAI، ونوفارو ERP'
-                    : 'FINB Accounting, FIREAI, NOVARO ERP'}
+                    ? 'الذكاء الاصطناعي والتوأم الرقمي'
+                    : 'AI Vision, IoT & Digital Twin'}
+                </div>
+                <p className="text-xs theme-text-secondary leading-relaxed">
+                  {isAr
+                    ? 'نظام إطفاء الحرائق الذكي، ومنصة تاساور للتوأم الرقمي الصناعي'
+                    : 'AI Fire Control System & Tasour 3D Industrial Digital Twin'}
                 </p>
               </div>
-            </div>
+            </button>
 
-            <div className="p-4 rounded-2xl theme-bg-surface border theme-border shadow-xs flex items-start gap-3.5">
-              <div className="w-10 h-10 rounded-xl theme-bg-elevated flex items-center justify-center shrink-0">
+            <button
+              type="button"
+              onClick={() => onNavigate('/projects')}
+              className="p-4 rounded-2xl tech-hud-card flex items-start gap-3.5 text-start cursor-pointer group"
+            >
+              <div className="w-11 h-11 rounded-xl theme-bg-elevated border theme-border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <ShoppingBag className="w-5 h-5 theme-accent-text" />
+              </div>
+              <div className="space-y-1">
+                <div className="text-[11px] font-mono-tabular font-bold theme-accent-text">
+                  02 · SMART E-COMMERCE
+                </div>
+                <div className="text-sm font-extrabold theme-text-primary">
+                  {isAr
+                    ? 'المتاجر والأسواق الرقمية الذكية'
+                    : 'Smart E-Commerce & Marketplaces'}
+                </div>
+                <p className="text-xs theme-text-secondary leading-relaxed">
+                  {isAr
+                    ? 'رفيد ماركتس، متجر فرش، وباويرا جلوبال للتجارة الحديثة'
+                    : 'Rufid Markets, FRESH Store & Pawera Global'}
+                </p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onNavigate('/projects')}
+              className="p-4 rounded-2xl tech-hud-card flex items-start gap-3.5 text-start cursor-pointer group"
+            >
+              <div className="w-11 h-11 rounded-xl theme-bg-elevated border theme-border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <Globe className="w-5 h-5 theme-accent-text" />
+              </div>
+              <div className="space-y-1">
+                <div className="text-[11px] font-mono-tabular font-bold theme-accent-text">
+                  03 · CLOUD ERP & PLATFORMS
+                </div>
+                <div className="text-sm font-extrabold theme-text-primary">
+                  {isAr
+                    ? 'الأنظمة المحاسبية ومنصات القطاعات'
+                    : 'Cloud ERP, EdTech & HealthTech'}
+                </div>
+                <p className="text-xs theme-text-secondary leading-relaxed">
+                  {isAr
+                    ? 'نظام FINB المحاسبي، نوفارو ERP، منارة اليمن، وساحة الصحة'
+                    : 'FINB Accounting, NOVARO ERP, Al-Manara & Seha Square'}
+                </p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onNavigate('/services')}
+              className="p-4 rounded-2xl tech-hud-card flex items-start gap-3.5 text-start cursor-pointer group"
+            >
+              <div className="w-11 h-11 rounded-xl theme-bg-elevated border theme-border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                 <ShieldCheck className="w-5 h-5 theme-accent-text" />
               </div>
-              <div className="space-y-0.5">
-                <div className="text-xs font-mono-tabular font-bold theme-accent-text">
-                  04 · VERIFIED PORTFOLIO
+              <div className="space-y-1">
+                <div className="text-[11px] font-mono-tabular font-bold theme-accent-text">
+                  04 · FULL-STACK ARCHITECTURE
                 </div>
-                <div className="text-sm font-bold theme-text-primary">
-                  {isAr ? 'روابط مباشرة ومعاينات موثقة' : 'Live Links & Verified Previews'}
-                </div>
-                <p className="text-xs theme-text-secondary">
+                <div className="text-sm font-extrabold theme-text-primary">
                   {isAr
-                    ? 'تصنيف منظم بدون تكرار مع لقطات شاشة حقيقية'
-                    : 'Structured non-repeating showcase with real screenshots'}
+                    ? 'هندسة موثقة وروابط تشغيل حية'
+                    : 'Verified Engineering & Live Systems'}
+                </div>
+                <p className="text-xs theme-text-secondary leading-relaxed">
+                  {isAr
+                    ? 'دراسات حالة تفصيلية، معماريات نظيفة، وتجارب تفاعلية'
+                    : 'Detailed case studies, clean architectures & live demos'}
                 </p>
               </div>
-            </div>
+            </button>
           </div>
         </div>
       </section>
     );
   }
 );
+

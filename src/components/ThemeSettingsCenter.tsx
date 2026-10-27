@@ -96,17 +96,53 @@ export const ThemeSettingsCenter: React.FC<ThemeSettingsCenterProps> = ({
     previewDensity !== committedDensity ||
     previewReducedMotion !== committedReducedMotion;
 
-  const handleApplyPersonal = () => {
+  const handleApplyPersonal = async () => {
+    const targetGlobalThemeId: ThemeId = resolveEffectiveThemeId(previewThemeMode);
     onApplyPersonalPrefs({
-      themeMode: previewThemeMode,
+      themeMode: targetGlobalThemeId,
       density: previewDensity,
       reducedMotion: previewReducedMotion,
     });
+
+    if (isOwnerAdmin && authUser) {
+      setPublishingGlobal(true);
+      setFeedbackBanner(null);
+      try {
+        await publishGlobalSiteAppearance(
+          {
+            themeId: targetGlobalThemeId,
+            density: previewDensity,
+            reducedMotion: previewReducedMotion,
+          },
+          authUser
+        );
+        setFeedbackBanner({
+          type: 'success',
+          text: isAr
+            ? `تم اعتماد ونشر الثيم "${targetGlobalThemeId}" بنجاح من لوحة الإدارة لجميع زوار المنصة.`
+            : `Successfully applied and published "${targetGlobalThemeId}" from Admin Dashboard for all visitors.`,
+        });
+      } catch (err) {
+        setFeedbackBanner({
+          type: 'error',
+          text:
+            err instanceof Error
+              ? err.message
+              : isAr
+              ? 'تعذر حفظ الثيم العام في قاعدة البيانات.'
+              : 'Failed to save global theme to database.',
+        });
+      } finally {
+        setPublishingGlobal(false);
+      }
+      return;
+    }
+
     setFeedbackBanner({
       type: 'success',
       text: isAr
-        ? 'تم تطبيق وحفظ تفضيلات المظهر الشخصية على متصفحك بنجاح.'
-        : 'Personal appearance preferences applied and saved locally.',
+        ? 'تم تطبيق وحفظ تفضيلات المظهر بنجاح.'
+        : 'Appearance preferences applied and saved.',
     });
   };
 

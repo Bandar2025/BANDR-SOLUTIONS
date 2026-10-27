@@ -1,14 +1,41 @@
 @import "tailwindcss";
 
 @layer base {
-  /* 1. Arctic Light — Default Flagship Bright & Modern Theme */
+  /* 1. Midnight Cyber-Tech — Default Flagship Smart Engineering & AI Showcase Theme */
   :root,
-  html[data-theme="arctic-light"] {
+  html[data-theme="midnight-pro"] {
     --font-ar: 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
     --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
+    --bg-primary: #070B14;
+    --bg-surface: #0E1526;
+    --bg-elevated: #15203B;
+    --bg-header: rgba(7, 11, 20, 0.88);
+    --bg-footer: #050811;
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+    --border-subtle: #1E293B;
+    --border-strong: #334155;
+    --accent-primary: #6366F1;
+    --accent-primary-hover: #4F46E5;
+    --accent-secondary: #06B6D4;
+    --accent-soft: rgba(99, 102, 241, 0.16);
+    --btn-primary-bg: #4F46E5;
+    --btn-primary-hover: #4338CA;
+    --btn-primary-text: #FFFFFF;
+    --focus-ring: #22D3EE;
+    --shadow-card: 0 18px 40px -12px rgba(2, 6, 23, 0.72);
+    --grid-line: rgba(99, 102, 241, 0.085);
+    --status-success: #10B981;
+    --status-warning: #F59E0B;
+    --status-error: #EF4444;
+  }
+
+  /* 2. Arctic Light — Bright Tech Lab Daylight Theme */
+  html[data-theme="arctic-light"] {
     --bg-primary: #F8FAFC;
     --bg-surface: #FFFFFF;
     --bg-elevated: #EEF2FF;
@@ -22,19 +49,19 @@
     --accent-primary: #4F46E5;
     --accent-primary-hover: #4338CA;
     --accent-secondary: #0891B2;
-    --accent-soft: rgba(79, 70, 229, 0.08);
+    --accent-soft: rgba(79, 70, 229, 0.09);
     --btn-primary-bg: #4F46E5;
     --btn-primary-hover: #4338CA;
     --btn-primary-text: #FFFFFF;
     --focus-ring: #4F46E5;
     --shadow-card: 0 12px 32px -10px rgba(15, 23, 42, 0.08);
-    --grid-line: rgba(79, 70, 229, 0.06);
+    --grid-line: rgba(79, 70, 229, 0.065);
     --status-success: #059669;
     --status-warning: #D97706;
     --status-error: #DC2626;
   }
 
-  /* 2. Ocean Breeze — Bright Sky & Turquoise Daylight Theme */
+  /* 3. Ocean Breeze — Bright Sky & Turquoise Daylight Theme */
   html[data-theme="ocean-breeze"] {
     --bg-primary: #F0F9FF;
     --bg-surface: #FFFFFF;
@@ -55,13 +82,13 @@
     --btn-primary-text: #FFFFFF;
     --focus-ring: #0284C7;
     --shadow-card: 0 12px 32px -10px rgba(2, 132, 199, 0.1);
-    --grid-line: rgba(2, 132, 199, 0.06);
+    --grid-line: rgba(2, 132, 199, 0.065);
     --status-success: #059669;
     --status-warning: #D97706;
     --status-error: #DC2626;
   }
 
-  /* 3. Emerald Tech — Fresh Mint & Emerald Daylight Theme */
+  /* 4. Emerald Tech — Fresh Mint & Emerald Daylight Theme */
   html[data-theme="emerald-tech"] {
     --bg-primary: #F2FBF7;
     --bg-surface: #FFFFFF;
@@ -82,88 +109,61 @@
     --btn-primary-text: #FFFFFF;
     --focus-ring: #059669;
     --shadow-card: 0 12px 32px -10px rgba(5, 150, 105, 0.1);
-    --grid-line: rgba(5, 150, 105, 0.06);
+    --grid-line: rgba(5, 150, 105, 0.065);
     --status-success: #059669;
     --status-warning: #D97706;
     --status-error: #DC2626;
   }
 
-  /* 4. Midnight Pro — Deep Indigo & Electric Cyan Dark Theme */
-  html[data-theme="midnight-pro"] {
-    --bg-primary: #0A0E1A;
-    --bg-surface: #111827;
-    --bg-elevated: #172238;
-    --bg-header: rgba(10, 14, 26, 0.94);
-    --bg-footer: #060914;
-    --text-primary: #F5F7FA;
-    --text-secondary: #94A3B8;
-    --text-muted: #64748B;
-    --border-subtle: #1E293B;
-    --border-strong: #334155;
-    --accent-primary: #6366F1;
-    --accent-primary-hover: #4F46E5;
-    --accent-secondary: #22D3EE;
-    --accent-soft: rgba(99, 102, 241, 0.14);
-    --btn-primary-bg: #6366F1;
-    --btn-primary-hover: #4F46E5;
-    --btn-primary-text: #FFFFFF;
-    --focus-ring: #6366F1;
-    --shadow-card: 0 10px 30px -10px rgba(6, 9, 20, 0.55);
-    --grid-line: rgba(99, 102, 241, 0.07);
-    --status-success: #10B981;
-    --status-warning: #F59E0B;
-    --status-error: #EF4444;
-  }
-
-  /* 5. Obsidian — Sophisticated Near-Black Studio */
+  /* 5. Obsidian — Sophisticated Carbon-Black Tech Console */
   html[data-theme="obsidian"] {
-    --bg-primary: #090C12;
-    --bg-surface: #111621;
-    --bg-elevated: #182030;
-    --bg-header: rgba(9, 12, 18, 0.94);
-    --bg-footer: #06080D;
+    --bg-primary: #080B11;
+    --bg-surface: #101622;
+    --bg-elevated: #182132;
+    --bg-header: rgba(8, 11, 17, 0.92);
+    --bg-footer: #05070B;
     --text-primary: #F8FAFC;
     --text-secondary: #D1D5DB;
     --text-muted: #9CA3AF;
-    --border-subtle: #232C3D;
+    --border-subtle: #222D40;
     --border-strong: #374151;
-    --accent-primary: #6E9BFF;
-    --accent-primary-hover: #5889FF;
-    --accent-secondary: #94A3B8;
-    --accent-soft: rgba(110, 155, 255, 0.13);
-    --btn-primary-bg: #3B6EF5;
-    --btn-primary-hover: #295CE0;
+    --accent-primary: #3B82F6;
+    --accent-primary-hover: #2563EB;
+    --accent-secondary: #38BDF8;
+    --accent-soft: rgba(59, 130, 246, 0.15);
+    --btn-primary-bg: #2563EB;
+    --btn-primary-hover: #1D4ED8;
     --btn-primary-text: #FFFFFF;
-    --focus-ring: #6E9BFF;
-    --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.65);
-    --grid-line: rgba(148, 163, 184, 0.06);
+    --focus-ring: #38BDF8;
+    --shadow-card: 0 14px 36px -10px rgba(0, 0, 0, 0.72);
+    --grid-line: rgba(59, 130, 246, 0.075);
     --status-success: #10B981;
     --status-warning: #F59E0B;
     --status-error: #EF4444;
   }
 
-  /* 6. Royal Violet — Sophisticated Violet Accents with Accessible Contrast */
+  /* 6. Royal Violet — Neural Violet & Cyber-Cyan Dark Theme */
   html[data-theme="royal-violet"] {
-    --bg-primary: #0E0B1E;
-    --bg-surface: #16122E;
-    --bg-elevated: #201B40;
-    --bg-header: rgba(14, 11, 30, 0.94);
-    --bg-footer: #090714;
+    --bg-primary: #0B091B;
+    --bg-surface: #13102B;
+    --bg-elevated: #1D183D;
+    --bg-header: rgba(11, 9, 27, 0.92);
+    --bg-footer: #070512;
     --text-primary: #F5F3FF;
     --text-secondary: #DDD6FE;
     --text-muted: #C4B5FD;
     --border-subtle: #2D2654;
     --border-strong: #433878;
-    --accent-primary: #A78BFA;
-    --accent-primary-hover: #8B5CF6;
-    --accent-secondary: #38BDF8;
-    --accent-soft: rgba(167, 139, 250, 0.15);
+    --accent-primary: #8B5CF6;
+    --accent-primary-hover: #7C3AED;
+    --accent-secondary: #22D3EE;
+    --accent-soft: rgba(139, 92, 246, 0.16);
     --btn-primary-bg: #7C3AED;
     --btn-primary-hover: #6D28D9;
     --btn-primary-text: #FFFFFF;
-    --focus-ring: #A78BFA;
-    --shadow-card: 0 10px 30px -10px rgba(8, 5, 20, 0.6);
-    --grid-line: rgba(167, 139, 250, 0.07);
+    --focus-ring: #22D3EE;
+    --shadow-card: 0 14px 36px -10px rgba(8, 5, 20, 0.7);
+    --grid-line: rgba(139, 92, 246, 0.08);
     --status-success: #10B981;
     --status-warning: #F59E0B;
     --status-error: #EF4444;
@@ -301,24 +301,72 @@
 }
 
 .theme-btn-primary {
-  background-color: var(--btn-primary-bg);
+  background: linear-gradient(135deg, var(--btn-primary-bg) 0%, var(--accent-primary-hover) 100%);
   color: var(--btn-primary-text);
-  transition: background-color 160ms ease, transform 160ms ease;
+  box-shadow: 0 4px 18px -4px var(--accent-soft);
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .theme-btn-primary:hover {
-  background-color: var(--btn-primary-hover);
+  background: linear-gradient(135deg, var(--btn-primary-hover) 0%, var(--accent-primary) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px -4px var(--accent-soft);
 }
 
 .theme-btn-secondary {
   background-color: var(--bg-elevated);
   color: var(--text-primary);
   border: 1px solid var(--border-strong);
-  transition: border-color 160ms ease, background-color 160ms ease;
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .theme-btn-secondary:hover {
   border-color: var(--accent-primary);
+  transform: translateY(-1px);
+}
+
+/* Smart Tech Navigation Dock & Engineered Buttons */
+.tech-nav-dock {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06), 0 8px 24px -8px rgba(0, 0, 0, 0.25);
+}
+
+.tech-nav-btn {
+  position: relative;
+  background-color: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tech-nav-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-elevated);
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -4px var(--accent-soft);
+}
+
+.tech-nav-btn-active {
+  position: relative;
+  background: linear-gradient(135deg, var(--btn-primary-bg) 0%, var(--accent-secondary) 160%);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 6px 20px -3px var(--accent-soft), inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+}
+
+.tech-hud-card {
+  position: relative;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+  transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tech-hud-card:hover {
+  border-color: var(--accent-primary);
+  box-shadow: 0 20px 44px -12px var(--accent-soft);
 }
 
 .theme-section-spacing {

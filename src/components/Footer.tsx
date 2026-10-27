@@ -170,7 +170,7 @@ export const Footer: React.FC<FooterProps> = React.memo(
             </div>
           </div>
 
-          {/* Bottom Copyright, Appearance Button & Back to Top */}
+          {/* Bottom Copyright & Back to Top */}
           <div className="mt-12 pt-8 border-t theme-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs theme-text-muted">
             <div className="space-y-1 text-center sm:text-start">
               <div>
@@ -183,29 +183,13 @@ export const Footer: React.FC<FooterProps> = React.memo(
             </div>
 
             <div className="flex items-center gap-2.5">
-              {onOpenAppearance && (
-                <button
-                  type="button"
-                  onClick={onOpenAppearance}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg theme-btn-secondary cursor-pointer whitespace-nowrap shrink-0"
-                >
-                  <Palette
-                    className="w-3.5 h-3.5 theme-accent-text"
-                    aria-hidden="true"
-                  />
-                  <span>
-                    {isAr ? 'المظهر والثيمات' : 'Appearance & Themes'}
-                  </span>
-                </button>
-              )}
-
               <button
                 type="button"
                 onClick={scrollToTop}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg theme-btn-secondary cursor-pointer whitespace-nowrap shrink-0"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl tech-nav-btn text-xs font-bold cursor-pointer whitespace-nowrap shrink-0"
               >
                 <span>{t.backToTop}</span>
-                <ArrowUp className="w-3.5 h-3.5" aria-hidden="true" />
+                <ArrowUp className="w-3.5 h-3.5 theme-accent-text" aria-hidden="true" />
               </button>
             </div>
           </div>
