@@ -76,19 +76,21 @@ export const ProjectCard: React.FC<ProjectCardProps> = React.memo(
     );
 
     return (
-      <article className="group flex flex-col rounded-2xl theme-bg-surface border theme-border hover:border-[var(--accent-primary)] transition-all duration-200 overflow-hidden shadow-xs hover:shadow-md">
-        {/* Visual Preview / Genuine Screenshot (Fixed 16:10 Aspect Ratio with Shimmer Skeleton) */}
+      <article className="group flex flex-col h-full rounded-2xl theme-bg-surface border theme-border hover:border-[var(--accent-primary)] transition-all duration-300 ease-out hover:scale-[1.025] hover:-translate-y-1 overflow-hidden shadow-xs hover:shadow-xl will-change-transform">
+        {/* Visual Preview / Genuine Screenshot (Fixed 16:10 Aspect Ratio with Shimmer Skeleton & Subtle Inner Hover Scale) */}
         <div
-          className="w-full aspect-[16/10] overflow-hidden relative theme-bg-surface animate-skeleton-shimmer"
+          className="w-full aspect-[16/10] overflow-hidden relative theme-bg-surface"
           style={{ aspectRatio: '16 / 10' }}
         >
-          <ProjectVisualPreview
-            project={project}
-            lang={lang}
-            priorityLoading={priorityLoading}
-            aspectRatioClass="aspect-[16/10]"
-            fitMode="contain"
-          />
+          <div className="w-full h-full transition-transform duration-500 ease-out group-hover:scale-[1.03]">
+            <ProjectVisualPreview
+              project={project}
+              lang={lang}
+              priorityLoading={priorityLoading}
+              aspectRatioClass="aspect-[16/10]"
+              fitMode="cover"
+            />
+          </div>
         </div>
 
         {/* Card Content */}

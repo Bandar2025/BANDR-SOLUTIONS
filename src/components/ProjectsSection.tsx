@@ -181,15 +181,19 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = React.memo(
           {!isCategorizedView && (
             <div>
               {filteredProjects.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 theme-grid-gap">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 theme-grid-gap py-2">
                   {filteredProjects.map((project, idx) => (
-                    <ProjectCard
+                    <div
                       key={`filtered-${project.id}`}
-                      project={project}
-                      lang={lang}
-                      onSelectProject={onSelectProject}
-                      priorityLoading={idx < 2}
-                    />
+                      className="relative hover:z-10 h-full"
+                    >
+                      <ProjectCard
+                        project={project}
+                        lang={lang}
+                        onSelectProject={onSelectProject}
+                        priorityLoading={idx < 2}
+                      />
+                    </div>
                   ))}
                 </div>
               ) : (
@@ -238,15 +242,19 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = React.memo(
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 theme-grid-gap">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 theme-grid-gap py-2">
                     {eCommerceProjects.map((project, idx) => (
-                      <ProjectCard
+                      <div
                         key={`cat-ecom-${project.id}`}
-                        project={project}
-                        lang={lang}
-                        onSelectProject={onSelectProject}
-                        priorityLoading={idx < 2}
-                      />
+                        className="relative hover:z-10 h-full"
+                      >
+                        <ProjectCard
+                          project={project}
+                          lang={lang}
+                          onSelectProject={onSelectProject}
+                          priorityLoading={idx < 2}
+                        />
+                      </div>
                     ))}
                   </div>
                 </section>
@@ -273,15 +281,19 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = React.memo(
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 theme-grid-gap">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 theme-grid-gap py-2">
                     {webPlatformsProjects.map((project, idx) => (
-                      <ProjectCard
+                      <div
                         key={`cat-web-${project.id}`}
-                        project={project}
-                        lang={lang}
-                        onSelectProject={onSelectProject}
-                        priorityLoading={idx < 2}
-                      />
+                        className="relative hover:z-10 h-full"
+                      >
+                        <ProjectCard
+                          project={project}
+                          lang={lang}
+                          onSelectProject={onSelectProject}
+                          priorityLoading={idx < 2}
+                        />
+                      </div>
                     ))}
                   </div>
                 </section>
@@ -308,15 +320,19 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = React.memo(
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 theme-grid-gap">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 theme-grid-gap py-2">
                     {systemsAndAiProjects.map((project, idx) => (
-                      <ProjectCard
+                      <div
                         key={`cat-sys-${project.id}`}
-                        project={project}
-                        lang={lang}
-                        onSelectProject={onSelectProject}
-                        priorityLoading={idx < 2}
-                      />
+                        className="relative hover:z-10 h-full"
+                      >
+                        <ProjectCard
+                          project={project}
+                          lang={lang}
+                          onSelectProject={onSelectProject}
+                          priorityLoading={idx < 2}
+                        />
+                      </div>
                     ))}
                   </div>
                 </section>

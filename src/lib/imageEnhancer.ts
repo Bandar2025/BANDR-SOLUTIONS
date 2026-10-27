@@ -47,15 +47,22 @@ export async function enhanceAndCompressImage(
 
         const sw = Math.max(1, cropPixel.width);
         const sh = Math.max(1, cropPixel.height);
-        const scale = enhancements.upscale2x ? 2 : 1;
+        const requestedScale = enhancements.upscale2x ? 2 : 1;
+        const maxAllowedDim = 1920;
+        const rawW = sw * requestedScale;
+        const rawH = sh * requestedScale;
+        const clampRatio =
+          Math.max(rawW, rawH) > maxAllowedDim
+            ? maxAllowedDim / Math.max(rawW, rawH)
+            : 1;
 
-        canvas.width = sw * scale;
-        canvas.height = sh * scale;
+        canvas.width = Math.max(1, Math.round(rawW * clampRatio));
+        canvas.height = Math.max(1, Math.round(rawH * clampRatio));
 
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
 
-        // Draw cropped region (with 2x upscale if requested)
+        // Draw cropped region (with upscale/clamp applied)
         ctx.drawImage(
           img,
           cropPixel.x,
@@ -94,31 +101,48 @@ export async function enhanceAndCompressImage(
           }
         }
 
-        const mimeType = 'image/webp';
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              reject(new Error('Canvas blob generation failed'));
-              return;
+        const mimeType: 'image/webp' | 'image/jpeg' = 'image/webp';
+        const MAX_SAFE_DATA_URL_LENGTH = 680000;
+        let currentQuality = Math.min(0.92, Math.max(0.4, compressionQuality));
+        let dataUrl = canvas.toDataURL(mimeType, currentQuality);
+
+        // Step down quality if base64 string is still too large for Firestore document limits
+        while (dataUrl.length > MAX_SAFE_DATA_URL_LENGTH && currentQuality > 0.45) {
+          currentQuality = Math.max(0.42, currentQuality - 0.12);
+          dataUrl = canvas.toDataURL(mimeType, currentQuality);
+        }
+
+        // If still above limit on ultra-detailed images, scale down dimensions to 1280px max
+        if (dataUrl.length > MAX_SAFE_DATA_URL_LENGTH) {
+          const downscaleRatio = 1280 / Math.max(canvas.width, canvas.height, 1280);
+          if (downscaleRatio < 1) {
+            const smallCanvas = document.createElement('canvas');
+            smallCanvas.width = Math.max(1, Math.round(canvas.width * downscaleRatio));
+            smallCanvas.height = Math.max(1, Math.round(canvas.height * downscaleRatio));
+            const sCtx = smallCanvas.getContext('2d');
+            if (sCtx) {
+              sCtx.imageSmoothingEnabled = true;
+              sCtx.imageSmoothingQuality = 'high';
+              sCtx.drawImage(canvas, 0, 0, smallCanvas.width, smallCanvas.height);
+              dataUrl = smallCanvas.toDataURL(mimeType, 0.78);
             }
-            const file = new File([blob], fileName, { type: mimeType });
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              const dataUrl = e.target?.result as string;
-              resolve({
-                dataUrl,
-                mimeType,
-                file,
-                width: canvas.width,
-                height: canvas.height,
-              });
-            };
-            reader.onerror = () => reject(new Error('FileReader error during compression'));
-            reader.readAsDataURL(blob);
-          },
-          mimeType,
-          Math.min(1.0, Math.max(0.4, compressionQuality))
-        );
+          }
+        }
+
+        fetch(dataUrl)
+          .then((res) => res.blob())
+          .then((blob) => {
+            const safeName = (fileName || 'enhanced_image.webp').replace(/[^a-zA-Z0-9_\-\.]+/g, '_');
+            const file = new File([blob], safeName, { type: mimeType });
+            resolve({
+              dataUrl,
+              mimeType,
+              file,
+              width: canvas.width,
+              height: canvas.height,
+            });
+          })
+          .catch((err) => reject(new Error(err?.message || 'Blob conversion error during compression')));
       } catch (err: any) {
         reject(new Error(err?.message || 'Canvas processing error during enhancement'));
       }

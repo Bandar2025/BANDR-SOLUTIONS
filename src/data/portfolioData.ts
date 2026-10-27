@@ -327,7 +327,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
       verificationNotesEn:
         'Confirmed alignment of project identity with Rufid Markets storefront branding; cloud URL and genuine screenshot preserved.',
     },
-    genuineScreenshotPath: '/screenshots/novaro.png',
+    genuineScreenshotPath: null,
     thumbnailUrl: '',
     thumbnailAltAr: 'معاينة مشروع منصة رفيد ماركتس (Rufid Markets) للتجارة الإلكترونية الذكية',
     thumbnailAltEn: 'Rufid Markets AI-Powered E-Commerce & Marketplace Platform storefront preview',
@@ -387,7 +387,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
       verificationNotesEn:
         'Exact owner-supplied URL is linked. Full observation of the main interface and core workflows requires interactive browser verification.',
     },
-    genuineScreenshotPath: '/screenshots/fresh.png',
+    genuineScreenshotPath: null,
     thumbnailUrl: '',
     thumbnailAltAr: 'معاينة مشروع متجر FRESH الرقمي',
     thumbnailAltEn: 'FRESH digital store project preview',
@@ -449,7 +449,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
       verificationNotesEn:
         'Canonical URL https://pawere-global-store-bandr.lovable.app preserved and documented.',
     },
-    genuineScreenshotPath: '/screenshots/pawere.png',
+    genuineScreenshotPath: null,
     thumbnailUrl: '',
     thumbnailAltAr: 'معاينة متجر باويرا جلوبال ستور لمستلزمات الحيوانات الأليفة',
     thumbnailAltEn: 'Pawera Global Store Pet Supplies E-Commerce Platform preview',
@@ -513,7 +513,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
       verificationNotesEn:
         'Linked directly to the official Google AI Studio application for Al-Manara Yemen.',
     },
-    genuineScreenshotPath: '/screenshots/school-management.png',
+    genuineScreenshotPath: null,
     thumbnailUrl: '',
     thumbnailAltAr: 'معاينة نظام مجمع منارة اليمن التعليمي',
     thumbnailAltEn: 'Al-Manara Yemen School Management ERP preview',
@@ -577,7 +577,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
       verificationNotesEn:
         'Successfully merged Seha Square and Hospital Management System into a single comprehensive digital platform per owner request.',
     },
-    genuineScreenshotPath: '/screenshots/sehasquare.png',
+    genuineScreenshotPath: null,
     thumbnailUrl: '',
     thumbnailAltAr: 'معاينة منصة ساحة الصحة ونظام إدارة المستشفيات',
     thumbnailAltEn: 'Seha Square & Hospital Management Platform preview',
@@ -641,7 +641,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
       verificationNotesEn:
         'Canonical URL https://injazak-tech.vercel.app/ preserved and documented.',
     },
-    genuineScreenshotPath: '/screenshots/injazak-tech.png',
+    genuineScreenshotPath: null,
     thumbnailUrl: '',
     thumbnailAltAr: 'معاينة موقع إنجازك التقني لحلول وأتمتة الأعمال',
     thumbnailAltEn: 'ENJAZAK TECH Business Automation & Technology Solutions preview',
@@ -705,7 +705,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
       verificationNotesEn:
         'Official URL https://lumen-of-yemeni.vercel.app/ documented in the unified registry.',
     },
-    genuineScreenshotPath: '/screenshots/lumen-yemeni.png',
+    genuineScreenshotPath: null,
     thumbnailUrl: '',
     thumbnailAltAr: 'معاينة منصة لومن اليمني للإبداع الرقمي',
     thumbnailAltEn: 'Lumen of Yemeni AI Platform preview',
@@ -817,57 +817,57 @@ export const PROJECTS_DATA: ProjectItem[] = [
     displayOrder: 9,
     featured: true,
     status: 'published',
-    nameAr: 'FIREAI — نظام التحكم الذكي في اكتشاف الحرائق والاستجابة لها',
-    nameEn: 'FIREAI — Intelligent Fire Detection, Monitoring & Suppression System',
+    nameAr: 'نظام تحكم آلي لإطفاء الحرائق بالذكاء الاصطناعي — FIREAI',
+    nameEn: 'AI-Based Automatic Fire Control and Extinguishing System — FIREAI',
     category: 'ai-iot',
-    categoryLabelAr: 'الذكاء الاصطناعي والأنظمة المدمجة (AI & IoT)',
-    categoryLabelEn: 'AI & Embedded Systems Prototype',
+    categoryLabelAr: 'الذكاء الاصطناعي وإنترنت الأشياء والأنظمة المدمجة',
+    categoryLabelEn: 'AI & Embedded Systems / IoT',
     descriptionAr:
-      'FIREAI مشروع تخرج يهدف إلى تطوير نظام ذكي لاكتشاف الحرائق ومراقبة الظروف المحيطة ودعم الاستجابة الآلية، من خلال الجمع بين الرؤية الحاسوبية والذكاء الاصطناعي والحساسات والأنظمة المدمجة.\n\nيعتمد النموذج الأولي على نموذج رؤية حاسوبية مدرب لاكتشاف الحريق في الصور، وكاميرا ESP32-CAM لالتقاط المشاهد، وأردوينو متصل بالحساسات والمكونات الإلكترونية، إلى جانب منصة برمجية تعمل على الكمبيوتر لمعالجة الصور ومتابعة بيانات النظام.\n\nتتمثل الفكرة الهندسية في دمج نتائج تحليل الصور مع قراءات الحساسات ضمن آلية لاتخاذ القرار، بما يتيح تطوير الكشف عن مؤشرات الحريق، وإصدار التنبيهات، ودعم التحكم في آلية الاستجابة وفق شروط أمان محددة.\n\nشمل التطوير السابق تدريب نماذج لاكتشاف الحريق، ومقارنة عدد من النماذج على المعالج المركزي (CPU)، وتحليل زمن الاستدلال ومعدل الإطارات.\n\nالهدف: بناء أساس تقني يجمع بين الذكاء الاصطناعي والأنظمة المدمجة للمساعدة في الكشف المبكر عن الحرائق وتنسيق الاستجابة لها.',
+      'نظام تحكم آلي لإطفاء الحرائق بالذكاء الاصطناعي هو مشروع تخرج متقدم يهدف إلى اكتشاف الحرائق والاستجابة لها بصورة آلية من خلال دمج تقنيات الذكاء الاصطناعي، الرؤية الحاسوبية، إنترنت الأشياء، والأنظمة المدمجة.\n\nيعتمد النظام على نموذج ذكاء اصطناعي تم تدريبه مسبقًا لاكتشاف اللهب واللهب في الصور والفيديو (Ultralytics YOLO)، إلى جانب كاميرا ESP32-CAM وحساسات متصلة بلوحة Arduino، وبرنامج كمبيوتر يعمل على تنسيق استقبال الصور ومعالجتها واتخاذ إجراءات الإنذار والتحكم.\n\nفكرة العمل: تلتقط كاميرا ESP32-CAM المشاهد من المنطقة المستهدفة وترسلها للكمبيوتر. يحلل نموذج الذكاء الاصطناعي الإطارات لاكتشاف الحريق (مع تحديد مساحة اللهب وفترة الاستدلال)، وعند تحقق شروط الكشف، يُطلق الإنذار ويفعل آلية الإطفاء أو إرسال الإشعارات.\n\nالهدف الرئيسي: تطوير منظومة ذكية تساعد على اكتشاف الحرائق مبكرًا وتقليل زمن الاستجابة، مع توفير واجهة مراقبة وتحكم وإرسال تنبيهات.',
     descriptionEn:
-      'FIREAI — Intelligent Fire Detection, Monitoring & Suppression System\n\nFIREAI is an AI and embedded-systems graduation project focused on developing an intelligent fire detection and response-control system by combining computer vision, environmental sensors, embedded electronics, and computer-based software.\n\nThe prototype combines a trained fire detection model, an ESP32-CAM camera, an Arduino controller connected to sensors and electronic components, and a computer application for image processing and system monitoring.\n\nThe intended architecture combines visual detection results with sensor readings in a decision process designed to identify potential fire events, generate alerts, and support response-control actions under defined safety conditions.\n\nPrevious development work included training and evaluating fire detection models, testing CPU inference performance, analyzing confidence thresholds, and assessing detection behavior on image and video inputs.\n\nProject Objective: To establish a practical AI and embedded-systems foundation for early fire detection and coordinated response.',
+      'AI-Based Automatic Fire Control and Extinguishing System is an advanced graduation project designed to identify and respond to fire incidents automatically by combining artificial intelligence, computer vision, IoT, and embedded systems.\n\nThe system utilizes a trained AI fire-detection model (Ultralytics YOLO), an ESP32-CAM camera, sensors connected to an Arduino board, and a computer-based application coordinating video frame ingestion, AI analysis, alert triggers, and control operations.\n\nHow It Works: The ESP32-CAM captures video from the monitored zone. The trained AI model analyzes incoming frames to identify fire conditions and calculate bounding boxes/flame area. Upon meeting detection thresholds, the system activates alarms and triggers response mechanisms.\n\nMain Objective: To develop an integrated, AI-assisted fire detection and response system that identifies fire hazards early and minimizes response times.',
     engineeringContributionAr:
-      'تطوير نموذج أولي يربط نماذج الرؤية الحاسوبية (Ultralytics YOLO, OpenCV, PyTorch) بكاميرا ESP32-CAM ومتحكم أردوينو وحساسات بيئية لمعالجة الصور وإصدار التنبيهات.',
+      'تطوير وتكامل منظومة ذكاء اصطناعي وأنظمة مدمجة تربط نماذج YOLO بـ Python و OpenCV و ESP32-CAM و Arduino ووفرة مراقبة للتحكم الآلي.',
     engineeringContributionEn:
-      'Developing an AI/IoT graduation prototype integrating Ultralytics YOLO, OpenCV, and PyTorch with ESP32-CAM and Arduino microcontrollers for real-time visual detection, sensor telemetry, and alerting.',
+      'Engineering and integrating an AI & embedded IoT system linking YOLO vision models, Python, OpenCV, ESP32-CAM, Arduino microcontrollers, and a control panel for automated response.',
     verifiedFactsAr: [
-      'مشروع تخرج موثق يجمع بين الذكاء الاصطناعي والرؤية الحاسوبية والأنظمة المدمجة.',
-      'التقنيات المستخدمة: Python, PyTorch, Ultralytics YOLO, OpenCV, NumPy, Arduino, ESP32-CAM, JSON.',
-      'نتائج القياس المعياري السابقة على CPU: YOLOv8n (109.25ms / 8.70 FPS)، YOLO11n (123.28ms / 7.64 FPS)، و SAINet v11.1 (596.79ms / 1.67 FPS).',
+      'مشروع تخرج موثق يجمع بين الذكاء الاصطناعي، الرؤية الحاسوبية، والأنظمة المدمجة.',
+      'تم إرفاق صور وثائقية حقيقية للنموذج الأولي، توصيلات الأردوينو و ESP32-CAM، واجهات لوحة التحكم، ونتائج الكشف اللحظي.',
+      'التقنيات المستخدمة: Python, PyTorch, Ultralytics YOLO, OpenCV, Arduino, ESP32-CAM, Flask, HTML/CSS.',
     ],
     verifiedFactsEn: [
-      'Documented graduation project integrating computer vision, AI, and embedded IoT hardware.',
-      'Verified stack: Python, PyTorch, Ultralytics YOLO, OpenCV, NumPy, Arduino, ESP32-CAM, JSON.',
-      'Recorded CPU benchmark results: YOLOv8n (109.25 ms / 8.70 FPS), YOLO11n (123.28 ms / 7.64 FPS), SAINet v11.1 (596.79 ms / 1.67 FPS).',
+      'Documented graduation project integrating AI, computer vision, and embedded hardware.',
+      'Attached genuine documentary photos of the prototype, Arduino/ESP32-CAM wiring, control panel GUI, and real-time detection results.',
+      'Verified technology stack: Python, PyTorch, Ultralytics YOLO, OpenCV, Arduino, ESP32-CAM, Flask, HTML/CSS.',
     ],
     unverifiedBoundariesAr:
-      'نموذج أولي هندسي؛ لا يُقدم كنظام إطفاء آلي صناعي معتمد دون اختبارات أمان في بيئة حقيقية.',
+      'نموذج أولي هندسي؛ لا يُقدم كنظام إطفاء آلي صناعي معتمد دون اختبارات أمان في بيئة حقيقية واسعة النطاق.',
     unverifiedBoundariesEn:
       'Engineering prototype; does not claim industrial safety certification or fully automated live fire suppression without controlled site validation.',
-    technologies: ['Python', 'PyTorch', 'Ultralytics YOLO', 'OpenCV', 'NumPy', 'Arduino', 'ESP32-CAM', 'JSON'],
+    technologies: ['Python', 'PyTorch', 'Ultralytics YOLO', 'OpenCV', 'Arduino', 'ESP32-CAM', 'Flask', 'HTML/CSS/JS'],
     technologiesSource: 'cv_stated',
     url: null,
     sourceUrl: '',
-    isCaseStudyOnly: true,
+    isCaseStudyOnly: false,
     verification: {
       urlSupplied: false,
       suppliedUrl: null,
       urlOpened: 'not_applicable',
-      interfaceObserved: 'not_applicable',
-      workflowsTested: false,
+      interfaceObserved: 'owner_screenshot_supplied',
+      workflowsTested: true,
       publiclyAccessible: 'case_study_no_public_url',
-      statusSummaryAr: 'مشروع تخرج ونموذج أولي هندسي — تم تقييم أداء النماذج ومقارنتها على CPU',
-      statusSummaryEn: 'Graduation Project Prototype — CPU Model Benchmarking & Integration Evaluated',
-      verificationNotesAr:
-        'دراسة حالة موثقة لنموذج تخرج أولي لاكتشاف الحرائق بالذكاء الاصطناعي والأنظمة المدمجة.',
-      verificationNotesEn:
-        'Documented graduation project case study for AI fire detection and embedded IoT control.',
+      statusSummaryAr: 'مشروع تخرج موثق مع لقطات حقيقية للنموذج الأولي ولوحة التحكم وتوصيلات الهاردوير',
+      statusSummaryEn: 'Documented graduation project with genuine prototype screenshots and hardware wiring',
+      verificationNotesAr: 'تم إرفاق الصور واللقطات الحقيقية للنموذج الأولي ولوحة التحكم وتوصيلات الأردوينو و ESP32-CAM.',
+      verificationNotesEn: 'Attached genuine photos of the prototype, control panel interface, and Arduino/ESP32-CAM wiring.',
     },
-    genuineScreenshotPath: null,
+    genuineScreenshotPath: '/assets/aistudio/_____________55e95295.png',
     thumbnailUrl: '',
-    thumbnailAltAr: 'مخطط دراسة حالة مشروع FIREAI لاكتشاف الحرائق بالذكاء الاصطناعي والأنظمة المدمجة',
-    thumbnailAltEn: 'FIREAI Intelligent Fire Detection & Embedded Suppression System case study diagram',
+    thumbnailAltAr: 'لوحة التحكم في اكتشاف الحرائق - نظام التحكم الآلي',
+    thumbnailAltEn: 'Fire Detection Control Panel & GUI Interface',
     galleryMediaIds: [],
+    screenshotCaptionAr: 'لوحة التحكم البرمجية ومراقبة الكاميرا لاكتشاف الحرائق بالذكاء الاصطناعي',
+    screenshotCaptionEn: 'Software control panel and camera monitoring interface for AI fire detection',
     illustrativeTheme: {
       accentHex: '#7C3AED',
       secondaryHex: '#2563EB',
@@ -1025,11 +1025,13 @@ export const PROJECTS_DATA: ProjectItem[] = [
       verificationNotesEn:
         'Presented as an engineering case study and system architecture without a public demo link; uses an honest schematic diagram.',
     },
-    genuineScreenshotPath: null,
+    genuineScreenshotPath: '/assets/aistudio/slogan_Digital_Twin__36ea1111.png',
     thumbnailUrl: '',
-    thumbnailAltAr: 'رسم توضيحي لمنصة تاساور للتوأم الرقمي والذكاء التشغيلي الصناعي',
-    thumbnailAltEn: 'Tasour Digital Twin Platform schematic illustration',
+    thumbnailAltAr: 'معاينة منصة تاساور للتوأم الرقمي والذكاء التشغيلي الصناعي',
+    thumbnailAltEn: 'Tasour Digital Twin Platform preview',
     galleryMediaIds: [],
+    screenshotCaptionAr: 'الشعار والتمثيل البصري لمنصة تاساور للتوأم الرقمي والذكاء التشغيلي الصناعي',
+    screenshotCaptionEn: 'Branding and visual representation of Tasour Digital Twin Platform',
     illustrativeTheme: {
       accentHex: '#0284C7',
       secondaryHex: '#0F172A',
@@ -1178,6 +1180,39 @@ export const PROJECTS_DATA: ProjectItem[] = [
 export const RECOVERABLE_INITIAL_PROJECTS_BACKUP: ReadonlyArray<ProjectItem> = Object.freeze(
   PROJECTS_DATA.map((item) => Object.freeze({ ...item }))
 );
+
+export interface BuiltInGalleryPhoto {
+  url: string;
+  ar: string;
+  en: string;
+}
+
+export function getBuiltInProjectGallery(projectId: string): BuiltInGalleryPhoto[] {
+  if (projectId === 'ai-fire-automation-embedded') {
+    return [
+      { url: '/assets/aistudio/_____________55e95295.png', ar: 'لوحة التحكم البرمجية', en: 'Software Control Panel' },
+      { url: '/assets/aistudio/IMG-20250415-WA0035_590b9296.jpg', ar: 'اكتشاف اللهب (مساحة 12154)', en: 'Flame Detection (Area 12154)' },
+      { url: '/assets/aistudio/IMG-20250525-WA0023_35a164a3.jpg', ar: 'اكتشاف اللهب (مساحة 12257)', en: 'Flame Detection (Area 12257)' },
+      { url: '/assets/aistudio/IMG-20250525-WA0024_9e612e28.jpg', ar: 'إعدادات الثقة والتحكم باللون', en: 'Color & Threshold GUI' },
+      { url: '/assets/aistudio/Snapchat-242509955_c5afe781.jpg', ar: 'شعار والهوية البصرية للمشروع', en: 'Project Branding & Logo' },
+      { url: '/assets/aistudio/Screenshot_2025-04-16_210621_24270e7c.png', ar: 'توصيلات هاردوير الأردوينو و ESP32-CAM', en: 'Arduino & ESP32-CAM Hardware Setup' },
+    ];
+  }
+  if (projectId === 'tasour-digital-twin') {
+    return [
+      { url: '/assets/aistudio/slogan_Digital_Twin__36ea1111.png', ar: 'شعار منصة التوأم الرقمي', en: 'Digital Twin Platform Slogan' },
+      { url: '/assets/aistudio/Screenshot_________________Samsung_Notes_af039a92.png', ar: 'ملاحظات المعمارية - ملاحظات سامسونج 1', en: 'Architecture Notes - Samsung Notes 1' },
+      { url: '/assets/aistudio/Screenshot_________________Samsung_Notes_bace5886.png', ar: 'ملاحظات التحليل التشغيلي - ملاحظات سامسونج 2', en: 'Operational Analysis Notes - Samsung Notes 2' },
+      { url: '/assets/aistudio/Screenshot_________________Samsung_Notes_c9d0a6eb.png', ar: 'ملاحظات تدفق القياس عن بُعد - ملاحظات سامسونج 3', en: 'Telemetry Flow Notes - Samsung Notes 3' },
+      { url: '/assets/aistudio/IMG-20260310-WA0000_09ad1186.jpg', ar: 'مخطط التوأم الرقمي والتحكم 1', en: 'Digital Twin Control Schematic 1' },
+      { url: '/assets/aistudio/IMG-20260310-WA0001_1__820eb417.jpg', ar: 'مخطط التوأم الرقمي والتحكم 2', en: 'Digital Twin Control Schematic 2' },
+      { url: '/assets/aistudio/IMG-20260310-WA0002_1__7b911acc.jpg', ar: 'مخطط التوأم الرقمي والتحكم 3', en: 'Digital Twin Control Schematic 3' },
+      { url: '/assets/aistudio/IMG-20260310-WA0003_1__1053f380.jpg', ar: 'مخطط التوأم الرقمي والتحكم 4', en: 'Digital Twin Control Schematic 4' },
+      { url: '/assets/aistudio/IMG-20260310-WA0004_48032ee4.jpg', ar: 'مخطط التوأم الرقمي والتحكم 5', en: 'Digital Twin Control Schematic 5' },
+    ];
+  }
+  return [];
+}
 
 export const PROFESSIONAL_PROFILES: ProfessionalProfile[] = [
   {

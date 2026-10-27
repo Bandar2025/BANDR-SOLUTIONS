@@ -358,6 +358,15 @@
   animation: theme-skeleton-shimmer 2s ease-in-out infinite;
 }
 
+@keyframes slideProgress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
 /* Respect OS prefers-reduced-motion AND user-configured data-reduced-motion="true" */
 @media (prefers-reduced-motion: reduce) {
   *,

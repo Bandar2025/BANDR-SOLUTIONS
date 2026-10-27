@@ -560,13 +560,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         newMediaIds.push(uploaded.id);
       }
 
-      const deduplicatedIds = Array.from(new Set(newMediaIds)).slice(0, 10);
+      const deduplicatedIds = Array.from(new Set(newMediaIds)).slice(0, 25);
+      const autoThumb =
+        (!editingProject.thumbnailUrl || editingProject.thumbnailUrl.trim().length === 0) &&
+        uploadedMediaItems.length > 0
+          ? uploadedMediaItems[0].dataUrl
+          : editingProject.thumbnailUrl;
+
       const updatedProject: ProjectItem = {
         ...editingProject,
+        thumbnailUrl: autoThumb,
         galleryMediaIds: deduplicatedIds,
       };
 
-      await persistEditingProjectToFirestore(updatedProject);
+      await persistEditingProjectToFirestore(updatedProject, autoThumb);
       setEditingProject(updatedProject);
       setGalleryItems((prev) => [...prev, ...uploadedMediaItems]);
       setMultiUploadQueue((prev) =>
@@ -676,24 +683,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         .then(async (blob) => {
           const file = new File([blob], fileName, { type: mimeType });
           try {
+            await persistEditingProjectToFirestore(editingProject);
             setUploadProgress(50);
             const newItem = await uploadProjectGalleryMedia(
               file,
               editingProject.id,
               editingProject.nameAr || 'صورة معرض',
               editingProject.nameEn || 'Gallery image',
-              editingProject.status || 'draft',
+              editingProject.status === 'draft' ? 'draft' : 'published',
               authUser,
               (pct) => setUploadProgress(50 + Math.round(pct * 0.5))
             );
-            setGalleryItems((prev) => [...prev, newItem]);
-            setEditingProject({
+            const updatedIds = Array.from(
+              new Set([...(editingProject.galleryMediaIds || []), newItem.id])
+            ).slice(0, 25);
+            const updatedProject: ProjectItem = {
               ...editingProject,
-              galleryMediaIds: [
-                ...(editingProject.galleryMediaIds || []),
-                newItem.id,
-              ],
-            });
+              galleryMediaIds: updatedIds,
+            };
+            await persistEditingProjectToFirestore(updatedProject);
+            setGalleryItems((prev) => [...prev, newItem]);
+            setEditingProject(updatedProject);
             setUploadProgress(null);
             setStatusBanner({
               type: 'success',
@@ -787,14 +797,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
       const updatedMediaIds = Array.from(
         new Set([...(editingProject.galleryMediaIds || []), newMedia.id])
-      ).slice(0, 10);
+      ).slice(0, 25);
+
+      const autoThumb =
+        !editingProject.thumbnailUrl || editingProject.thumbnailUrl.trim().length === 0
+          ? newMedia.dataUrl
+          : editingProject.thumbnailUrl;
 
       const updatedProject: ProjectItem = {
         ...editingProject,
+        thumbnailUrl: autoThumb,
         galleryMediaIds: updatedMediaIds,
       };
 
-      await persistEditingProjectToFirestore(updatedProject);
+      await persistEditingProjectToFirestore(updatedProject, autoThumb);
 
       setEditingProject(updatedProject);
       setGalleryItems((prev) => [...prev, newMedia]);

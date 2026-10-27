@@ -12,8 +12,12 @@ import {
   ChevronLeft,
   ChevronRight,
   MessageSquare,
+  Sparkles,
+  Layers,
+  Compass,
 } from 'lucide-react';
 import {
+  getBuiltInProjectGallery,
   Language,
   ProjectGalleryItem,
   ProjectItem,
@@ -127,32 +131,51 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
     const list: { url: string; alt: string; label: string }[] = [];
     const seen = new Set<string>();
 
-    const mainUrl =
-      project.genuineScreenshotPath ||
-      project.thumbnailUrl ||
-      '';
-    if (mainUrl && !seen.has(mainUrl)) {
-      seen.add(mainUrl);
+    const addImg = (url?: string | null, alt?: string, label?: string) => {
+      if (!url) return;
+      const trimmed = url.trim();
+      if (!trimmed || trimmed.startsWith('/screenshots/') || seen.has(trimmed)) return;
+      seen.add(trimmed);
       list.push({
-        url: mainUrl,
-        alt: isAr
-          ? project.thumbnailAltAr || project.nameAr
-          : project.thumbnailAltEn || project.nameEn,
-        label: isAr ? 'الصورة الرئيسية' : 'Main Thumbnail',
+        url: trimmed,
+        alt: alt || (isAr ? project.nameAr : project.nameEn),
+        label: label || (isAr ? 'الصورة الرئيسية' : 'Main Image'),
       });
-    }
+    };
 
+    // 1. Uploaded main thumbnail in Firestore
+    addImg(
+      project.thumbnailUrl,
+      isAr ? project.thumbnailAltAr || project.nameAr : project.thumbnailAltEn || project.nameEn,
+      isAr ? 'الصورة الرئيسية' : 'Main Thumbnail'
+    );
+
+    // 2. Genuine local screenshot path
+    addImg(
+      project.genuineScreenshotPath,
+      isAr ? project.thumbnailAltAr || project.nameAr : project.thumbnailAltEn || project.nameEn,
+      isAr
+        ? project.screenshotCaptionAr || 'واجهة المشروع الرئيسية'
+        : project.screenshotCaptionEn || 'Primary Interface'
+    );
+
+    // 3. Firestore uploaded gallery items
     galleryItems.forEach((item, index) => {
-      if (item.dataUrl && !seen.has(item.dataUrl)) {
-        seen.add(item.dataUrl);
-        list.push({
-          url: item.dataUrl,
-          alt: isAr
-            ? item.altAr || `${project.nameAr} - ${index + 1}`
-            : item.altEn || `${project.nameEn} - ${index + 1}`,
-          label: isAr ? `لقطة شاشة ${index + 1}` : `Screenshot ${index + 1}`,
-        });
-      }
+      addImg(
+        item.dataUrl,
+        isAr
+          ? item.altAr || `${project.nameAr} - ${index + 1}`
+          : item.altEn || `${project.nameEn} - ${index + 1}`,
+        isAr
+          ? item.altAr || `لقطة شاشة ${index + 1}`
+          : item.altEn || `Screenshot ${index + 1}`
+      );
+    });
+
+    // 4. Built-in project gallery items
+    const builtIn = getBuiltInProjectGallery(project.id);
+    builtIn.forEach((p) => {
+      addImg(p.url, isAr ? p.ar : p.en, isAr ? p.ar : p.en);
     });
 
     return list;
@@ -160,14 +183,36 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
 
   const activeDisplayImage = allDisplayImages[activeLightboxIndex] || allDisplayImages[0];
 
+  const currentModalSlideIndex = useMemo(() => {
+    if (allDisplayImages.length === 0) return 0;
+    return ((activeLightboxIndex % allDisplayImages.length) + allDisplayImages.length) % allDisplayImages.length;
+  }, [activeLightboxIndex, allDisplayImages.length]);
+
+  const handleSelectModalSlide = (idx: number) => {
+    if (allDisplayImages.length === 0) return;
+    const normalizedIdx = ((idx % allDisplayImages.length) + allDisplayImages.length) % allDisplayImages.length;
+    const target = allDisplayImages[normalizedIdx];
+    if (!target) return;
+    setSelectedGalleryImage(target.url);
+    setActiveLightboxIndex(normalizedIdx);
+  };
+
   const handleLightboxPrev = () => {
     if (allDisplayImages.length <= 1) return;
-    setActiveLightboxIndex((prev) => (prev > 0 ? prev - 1 : allDisplayImages.length - 1));
+    const nextIdx = activeLightboxIndex > 0 ? activeLightboxIndex - 1 : allDisplayImages.length - 1;
+    setActiveLightboxIndex(nextIdx);
+    if (allDisplayImages[nextIdx]) {
+      setSelectedGalleryImage(allDisplayImages[nextIdx].url);
+    }
   };
 
   const handleLightboxNext = () => {
     if (allDisplayImages.length <= 1) return;
-    setActiveLightboxIndex((prev) => (prev < allDisplayImages.length - 1 ? prev + 1 : 0));
+    const nextIdx = activeLightboxIndex < allDisplayImages.length - 1 ? activeLightboxIndex + 1 : 0;
+    setActiveLightboxIndex(nextIdx);
+    if (allDisplayImages[nextIdx]) {
+      setSelectedGalleryImage(allDisplayImages[nextIdx].url);
+    }
   };
 
   // Keyboard navigation for Lightbox and Modal
@@ -280,38 +325,36 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
 
   return (
     <>
-      {/* Primary Project Detail Modal */}
+      {/* Primary Project Detail Modal — Ultra-Modern Wide Layout */}
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/80 overflow-y-auto"
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/85 backdrop-blur-md overflow-y-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-project-title"
         onClick={onClose}
       >
         <div
-          className="relative w-full max-w-3xl theme-bg-surface theme-text-primary rounded-2xl border theme-border shadow-2xl overflow-hidden my-auto max-h-[92vh] flex flex-col"
+          className="relative w-full max-w-5xl theme-bg-surface theme-text-primary rounded-3xl border theme-border shadow-2xl overflow-hidden my-auto max-h-[95vh] flex flex-col animate-fadeIn"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Top Modal Header */}
-          <div className="flex items-start justify-between gap-4 px-6 py-5 theme-bg-elevated border-b theme-border shrink-0">
-            <div className="min-w-0 space-y-1">
-              <div className="flex flex-wrap items-center gap-2 text-xs theme-accent-text font-semibold leading-normal">
-                <span>{isAr ? project.categoryLabelAr : project.categoryLabelEn}</span>
-                <span aria-hidden="true">·</span>
-                <span className="font-mono-tabular">{project.illustrativeTheme.domainCode}</span>
+          {/* Top Modal Header — Sleek Widescreen Header */}
+          <div className="flex items-start justify-between gap-6 px-8 py-6 theme-bg-elevated border-b theme-border shrink-0">
+            <div className="min-w-0 space-y-2">
+              <div className="flex flex-wrap items-center gap-3 text-xs theme-accent-text font-bold tracking-wide">
+                <span className="px-3 py-1 rounded-full theme-bg-surface border theme-border">
+                  {isAr ? project.categoryLabelAr : project.categoryLabelEn}
+                </span>
+                <span className="font-mono-tabular opacity-80">{project.illustrativeTheme.domainCode}</span>
                 {isAdminPreview && (
-                  <>
-                    <span aria-hidden="true">·</span>
-                    <span className="text-amber-400 font-semibold">
-                      {project.status === 'draft'
-                        ? isAr
-                          ? 'معاينة مسودة (غير منشور للعامة)'
-                          : 'DRAFT PREVIEW'
-                        : isAr
-                        ? 'معاينة منشور'
-                        : 'PUBLISHED PREVIEW'}
-                    </span>
-                  </>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[11px] font-bold">
+                    {project.status === 'draft'
+                      ? isAr
+                        ? 'معاينة مسودة (غير منشور)'
+                        : 'DRAFT PREVIEW'
+                      : isAr
+                      ? 'معاينة منشور'
+                      : 'PUBLISHED PREVIEW'}
+                  </span>
                 )}
               </div>
 
@@ -319,11 +362,11 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                 id="modal-project-title"
                 className="font-display"
               >
-                <span className="block text-xl sm:text-2xl font-extrabold theme-text-primary leading-[1.28] tracking-tight">
+                <span className="block text-2xl sm:text-4xl font-black theme-text-primary leading-[1.2] tracking-tight">
                   {primaryTitle}
                 </span>
                 {subtitle && (
-                  <span className="block text-xs sm:text-sm font-medium theme-text-secondary mt-1 leading-[1.45]">
+                  <span className="block text-sm sm:text-base font-semibold theme-text-secondary mt-2 leading-[1.5]">
                     {subtitle}
                   </span>
                 )}
@@ -334,43 +377,140 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
               type="button"
               onClick={onClose}
               aria-label={t.modalClose}
-              className="p-2 rounded-lg theme-btn-secondary cursor-pointer shrink-0"
+              className="p-2.5 rounded-xl theme-btn-secondary cursor-pointer shrink-0 hover:scale-105 transition-transform"
             >
-              <X className="w-5 h-5" />
+              <X className="w-6 h-6" />
             </button>
           </div>
 
-          {/* Scrollable Modal Body */}
-          <div className="overflow-y-auto p-6 space-y-6">
-            {/* Visual Preview Container with Fullscreen Zoom Trigger */}
-            <div className="relative group rounded-xl overflow-hidden border theme-border">
-              <ProjectVisualPreview
-                project={project}
-                lang={lang}
-                overrideImageUrl={selectedGalleryImage}
-                heightClass="h-64 sm:h-80"
-                priorityLoading={true}
-              />
+          {/* Scrollable Modal Widescreen Body */}
+          <div className="overflow-y-auto p-6 sm:p-10 space-y-8">
+            {/* Quick Concept / Executive Summary Card (For Instant Comprehension) */}
+            <div className="p-6 sm:p-7 rounded-2xl theme-bg-elevated border theme-border relative overflow-hidden shadow-lg space-y-3">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--accent-primary)]/5 rounded-full blur-3xl pointer-events-none" />
+              <div className="flex items-center gap-2 text-xs font-bold theme-accent-text uppercase tracking-wider">
+                <Compass className="w-4 h-4" />
+                <span>{isAr ? 'نظرة عامة سريعة على المشروع' : 'Instant Project Overview'}</span>
+              </div>
+              <p className="text-base sm:text-lg font-medium theme-text-primary leading-[1.85]">
+                {descriptionParagraphs[0] || (isAr ? project.descriptionAr : project.descriptionEn)}
+              </p>
+            </div>
 
+            {/* Visual Preview Container with Fullscreen Zoom Trigger & Pagination Dots */}
+            <div className="space-y-3">
+              <div className="relative group rounded-2xl overflow-hidden border theme-border shadow-2xl">
+                <ProjectVisualPreview
+                  project={project}
+                  lang={lang}
+                  heightClass="h-80 sm:h-[440px]"
+                  priorityLoading={true}
+                  enableSlideshow={!lightboxOpen}
+                  fitMode="contain"
+                  activeSlideIndexProp={currentModalSlideIndex}
+                  onSlideChange={(idx) => {
+                    setActiveLightboxIndex(idx);
+                    if (allDisplayImages[idx]) {
+                      setSelectedGalleryImage(allDisplayImages[idx].url);
+                    }
+                  }}
+                />
+
+                {allDisplayImages.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openLightboxWithImage(
+                        allDisplayImages[currentModalSlideIndex]?.url || allDisplayImages[0].url
+                      )
+                    }
+                    className="absolute bottom-3.5 end-3.5 z-30 inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-900 text-white text-xs font-bold shadow-xl backdrop-blur-md transition-all cursor-pointer border border-white/20 hover:scale-105"
+                    aria-label={isAr ? 'عرض في المعاينة المكبرة' : 'View in full-screen Lightbox'}
+                  >
+                    <Maximize2 className="w-4 h-4" aria-hidden="true" />
+                    <span>{isAr ? 'تكبير الصورة بالكامل' : 'Fullscreen Zoom'}</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Interactive Pagination Dots Bar Directly Below Image */}
               {allDisplayImages.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => openLightboxWithImage(selectedGalleryImage || allDisplayImages[0].url)}
-                  className="absolute top-3 end-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900/85 hover:bg-slate-900 text-white text-xs font-semibold shadow-lg backdrop-blur-sm transition-all cursor-pointer border border-white/20"
-                  aria-label={isAr ? 'عرض في المعاينة المكبرة' : 'View in full-screen Lightbox'}
+                <div
+                  className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 rounded-xl theme-bg-elevated border theme-border"
+                  role="region"
+                  aria-label={isAr ? 'التنقل بين صور المشروع' : 'Project images pagination'}
                 >
-                  <Maximize2 className="w-3.5 h-3.5" aria-hidden="true" />
-                  <span>{isAr ? 'تكبير كامل' : 'Expand / Zoom'}</span>
-                </button>
+                  <div className="flex items-center gap-2 text-xs font-medium theme-text-secondary min-w-0">
+                    <span className="px-2 py-0.5 rounded-md theme-bg-surface border theme-border font-mono-tabular font-bold theme-accent-text shrink-0">
+                      {currentModalSlideIndex + 1} / {allDisplayImages.length}
+                    </span>
+                    <span className="truncate">
+                      {allDisplayImages[currentModalSlideIndex]?.label ||
+                        (isAr ? 'معاينة المشروع' : 'Project Preview')}
+                    </span>
+                  </div>
+
+                  {allDisplayImages.length > 1 && (
+                    <div className="flex items-center gap-2 mx-auto sm:mx-0">
+                      <button
+                        type="button"
+                        onClick={() => handleSelectModalSlide(currentModalSlideIndex - 1)}
+                        aria-label={isAr ? 'الصورة السابقة' : 'Previous image'}
+                        className="p-1.5 rounded-lg theme-bg-surface hover:border-[var(--accent-primary)] border theme-border theme-text-secondary hover:theme-text-primary transition-colors cursor-pointer"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5 rtl:rotate-180" />
+                      </button>
+
+                      <div
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full theme-bg-surface border theme-border"
+                        role="tablist"
+                        aria-label={isAr ? 'مؤشرات صور المشروع' : 'Image pagination dots'}
+                      >
+                        {allDisplayImages.map((imgItem, idx) => {
+                          const isActive = currentModalSlideIndex === idx;
+                          return (
+                            <button
+                              key={idx}
+                              type="button"
+                              role="tab"
+                              aria-selected={isActive}
+                              aria-label={
+                                isAr
+                                  ? `الانتقال إلى الصورة ${idx + 1}: ${imgItem.label}`
+                                  : `Go to image ${idx + 1}: ${imgItem.label}`
+                              }
+                              title={imgItem.label}
+                              onClick={() => handleSelectModalSlide(idx)}
+                              className={`rounded-full transition-all duration-300 cursor-pointer ${
+                                isActive
+                                  ? 'w-6 h-2 bg-[var(--accent-primary)] shadow-xs'
+                                  : 'w-2 h-2 bg-slate-400/50 hover:bg-slate-400'
+                              }`}
+                            />
+                          );
+                        })}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleSelectModalSlide(currentModalSlideIndex + 1)}
+                        aria-label={isAr ? 'الصورة التالية' : 'Next image'}
+                        className="p-1.5 rounded-lg theme-bg-surface hover:border-[var(--accent-primary)] border theme-border theme-text-secondary hover:theme-text-primary transition-colors cursor-pointer"
+                      >
+                        <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />
+                      </button>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
 
             {/* Project Gallery Thumbnails Strip (When Multiple Images Exist) */}
             {allDisplayImages.length > 1 && (
-              <div className="space-y-2.5">
-                <div className="flex items-center justify-between text-xs font-bold theme-text-primary">
-                  <span className="flex items-center gap-1.5">
-                    <Images className="w-4 h-4 theme-accent-text" aria-hidden="true" />
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm font-bold theme-text-primary">
+                  <span className="flex items-center gap-2">
+                    <Images className="w-5 h-5 theme-accent-text" aria-hidden="true" />
                     <span>
                       {t.modalGalleryHeading} ({allDisplayImages.length})
                     </span>
@@ -382,29 +522,24 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                         setSelectedGalleryImage(null);
                         setActiveLightboxIndex(0);
                       }}
-                      className="theme-accent-text hover:underline cursor-pointer"
+                      className="text-xs theme-accent-text hover:underline cursor-pointer font-semibold"
                     >
                       {isAr ? 'العودة للصورة الرئيسية' : 'Reset to Main Thumbnail'}
                     </button>
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {allDisplayImages.map((imgItem, idx) => {
-                    const isSelected =
-                      (selectedGalleryImage === imgItem.url) ||
-                      (!selectedGalleryImage && idx === 0);
+                    const isSelected = currentModalSlideIndex === idx;
                     return (
                       <button
                         key={idx}
                         type="button"
-                        onClick={() => {
-                          setSelectedGalleryImage(imgItem.url);
-                          setActiveLightboxIndex(idx);
-                        }}
-                        className={`group relative rounded-lg overflow-hidden border-2 text-start transition-all cursor-pointer ${
+                        onClick={() => handleSelectModalSlide(idx)}
+                        className={`group relative rounded-xl overflow-hidden border-2 text-start transition-all cursor-pointer shadow-md hover:scale-[1.02] ${
                           isSelected
-                            ? 'border-[var(--accent-primary)] ring-2 ring-[var(--accent-primary)]/30'
+                            ? 'border-[var(--accent-primary)] ring-4 ring-[var(--accent-primary)]/20'
                             : 'border-[var(--border-subtle)] hover:border-[var(--accent-primary)]'
                         }`}
                       >
@@ -414,12 +549,12 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                           loading="lazy"
                           decoding="async"
                           referrerPolicy="no-referrer"
-                          className="w-full h-20 object-cover"
+                          className="w-full h-24 sm:h-28 object-cover"
                         />
-                        <div className="px-2 py-1 theme-bg-elevated text-[10px] theme-text-secondary truncate flex items-center justify-between">
-                          <span className="truncate">{imgItem.label}</span>
+                        <div className="px-3 py-1.5 theme-bg-elevated text-xs theme-text-secondary truncate flex items-center justify-between">
+                          <span className="truncate font-medium">{imgItem.label}</span>
                           {idx === 0 && (
-                            <span className="text-[9px] font-semibold theme-accent-text shrink-0">
+                            <span className="text-xs font-bold theme-accent-text shrink-0">
                               ★
                             </span>
                           )}
@@ -431,10 +566,15 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
               </div>
             )}
 
-            {/* Structured Multi-Paragraph Description & Engineering Role */}
-            <div className="space-y-4">
-              <div className="space-y-3">
-                {descriptionParagraphs.map((para, idx) => {
+            {/* Detailed Description Paragraphs & Engineering Contribution */}
+            <div className="space-y-6">
+              <h3 className="text-xl sm:text-2xl font-extrabold theme-text-primary flex items-center gap-3 border-b theme-border pb-3">
+                <Sparkles className="w-6 h-6 theme-accent-text shrink-0" />
+                <span>{isAr ? 'التفاصيل الشاملة وفكرة المشروع' : 'Detailed Concept & Scope'}</span>
+              </h3>
+
+              <div className="space-y-4">
+                {descriptionParagraphs.slice(1).map((para, idx) => {
                   const isCallout =
                     para.startsWith('الهدف:') ||
                     para.startsWith('حالة المشروع:') ||
@@ -445,7 +585,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                     return (
                       <div
                         key={idx}
-                        className="p-3.5 rounded-xl theme-bg-elevated border theme-border text-xs sm:text-sm font-medium theme-text-primary leading-[1.72]"
+                        className="p-5 rounded-2xl theme-bg-elevated border theme-border text-sm sm:text-base font-semibold theme-text-primary leading-[1.8]"
                       >
                         {para}
                       </div>
@@ -455,11 +595,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                   return (
                     <p
                       key={idx}
-                      className={
-                        idx === 0
-                          ? 'text-base sm:text-[16.5px] font-medium theme-text-primary leading-[1.78]'
-                          : 'text-sm sm:text-[15px] font-normal theme-text-secondary leading-[1.78]'
-                      }
+                      className="text-base sm:text-lg font-normal theme-text-secondary leading-[1.9]"
                     >
                       {para}
                     </p>
@@ -467,11 +603,12 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                 })}
               </div>
 
-              <div className="p-4 rounded-xl theme-card-elevated space-y-1.5">
-                <h3 className="text-xs font-semibold theme-accent-text tracking-wide">
+              {/* Engineering Contribution Card */}
+              <div className="p-6 rounded-2xl theme-card-elevated space-y-2 border theme-border">
+                <h4 className="text-xs font-extrabold theme-accent-text uppercase tracking-wider">
                   {t.modalEngineeringRole}
-                </h3>
-                <p className="text-sm sm:text-[14.5px] font-normal theme-text-primary leading-[1.7]">
+                </h4>
+                <p className="text-base sm:text-lg font-semibold theme-text-primary leading-[1.8]">
                   {isAr
                     ? project.engineeringContributionAr
                     : project.engineeringContributionEn}
@@ -479,86 +616,91 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
               </div>
             </div>
 
-            {/* Technologies */}
-            <div>
-              <h3 className="text-sm font-bold theme-text-primary mb-2.5 flex items-center gap-2">
-                <FileCode2 className="w-4 h-4 theme-accent-text shrink-0" />
+            {/* Technologies Grid */}
+            <div className="space-y-4">
+              <h3 className="text-lg sm:text-xl font-bold theme-text-primary flex items-center gap-2.5 border-b theme-border pb-3">
+                <FileCode2 className="w-5 h-5 theme-accent-text shrink-0" />
                 <span>{t.modalTechStack}</span>
               </h3>
               {project.technologies.length > 0 ? (
-                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-medium leading-relaxed">
-                  {project.technologies.map((tech, idx) => (
-                    <React.Fragment key={tech}>
-                      {idx > 0 && <span className="theme-text-muted">·</span>}
-                      <span className="font-mono-tabular theme-accent-text">{tech}</span>
-                    </React.Fragment>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  {project.technologies.map((tech) => (
+                    <span
+                      key={tech}
+                      className="px-3.5 py-1.5 rounded-xl theme-bg-elevated border theme-border text-xs sm:text-sm font-bold theme-accent-text font-mono-tabular shadow-xs"
+                    >
+                      {tech}
+                    </span>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs theme-text-muted leading-relaxed">{t.modalTechNotClaimed}</p>
+                <p className="text-sm theme-text-muted leading-relaxed">{t.modalTechNotClaimed}</p>
               )}
             </div>
 
             {/* Engineering Case Study Deep Dive */}
             {project.caseStudy && (
-              <div className="p-5 rounded-xl theme-card-elevated space-y-4">
-                <div className="flex items-center justify-between gap-2 border-b theme-border pb-3">
-                  <h3 className="text-base font-bold theme-text-primary leading-snug">
-                    {isAr
-                      ? 'تفاصيل دراسة الحالة والمعمارية الهندسية'
-                      : 'Engineering Case Study & System Architecture'}
+              <div className="p-7 rounded-2xl theme-card-elevated space-y-6 border theme-border">
+                <div className="flex items-center justify-between gap-4 border-b theme-border pb-4">
+                  <h3 className="text-xl font-extrabold theme-text-primary leading-snug flex items-center gap-2.5">
+                    <Layers className="w-6 h-6 theme-accent-text" />
+                    <span>
+                      {isAr
+                        ? 'دراسة الحالة والمعمارية الهندسية المتقدمة'
+                        : 'Advanced Engineering Case Study & Architecture'}
+                    </span>
                   </h3>
-                  <span className="text-xs font-mono-tabular theme-accent-text font-semibold">
-                    ARCHITECTURE
+                  <span className="px-3 py-1 rounded-full bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] font-mono-tabular text-xs font-bold">
+                    SYSTEM ARCHITECTURE
                   </span>
                 </div>
 
-                <div>
-                  <h4 className="text-xs font-semibold theme-accent-text mb-1.5">
+                <div className="space-y-2">
+                  <h4 className="text-sm font-bold theme-accent-text">
                     {isAr
                       ? 'التحدي الهندسي ونطاق النظام'
                       : 'Engineering Problem & System Scope'}
                   </h4>
-                  <p className="text-sm font-normal theme-text-secondary leading-[1.75]">
+                  <p className="text-base font-normal theme-text-secondary leading-[1.85]">
                     {isAr
                       ? project.caseStudy.problemStatementAr
                       : project.caseStudy.problemStatementEn}
                   </p>
                 </div>
 
-                <div>
-                  <h4 className="text-xs font-semibold theme-accent-text mb-2">
+                <div className="space-y-3">
+                  <h4 className="text-sm font-bold theme-accent-text">
                     {isAr ? 'الطبقات المعمارية للنظام' : 'System Architecture Layers'}
                   </h4>
-                  <ul className="space-y-2 text-sm font-normal theme-text-secondary leading-[1.72]">
+                  <div className="grid grid-cols-1 gap-3">
                     {(isAr
                       ? project.caseStudy.architectureLayersAr
                       : project.caseStudy.architectureLayersEn
                     ).map((layer, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5">
-                        <span className="font-mono-tabular theme-accent-text text-xs font-semibold mt-1 shrink-0">
-                          0{idx + 1}.
+                      <div key={idx} className="p-4 rounded-xl theme-bg-surface border theme-border flex items-start gap-3">
+                        <span className="px-2.5 py-1 rounded-lg theme-bg-elevated font-mono-tabular theme-accent-text text-xs font-extrabold shrink-0">
+                          0{idx + 1}
                         </span>
-                        <span>{layer}</span>
-                      </li>
+                        <span className="text-sm font-medium theme-text-primary leading-[1.7]">{layer}</span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
 
-                <div>
-                  <h4 className="text-xs font-semibold theme-accent-text mb-2">
+                <div className="space-y-3">
+                  <h4 className="text-sm font-bold theme-accent-text">
                     {isAr
-                      ? 'المساهمات الهندسية'
+                      ? 'المساهمات الهندسية الأساسية'
                       : 'Key Engineering Contributions'}
                   </h4>
-                  <ul className="space-y-2 text-sm font-normal theme-text-secondary leading-[1.72]">
+                  <ul className="space-y-2.5">
                     {(isAr
                       ? project.caseStudy.keyEngineeringContributionsAr
                       : project.caseStudy.keyEngineeringContributionsEn
                     ).map((item, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 theme-accent-text shrink-0 mt-1" />
-                        <span>{item}</span>
+                      <li key={idx} className="flex items-start gap-3 p-3.5 rounded-xl theme-bg-surface border theme-border">
+                        <CheckCircle2 className="w-5 h-5 theme-accent-text shrink-0 mt-0.5" />
+                        <span className="text-sm font-medium theme-text-primary leading-[1.7]">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -567,41 +709,41 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
             )}
 
             {/* 5-Point Link Verification Matrix */}
-            <div className="p-5 rounded-xl theme-card-elevated space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-sm font-bold theme-text-primary flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 theme-accent-text shrink-0" />
+            <div className="p-7 rounded-2xl theme-card-elevated space-y-5 border theme-border">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b theme-border pb-4">
+                <h3 className="text-lg font-extrabold theme-text-primary flex items-center gap-2.5">
+                  <ShieldCheck className="w-5 h-5 theme-accent-text shrink-0" />
                   <span>{t.modalVerificationHeading}</span>
                 </h3>
-                <span className="text-xs font-medium theme-text-secondary">
+                <span className="text-xs font-bold theme-text-secondary px-3 py-1 rounded-full theme-bg-surface border theme-border">
                   {isAr ? v.statusSummaryAr : v.statusSummaryEn}
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div className="p-3 rounded-lg theme-bg-surface border theme-border">
-                  <div className="theme-text-muted mb-1">{t.modalUrlSupplied}</div>
-                  <div className="font-medium theme-text-primary break-all font-mono-tabular leading-snug">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div className="p-4 rounded-xl theme-bg-surface border theme-border space-y-1.5">
+                  <div className="text-[11px] font-bold theme-text-muted uppercase tracking-wider">{t.modalUrlSupplied}</div>
+                  <div className="font-semibold theme-text-primary break-all font-mono-tabular leading-relaxed text-sm">
                     {v.suppliedUrl ||
                       (isAr ? 'غير مزود (دراسة حالة)' : 'None supplied (Case Study)')}
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg theme-bg-surface border theme-border">
-                  <div className="theme-text-muted mb-1">{t.modalUrlOpened}</div>
-                  <div className="font-medium theme-text-primary leading-snug">{formatUrlOpened()}</div>
+                <div className="p-4 rounded-xl theme-bg-surface border theme-border space-y-1.5">
+                  <div className="text-[11px] font-bold theme-text-muted uppercase tracking-wider">{t.modalUrlOpened}</div>
+                  <div className="font-semibold theme-text-primary leading-relaxed text-sm">{formatUrlOpened()}</div>
                 </div>
 
-                <div className="p-3 rounded-lg theme-bg-surface border theme-border">
-                  <div className="theme-text-muted mb-1">{t.modalInterfaceObserved}</div>
-                  <div className="font-medium theme-text-primary leading-snug">
+                <div className="p-4 rounded-xl theme-bg-surface border theme-border space-y-1.5">
+                  <div className="text-[11px] font-bold theme-text-muted uppercase tracking-wider">{t.modalInterfaceObserved}</div>
+                  <div className="font-semibold theme-text-primary leading-relaxed text-sm">
                     {formatInterfaceObserved()}
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg theme-bg-surface border theme-border">
-                  <div className="theme-text-muted mb-1">{t.modalWorkflowsTested}</div>
-                  <div className="font-medium theme-text-primary leading-snug">
+                <div className="p-4 rounded-xl theme-bg-surface border theme-border space-y-1.5">
+                  <div className="text-[11px] font-bold theme-text-muted uppercase tracking-wider">{t.modalWorkflowsTested}</div>
+                  <div className="font-semibold theme-text-primary leading-relaxed text-sm">
                     {v.workflowsTested
                       ? isAr
                         ? 'تم الاختبار'
@@ -612,20 +754,20 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg theme-bg-surface border theme-border sm:col-span-2">
-                  <div className="theme-text-muted mb-1">{t.modalPublicAccess}</div>
-                  <div className="font-medium theme-text-primary leading-snug">
+                <div className="p-4 rounded-xl theme-bg-surface border theme-border sm:col-span-2 space-y-1.5">
+                  <div className="text-[11px] font-bold theme-text-muted uppercase tracking-wider">{t.modalPublicAccess}</div>
+                  <div className="font-semibold theme-text-primary leading-relaxed text-sm">
                     {formatPublicAccess()}
                   </div>
                 </div>
               </div>
 
               {v.alternativeUrl && (
-                <div className="p-3 rounded-lg theme-bg-surface border theme-border text-xs space-y-1">
-                  <div className="font-semibold theme-accent-text">
+                <div className="p-4 rounded-xl theme-bg-surface border theme-border text-xs space-y-1.5">
+                  <div className="font-bold theme-accent-text text-sm">
                     {t.modalAltUrlLabel}
                   </div>
-                  <div className="font-mono-tabular break-all theme-text-primary">
+                  <div className="font-mono-tabular break-all theme-text-primary text-sm font-semibold">
                     {v.alternativeUrl}
                   </div>
                   <div className="theme-text-secondary">
@@ -634,35 +776,36 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                 </div>
               )}
 
-              <p className="text-xs theme-text-muted leading-[1.7]">
+              <p className="text-sm theme-text-muted leading-[1.8]">
                 {isAr ? v.verificationNotesAr : v.verificationNotesEn}
               </p>
             </div>
 
             {/* Epistemic Separation: Verified Facts vs Unverified Boundaries */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl theme-card-elevated space-y-2.5">
-                <h4 className="text-xs font-bold theme-text-primary flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 theme-accent-text shrink-0" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="p-6 rounded-2xl theme-card-elevated space-y-3 border theme-border">
+                <h4 className="text-sm font-extrabold theme-text-primary flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 theme-accent-text shrink-0" />
                   <span>{t.modalVerifiedFacts}</span>
                 </h4>
-                <ul className="space-y-1.5 text-xs theme-text-secondary">
+                <ul className="space-y-2 text-sm theme-text-secondary">
                   {(isAr ? project.verifiedFactsAr : project.verifiedFactsEn).map(
                     (fact, i) => (
-                      <li key={i} className="leading-[1.7]">
-                        • {fact}
+                      <li key={i} className="leading-[1.75] flex items-start gap-2">
+                        <span className="text-[var(--accent-primary)] font-bold">•</span>
+                        <span>{fact}</span>
                       </li>
                     )
                   )}
                 </ul>
               </div>
 
-              <div className="p-4 rounded-xl theme-card-elevated space-y-2.5">
-                <h4 className="text-xs font-bold theme-text-primary flex items-center gap-1.5">
-                  <AlertCircle className="w-4 h-4 theme-text-muted shrink-0" />
+              <div className="p-6 rounded-2xl theme-card-elevated space-y-3 border theme-border">
+                <h4 className="text-sm font-extrabold theme-text-primary flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5 theme-text-muted shrink-0" />
                   <span>{t.modalUnverifiedScope}</span>
                 </h4>
-                <p className="text-xs theme-text-muted leading-[1.7]">
+                <p className="text-sm theme-text-muted leading-[1.8]">
                   {isAr
                     ? project.unverifiedBoundariesAr
                     : project.unverifiedBoundariesEn}
@@ -671,13 +814,13 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
             </div>
           </div>
 
-          {/* Bottom Modal Footer Actions */}
-          <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4 theme-bg-elevated border-t theme-border shrink-0">
-            <div className="flex items-center gap-2">
+          {/* Bottom Modal Footer Actions — Generous Padding & Distinct CTA Buttons */}
+          <div className="flex flex-wrap items-center justify-between gap-4 px-8 py-6 theme-bg-elevated border-t theme-border shrink-0">
+            <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 rounded-lg theme-btn-secondary text-xs font-semibold cursor-pointer"
+                className="px-5 py-2.5 rounded-xl theme-btn-secondary text-sm font-bold cursor-pointer"
               >
                 {t.modalClose}
               </button>
@@ -685,24 +828,24 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
               <button
                 type="button"
                 onClick={handleInquireProject}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg theme-btn-secondary text-xs font-semibold cursor-pointer hover:border-[var(--accent-primary)]"
+                className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl theme-btn-secondary text-sm font-bold cursor-pointer hover:border-[var(--accent-primary)]"
               >
-                <MessageSquare className="w-3.5 h-3.5 theme-accent-text" />
+                <MessageSquare className="w-4 h-4 theme-accent-text" />
                 <span>{isAr ? 'طلب مشروع مماثل' : 'Inquire Similar Project'}</span>
               </button>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex flex-wrap items-center gap-3">
               {project.sourceUrl && project.sourceUrl.trim().length > 0 && (
                 <a
                   href={project.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg theme-btn-secondary text-xs font-semibold"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl theme-btn-secondary text-sm font-bold shadow-md"
                 >
-                  <Code2 className="w-3.5 h-3.5" aria-hidden="true" />
+                  <Code2 className="w-4 h-4" aria-hidden="true" />
                   <span>{t.modalSourceCodeBtn}</span>
-                  <ExternalLink className="w-3 h-3" aria-hidden="true" />
+                  <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
                 </a>
               )}
 
@@ -711,10 +854,10 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                   href={project.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg theme-btn-primary text-xs font-semibold"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl theme-btn-primary text-sm font-bold shadow-xl hover:scale-105 transition-transform"
                 >
                   <span>{t.visitProject}</span>
-                  <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                  <ExternalLink className="w-4 h-4" aria-hidden="true" />
                 </a>
               )}
             </div>
@@ -733,14 +876,14 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
         >
           {/* Top Lightbox Navigation Bar */}
           <div
-            className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-black/60 border-b border-white/10 z-10 shrink-0"
+            className="flex items-center justify-between px-6 py-4 bg-black/60 border-b border-white/10 z-10 shrink-0"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3 min-w-0">
-              <span className="px-2.5 py-1 rounded-md bg-white/10 text-white font-mono text-xs font-semibold shrink-0">
+              <span className="px-3 py-1 rounded-lg bg-white/10 text-white font-mono text-xs font-bold shrink-0">
                 {activeLightboxIndex + 1} / {allDisplayImages.length}
               </span>
-              <span className="text-sm font-medium text-white/90 truncate max-w-[55vw]">
+              <span className="text-base font-semibold text-white/95 truncate max-w-[55vw]">
                 {activeDisplayImage.alt}
               </span>
             </div>
@@ -749,17 +892,17 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
               <button
                 type="button"
                 onClick={() => setLightboxOpen(false)}
-                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
                 aria-label={isAr ? 'إغلاق المعاينة' : 'Close full-screen'}
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
             </div>
           </div>
 
           {/* Center Stage with Prev / Image / Next */}
           <div
-            className="relative flex-1 flex items-center justify-center p-2 sm:p-6 overflow-hidden min-h-0"
+            className="relative flex-1 flex items-center justify-center p-4 sm:p-8 overflow-hidden min-h-0"
             onClick={(e) => e.stopPropagation()}
           >
             {allDisplayImages.length > 1 && (
@@ -769,19 +912,52 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                   e.stopPropagation();
                   handleLightboxPrev();
                 }}
-                className="absolute left-2 sm:left-6 z-20 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/20 transition-all cursor-pointer backdrop-blur-sm"
+                className="absolute left-4 sm:left-8 z-20 p-3 sm:p-4 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/20 transition-all cursor-pointer backdrop-blur-md"
                 aria-label={isAr ? 'الصورة السابقة' : 'Previous image'}
               >
-                <ChevronLeft className="w-6 h-6" />
+                <ChevronLeft className="w-7 h-7" />
               </button>
             )}
 
-            <div className="relative max-h-full max-w-full flex items-center justify-center">
+            <div className="relative max-h-full max-w-full flex flex-col items-center justify-center gap-4">
               <img
                 src={activeDisplayImage.url}
                 alt={activeDisplayImage.alt}
-                className="max-h-[75vh] sm:max-h-[82vh] max-w-[92vw] object-contain rounded-lg shadow-2xl transition-all"
+                className="max-h-[75vh] sm:max-h-[80vh] max-w-[94vw] object-contain rounded-xl shadow-2xl transition-all"
               />
+
+              {/* Lightbox Pagination Dots */}
+              {allDisplayImages.length > 1 && (
+                <div
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/70 border border-white/15 backdrop-blur-md"
+                  role="tablist"
+                  aria-label={isAr ? 'مؤشرات الصور في العرض المكبر' : 'Lightbox pagination dots'}
+                >
+                  {allDisplayImages.map((img, idx) => {
+                    const isActive = activeLightboxIndex === idx;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        role="tab"
+                        aria-selected={isActive}
+                        aria-label={
+                          isAr
+                            ? `الصورة ${idx + 1} من ${allDisplayImages.length}`
+                            : `Image ${idx + 1} of ${allDisplayImages.length}`
+                        }
+                        title={img.label}
+                        onClick={() => handleSelectModalSlide(idx)}
+                        className={`rounded-full transition-all duration-300 cursor-pointer ${
+                          isActive
+                            ? 'w-6 h-2 bg-[var(--accent-primary)]'
+                            : 'w-2 h-2 bg-white/40 hover:bg-white/80'
+                        }`}
+                      />
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {allDisplayImages.length > 1 && (
@@ -791,35 +967,35 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                   e.stopPropagation();
                   handleLightboxNext();
                 }}
-                className="absolute right-2 sm:right-6 z-20 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/20 transition-all cursor-pointer backdrop-blur-sm"
+                className="absolute right-4 sm:right-8 z-20 p-3 sm:p-4 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/20 transition-all cursor-pointer backdrop-blur-md"
                 aria-label={isAr ? 'الصورة التالية' : 'Next image'}
               >
-                <ChevronRight className="w-6 h-6" />
+                <ChevronRight className="w-7 h-7" />
               </button>
             )}
           </div>
 
           {/* Bottom Lightbox Bar: Thumbnails & Navigation Hint */}
           <div
-            className="px-4 py-3 bg-black/60 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 z-10 shrink-0"
+            className="px-6 py-4 bg-black/60 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 z-10 shrink-0"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="text-[11px] text-white/60">
+            <div className="text-xs text-white/70">
               {isAr
                 ? 'استخدم مفاتيح الأسهم ← → للتنقل · Esc للإغلاق'
                 : 'Use arrow keys ← → to navigate · Esc to close'}
             </div>
 
             {allDisplayImages.length > 1 && (
-              <div className="flex items-center gap-2 overflow-x-auto max-w-full py-1">
+              <div className="flex items-center gap-3 overflow-x-auto max-w-full py-1">
                 {allDisplayImages.map((img, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => setActiveLightboxIndex(idx)}
-                    className={`relative rounded-md overflow-hidden border-2 transition-all cursor-pointer shrink-0 w-12 h-10 ${
+                    className={`relative rounded-lg overflow-hidden border-2 transition-all cursor-pointer shrink-0 w-16 h-12 ${
                       activeLightboxIndex === idx
-                        ? 'border-[var(--accent-primary)] ring-2 ring-[var(--accent-primary)]/50 scale-105'
+                        ? 'border-[var(--accent-primary)] ring-4 ring-[var(--accent-primary)]/50 scale-105'
                         : 'border-white/20 opacity-60 hover:opacity-100'
                     }`}
                   >

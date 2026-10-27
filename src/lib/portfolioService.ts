@@ -739,10 +739,10 @@ export async function savePortfolioProject(
     displayOrder: Math.max(0, Math.min(10000, Number(input.displayOrder) || 1)),
     status: input.status === 'draft' ? 'draft' : 'published',
     isCaseStudyOnly: Boolean(input.isCaseStudyOnly),
-    thumbnailUrl: (input.thumbnailUrl || '').slice(0, 450000),
+    thumbnailUrl: (input.thumbnailUrl || '').slice(0, 850000),
     thumbnailAltAr: input.thumbnailAltAr.trim().slice(0, 300),
     thumbnailAltEn: input.thumbnailAltEn.trim().slice(0, 300),
-    galleryMediaIds: (input.galleryMediaIds || []).slice(0, 10),
+    galleryMediaIds: (input.galleryMediaIds || []).slice(0, 25),
     ownerUid: user.uid,
   };
 
@@ -752,8 +752,8 @@ export async function savePortfolioProject(
       const existingData = existingSnap.data();
       await setDoc(docRef, {
         ...validatedData,
-        ownerUid: existingData.ownerUid,
-        createdAt: existingData.createdAt,
+        ownerUid: existingData.ownerUid || user.uid,
+        createdAt: existingData.createdAt || serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
     } else {
@@ -904,14 +904,17 @@ export async function uploadProjectGalleryMedia(
   const mediaId = sanitizeId(`media_${projectId}_${Date.now()}`);
   const path = `project_media/${mediaId}`;
 
+  const normalizedStatus: 'published' | 'draft' =
+    projectStatus === 'draft' ? 'draft' : 'published';
+
   const record = {
     projectId: sanitizeId(projectId),
-    fileName: processed.safeFileName,
+    fileName: sanitizeFileName(processed.safeFileName),
     mimeType: processed.mimeType,
     dataUrl: processed.dataUrl,
-    altAr: altAr.trim().slice(0, 300),
-    altEn: altEn.trim().slice(0, 300),
-    status: projectStatus,
+    altAr: (altAr || '').trim().slice(0, 300),
+    altEn: (altEn || '').trim().slice(0, 300),
+    status: normalizedStatus,
     ownerUid: user.uid,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
@@ -949,15 +952,22 @@ export async function uploadPreOptimizedGalleryMedia(
     `media_${projectId}_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`
   );
   const path = `project_media/${mediaId}`;
+  const cleanFileName = sanitizeFileName(safeFileName);
+  const validMimeType: 'image/jpeg' | 'image/png' | 'image/webp' =
+    mimeType === 'image/png' || mimeType === 'image/jpeg' || mimeType === 'image/webp'
+      ? mimeType
+      : 'image/webp';
+  const normalizedStatus: 'published' | 'draft' =
+    projectStatus === 'draft' ? 'draft' : 'published';
 
   const record = {
     projectId: sanitizeId(projectId),
-    fileName: safeFileName,
-    mimeType,
+    fileName: cleanFileName,
+    mimeType: validMimeType,
     dataUrl,
-    altAr: altAr.trim().slice(0, 300),
-    altEn: altEn.trim().slice(0, 300),
-    status: projectStatus,
+    altAr: (altAr || '').trim().slice(0, 300),
+    altEn: (altEn || '').trim().slice(0, 300),
+    status: normalizedStatus,
     ownerUid: user.uid,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),

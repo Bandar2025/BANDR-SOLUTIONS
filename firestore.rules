@@ -123,10 +123,10 @@ service cloud.firestore {
       data.displayOrder is number && data.displayOrder >= 0 && data.displayOrder <= 10000 &&
       data.status is string && data.status in ['published', 'draft'] &&
       data.isCaseStudyOnly is bool &&
-      data.thumbnailUrl is string && data.thumbnailUrl.size() <= 450000 &&
+      data.thumbnailUrl is string && data.thumbnailUrl.size() <= 850000 &&
       data.thumbnailAltAr is string && data.thumbnailAltAr.size() <= 300 &&
       data.thumbnailAltEn is string && data.thumbnailAltEn.size() <= 300 &&
-      data.galleryMediaIds is list && data.galleryMediaIds.size() <= 10 &&
+      data.galleryMediaIds is list && data.galleryMediaIds.size() <= 25 &&
       (data.galleryMediaIds.size() == 0 || (data.galleryMediaIds[0] is string && data.galleryMediaIds[0].size() <= 128)) &&
       data.ownerUid is string && data.ownerUid == request.auth.uid && data.ownerUid.size() >= 1 && data.ownerUid.size() <= 128 &&
       data.createdAt is timestamp &&
@@ -160,9 +160,9 @@ service cloud.firestore {
         'updatedAt'
       ]) &&
       isValidId(data.projectId) &&
-      data.fileName is string && data.fileName.size() >= 1 && data.fileName.size() <= 180 && data.fileName.matches('^[a-zA-Z0-9_\\-\\.]+$') &&
+      data.fileName is string && data.fileName.size() >= 1 && data.fileName.size() <= 250 &&
       data.mimeType is string && data.mimeType in ['image/jpeg', 'image/png', 'image/webp'] &&
-      data.dataUrl is string && data.dataUrl.size() >= 20 && data.dataUrl.size() <= 650000 &&
+      data.dataUrl is string && data.dataUrl.size() >= 20 && data.dataUrl.size() <= 900000 &&
       data.altAr is string && data.altAr.size() <= 300 &&
       data.altEn is string && data.altEn.size() <= 300 &&
       data.status is string && data.status in ['published', 'draft'] &&
