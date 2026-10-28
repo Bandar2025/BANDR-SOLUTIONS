@@ -4,6 +4,14 @@
  * and adjustable compression controls.
  */
 
+export {
+  standardizeImageAspectRatio,
+  type StandardAspectRatio,
+  type ImageFitMode,
+  type ImageObjectPosition,
+  type StandardizedImageAspectConfig,
+} from './aspectRatio';
+
 export interface EnhancementOptions {
   sharpen: boolean;       // Apply unsharp mask sharpening filter
   sharpenAmount: number;  // 0.0 to 1.0

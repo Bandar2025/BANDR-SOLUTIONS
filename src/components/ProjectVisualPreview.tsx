@@ -19,6 +19,9 @@ import {
   UI_TRANSLATIONS,
 } from '../data/portfolioData';
 import { fetchProjectGalleryItems } from '../lib/portfolioService';
+import { standardizeImageAspectRatio, StandardAspectRatio } from '../lib/aspectRatio';
+
+const DEFAULT_PREVIEW_ASPECT = standardizeImageAspectRatio('16:9', 'cover', 'top');
 
 interface ProjectVisualPreviewProps {
   project: ProjectItem;
@@ -26,6 +29,7 @@ interface ProjectVisualPreviewProps {
   overrideImageUrl?: string | null;
   heightClass?: string;
   aspectRatioClass?: string;
+  aspectRatio?: StandardAspectRatio;
   priorityLoading?: boolean;
   enableSlideshow?: boolean;
   fitMode?: 'contain' | 'cover';
@@ -56,7 +60,8 @@ export const ProjectVisualPreview: React.FC<ProjectVisualPreviewProps> =
       lang,
       overrideImageUrl,
       heightClass,
-      aspectRatioClass = 'aspect-[16/10]',
+      aspectRatioClass,
+      aspectRatio = '16:9',
       priorityLoading = false,
       enableSlideshow = true,
       fitMode = 'cover',
@@ -333,7 +338,14 @@ export const ProjectVisualPreview: React.FC<ProjectVisualPreviewProps> =
         [allSlides, loadedUrls]
       );
 
-      const dimensionClass = heightClass ? heightClass : aspectRatioClass;
+      const standardizedAspect = useMemo(
+        () => standardizeImageAspectRatio(aspectRatio, currentFit, 'top'),
+        [aspectRatio, currentFit]
+      );
+
+      const dimensionClass = heightClass
+        ? heightClass
+        : aspectRatioClass || standardizedAspect.aspectRatioClass || DEFAULT_PREVIEW_ASPECT.aspectRatioClass;
 
       return (
         <div
@@ -414,10 +426,10 @@ export const ProjectVisualPreview: React.FC<ProjectVisualPreviewProps> =
                       referrerPolicy="no-referrer"
                       onLoad={() => handleImageLoad(slide.url)}
                       onError={() => handleImageError(slide.url)}
-                      className={`w-full h-full transition-transform duration-[3500ms] ease-out ${
+                      className={`${standardizedAspect.imageClass} transition-transform duration-[3500ms] ease-out ${
                         currentFit === 'contain'
-                          ? 'object-contain p-2 sm:p-3 drop-shadow-[0_12px_28px_rgba(0,0,0,0.55)]'
-                          : 'object-cover object-center'
+                          ? 'p-2 sm:p-3 drop-shadow-[0_12px_28px_rgba(0,0,0,0.55)]'
+                          : ''
                       } ${isActive ? 'scale-[1.02]' : 'scale-100'}`}
                     />
                   </div>

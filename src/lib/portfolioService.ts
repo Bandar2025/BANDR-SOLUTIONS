@@ -190,9 +190,10 @@ function resolveCanonicalAuditOverrides(
     }
   } else if (docId === 'lumen-yemeni') {
     const isLegacyLumen =
-      !data.nameEn?.includes('Creative & Productivity') ||
-      data.nameAr === 'Lumen of Yemeni AI Platform' ||
-      !data.descriptionAr?.includes('Lumen of Yemeni منصة رقمية');
+      !data.nameEn?.includes('Multimodal AI & Digital Creativity Platform') ||
+      !data.nameAr?.includes('Lumen of Yemeni') ||
+      !data.descriptionAr?.includes('أبرز مجالات المشروع') ||
+      !data.thumbnailUrl;
 
     if (isLegacyLumen || !rawUrl || !rawUrl.includes('lumen-of-yemeni.vercel.app')) {
       resolvedUrl = baseline.url;
@@ -229,10 +230,12 @@ function resolveCanonicalAuditOverrides(
       needsFirestorePatch = true;
     }
   } else if (docId === 'smart-accounting-warehouse') {
-    // Correct Accounting -> FINB
+    // Correct Accounting -> FINB with 15 genuine screenshots and 9-test FIFO engine specification
     const isLegacyAccounting =
       !rawUrl ||
       resolvedCaseStudyOnly ||
+      !data.thumbnailUrl ||
+      !data.descriptionAr?.includes('9 اختبارات آلية') ||
       !data.nameEn?.includes('FINB') ||
       data.nameEn === 'Smart Accounting & Warehouse Management Platform' ||
       data.nameAr?.includes('المستودعات');
@@ -340,6 +343,28 @@ function resolveCanonicalAuditOverrides(
       resolvedCategoryLabelEn = baseline.categoryLabelEn;
       needsFirestorePatch = true;
     }
+  } else if (docId === 'novaro-erp') {
+    const isLegacyNovaroErp =
+      !data.url ||
+      !data.sourceUrl ||
+      data.isCaseStudyOnly ||
+      !data.thumbnailUrl ||
+      !data.nameAr?.includes('نوفارو (NOVARO ERP)');
+
+    if (isLegacyNovaroErp) {
+      resolvedUrl = baseline.url;
+      resolvedCaseStudyOnly = false;
+      resolvedNameAr = baseline.nameAr;
+      resolvedNameEn = baseline.nameEn;
+      resolvedDescriptionAr = baseline.descriptionAr;
+      resolvedDescriptionEn = baseline.descriptionEn;
+      resolvedContributionAr = baseline.engineeringContributionAr;
+      resolvedContributionEn = baseline.engineeringContributionEn;
+      resolvedCategory = baseline.category;
+      resolvedCategoryLabelAr = baseline.categoryLabelAr;
+      resolvedCategoryLabelEn = baseline.categoryLabelEn;
+      needsFirestorePatch = true;
+    }
   }
 
   return {
@@ -394,18 +419,23 @@ export function mapFirestoreRecordToProjectItem(
       categoryLabelEn:
         canonical.categoryLabelEn || data.categoryLabelEn || baseline.categoryLabelEn,
       technologies:
-        Array.isArray(data.technologies) && data.technologies.length > 0
-          ? data.technologies
-          : baseline.technologies,
+        docId === 'novaro-erp' || docId === 'smart-accounting-warehouse'
+          ? baseline.technologies
+          : Array.isArray(data.technologies) && data.technologies.length > 0
+            ? data.technologies
+            : baseline.technologies,
       technologiesSource:
         (Array.isArray(data.technologies) && data.technologies.length > 0) ||
         baseline.technologies.length > 0
           ? 'cv_stated'
           : baseline.technologiesSource,
       url: canonical.url,
-      sourceUrl: cleanSourceUrl,
+      sourceUrl: cleanSourceUrl || baseline.sourceUrl,
       featured: Boolean(data.featured),
-      displayOrder: Number(data.displayOrder) || baseline.displayOrder,
+      displayOrder:
+        docId === 'novaro-erp' || docId === 'smart-accounting-warehouse'
+          ? baseline.displayOrder
+          : Number(data.displayOrder) || baseline.displayOrder,
       status: data.status === 'draft' ? 'draft' : 'published',
       isCaseStudyOnly: canonical.isCaseStudyOnly,
       thumbnailUrl:

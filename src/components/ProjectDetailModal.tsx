@@ -25,6 +25,9 @@ import {
 } from '../data/portfolioData';
 import { ProjectVisualPreview } from './ProjectVisualPreview';
 import { fetchProjectGalleryItems } from '../lib/portfolioService';
+import { standardizeImageAspectRatio } from '../lib/aspectRatio';
+
+const MODAL_GALLERY_ASPECT = standardizeImageAspectRatio('16:9', 'cover', 'top');
 
 export interface ProjectDetailModalProps {
   project: ProjectItem | null;
@@ -411,10 +414,11 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                 <ProjectVisualPreview
                   project={project}
                   lang={lang}
-                  heightClass="h-80 sm:h-[440px]"
+                  aspectRatio="16:9"
+                  aspectRatioClass={MODAL_GALLERY_ASPECT.aspectRatioClass}
                   priorityLoading={true}
                   enableSlideshow={!lightboxOpen}
-                  fitMode="contain"
+                  fitMode="cover"
                   activeSlideIndexProp={currentModalSlideIndex}
                   onSlideChange={(idx) => {
                     setActiveLightboxIndex(idx);
@@ -551,14 +555,16 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                             : 'border-[var(--border-subtle)] hover:border-[var(--accent-primary)]'
                         }`}
                       >
-                        <img
-                          src={imgItem.url}
-                          alt={imgItem.alt}
-                          loading="lazy"
-                          decoding="async"
-                          referrerPolicy="no-referrer"
-                          className="w-full h-24 sm:h-28 object-cover"
-                        />
+                        <div className={`${MODAL_GALLERY_ASPECT.containerClass} bg-slate-950`}>
+                          <img
+                            src={imgItem.url}
+                            alt={imgItem.alt}
+                            loading="lazy"
+                            decoding="async"
+                            referrerPolicy="no-referrer"
+                            className={`${MODAL_GALLERY_ASPECT.imageClass} transition-transform duration-300 group-hover:scale-105`}
+                          />
+                        </div>
                         <div className="px-3 py-1.5 theme-bg-elevated text-xs theme-text-secondary truncate flex items-center justify-between">
                           <span className="truncate font-medium">{imgItem.label}</span>
                           {idx === 0 && (
@@ -1228,7 +1234,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                     key={idx}
                     type="button"
                     onClick={() => setActiveLightboxIndex(idx)}
-                    className={`relative rounded-lg overflow-hidden border-2 transition-all cursor-pointer shrink-0 w-16 h-12 ${
+                    className={`relative rounded-lg overflow-hidden border-2 transition-all cursor-pointer shrink-0 w-20 ${MODAL_GALLERY_ASPECT.aspectRatioClass} ${
                       activeLightboxIndex === idx
                         ? 'border-[var(--accent-primary)] ring-4 ring-[var(--accent-primary)]/50 scale-105'
                         : 'border-white/20 opacity-60 hover:opacity-100'
@@ -1237,7 +1243,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                     <img
                       src={img.url}
                       alt=""
-                      className="w-full h-full object-cover"
+                      className={MODAL_GALLERY_ASPECT.imageClass}
                     />
                   </button>
                 ))}

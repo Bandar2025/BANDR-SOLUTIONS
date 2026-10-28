@@ -74,6 +74,9 @@ import { ThemeSettingsCenter } from './ThemeSettingsCenter';
 import { ImageCropModal } from './ImageCropModal';
 import { AdminAnalyticsCharts } from './AdminAnalyticsCharts';
 import { AdminSeoManager } from './AdminSeoManager';
+import { standardizeImageAspectRatio } from '../lib/aspectRatio';
+
+const ADMIN_THUMBNAIL_ASPECT = standardizeImageAspectRatio('16:9', 'cover', 'top');
 
 export interface QueueImageItem {
   id: string;
@@ -1478,7 +1481,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <ProjectVisualPreview
                           project={project}
                           lang={lang}
-                          heightClass="h-48"
+                          aspectRatio="16:9"
+                          aspectRatioClass={ADMIN_THUMBNAIL_ASPECT.aspectRatioClass}
+                          fitMode="cover"
                         />
                         <div className="absolute top-3 end-3 flex items-center gap-1.5 z-10">
                           <span
@@ -2006,7 +2011,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               : editingProject.thumbnailUrl,
                         }}
                         lang={lang}
-                        heightClass="h-52"
+                        aspectRatio="16:9"
+                        aspectRatioClass={ADMIN_THUMBNAIL_ASPECT.aspectRatioClass}
+                        fitMode="cover"
                       />
                     </div>
                   </div>
@@ -2229,11 +2236,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               className="p-3 rounded-xl theme-bg-surface border theme-border space-y-2.5"
                             >
                               <div className="flex gap-3 items-start">
-                                <img
-                                  src={item.dataUrl || item.previewUrl}
-                                  alt="Queue preview"
-                                  className="w-20 aspect-[16/10] object-cover rounded-lg border theme-border shrink-0"
-                                />
+                                <div className={`w-24 ${ADMIN_THUMBNAIL_ASPECT.aspectRatioClass} overflow-hidden rounded-lg border theme-border shrink-0`}>
+                                  <img
+                                    src={item.dataUrl || item.previewUrl}
+                                    alt="Queue preview"
+                                    className={ADMIN_THUMBNAIL_ASPECT.imageClass}
+                                  />
+                                </div>
                                 <div className="flex-1 min-w-0 space-y-1">
                                   <div className="flex items-center justify-between gap-1">
                                     <span className="text-xs font-bold theme-text-primary truncate">
@@ -2372,13 +2381,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               }`}
                             >
                               <div className="flex gap-3 items-start">
-                                <div className="relative shrink-0">
+                                <div className={`relative shrink-0 w-28 ${ADMIN_THUMBNAIL_ASPECT.aspectRatioClass} overflow-hidden rounded-lg border theme-border`}>
                                   <img
                                     src={item.dataUrl}
                                     alt={isAr ? item.altAr : item.altEn}
                                     loading="lazy"
                                     decoding="async"
-                                    className="w-24 aspect-[16/10] object-cover rounded-lg border theme-border"
+                                    className={ADMIN_THUMBNAIL_ASPECT.imageClass}
                                   />
                                   <span className="absolute top-1 start-1 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-mono-tabular text-white">
                                     #{idx + 1}

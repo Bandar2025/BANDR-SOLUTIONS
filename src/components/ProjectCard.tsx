@@ -1,7 +1,10 @@
 import React, { useMemo } from 'react';
 import { ExternalLink, ArrowUpRight, BookOpen, ShieldCheck } from 'lucide-react';
 import { Language, ProjectItem, UI_TRANSLATIONS } from '../data/portfolioData';
+import { standardizeImageAspectRatio } from '../lib/aspectRatio';
 import { ProjectVisualPreview } from './ProjectVisualPreview';
+
+const CARD_THUMBNAIL_ASPECT = standardizeImageAspectRatio('16:9', 'cover', 'top');
 
 interface ProjectCardProps {
   project: ProjectItem;
@@ -77,17 +80,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = React.memo(
 
     return (
       <article className="group flex flex-col h-full rounded-2xl theme-bg-surface border theme-border hover:border-[var(--accent-primary)] transition-all duration-300 ease-out hover:scale-[1.025] hover:-translate-y-1 overflow-hidden shadow-xs hover:shadow-xl will-change-transform">
-        {/* Visual Preview / Genuine Screenshot (Fixed 16:10 Aspect Ratio with Shimmer Skeleton & Subtle Inner Hover Scale) */}
-        <div
-          className="w-full aspect-[16/10] overflow-hidden relative theme-bg-surface"
-          style={{ aspectRatio: '16 / 10' }}
-        >
+        {/* Visual Preview / Genuine Screenshot (Standardized 16:9 Aspect Ratio with CSS object-fit: cover) */}
+        <div className={`${CARD_THUMBNAIL_ASPECT.containerClass} theme-bg-surface`}>
           <div className="w-full h-full transition-transform duration-500 ease-out group-hover:scale-[1.03]">
             <ProjectVisualPreview
               project={project}
               lang={lang}
               priorityLoading={priorityLoading}
-              aspectRatioClass="aspect-[16/10]"
+              aspectRatioClass={CARD_THUMBNAIL_ASPECT.aspectRatioClass}
               fitMode="cover"
             />
           </div>
