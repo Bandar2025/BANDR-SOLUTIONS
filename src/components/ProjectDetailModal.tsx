@@ -33,6 +33,9 @@ export interface ProjectDetailModalProps {
   isAdminPreview?: boolean;
   preloadedGallery?: ProjectGalleryItem[];
   onInquireService?: (serviceTitle: string) => void;
+  onSelectTech?: (tech: string) => void;
+  selectedTech?: string | null;
+  allProjects?: ProjectItem[];
 }
 
 /**
@@ -91,6 +94,9 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
   isAdminPreview = false,
   preloadedGallery,
   onInquireService,
+  onSelectTech,
+  selectedTech,
+  allProjects = [],
 }) => {
   const isAr = lang === 'ar';
   const t = UI_TRANSLATIONS[lang].projects;
@@ -616,22 +622,80 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
               </div>
             </div>
 
-            {/* Technologies Grid */}
+            {/* Clickable Technologies Grid (Tech Stack Filter Badges) */}
             <div className="space-y-4">
-              <h3 className="text-lg sm:text-xl font-bold theme-text-primary flex items-center gap-2.5 border-b theme-border pb-3">
-                <FileCode2 className="w-5 h-5 theme-accent-text shrink-0" />
-                <span>{t.modalTechStack}</span>
-              </h3>
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b theme-border pb-3">
+                <h3 className="text-lg sm:text-xl font-bold theme-text-primary flex items-center gap-2.5">
+                  <FileCode2 className="w-5 h-5 theme-accent-text shrink-0" />
+                  <span>{t.modalTechStack}</span>
+                </h3>
+                {project.technologies.length > 0 && onSelectTech && (
+                  <span className="text-xs font-medium theme-text-muted">
+                    {isAr
+                      ? 'اضغط على أي تقنية لتصفية المشاريع المطابقة'
+                      : 'Click any badge to filter projects by technology'}
+                  </span>
+                )}
+              </div>
               {project.technologies.length > 0 ? (
-                <div className="flex flex-wrap items-center gap-2.5">
-                  {project.technologies.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-3.5 py-1.5 rounded-xl theme-bg-elevated border theme-border text-xs sm:text-sm font-bold theme-accent-text font-mono-tabular shadow-xs"
-                    >
-                      {tech}
-                    </span>
-                  ))}
+                <div className="flex flex-wrap items-center gap-2.5" role="group" aria-label={t.modalTechStack}>
+                  {project.technologies.map((tech) => {
+                    const isActiveTech =
+                      Boolean(selectedTech) &&
+                      selectedTech!.toLowerCase() === tech.toLowerCase();
+                    const matchingCount =
+                      allProjects.length > 0
+                        ? allProjects.filter(
+                            (p) =>
+                              p.status !== 'draft' &&
+                              p.technologies.some(
+                                (tItem) => tItem.toLowerCase() === tech.toLowerCase()
+                              )
+                          ).length
+                        : 0;
+
+                    return (
+                      <button
+                        key={tech}
+                        type="button"
+                        onClick={() => {
+                          if (onSelectTech) {
+                            onSelectTech(tech);
+                          }
+                        }}
+                        title={
+                          isAr
+                            ? `تصفية المشاريع التي تستخدم ${tech}`
+                            : `Filter projects built with ${tech}`
+                        }
+                        aria-pressed={isActiveTech}
+                        className={`group/tech inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs sm:text-sm font-bold font-mono-tabular transition-all duration-200 cursor-pointer shadow-xs hover:scale-105 active:scale-95 ${
+                          isActiveTech
+                            ? 'bg-[var(--accent-primary)] text-white border-[var(--accent-primary)] shadow-md'
+                            : 'theme-bg-elevated theme-border theme-accent-text hover:border-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10'
+                        }`}
+                      >
+                        <Code2
+                          className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover/tech:rotate-12 ${
+                            isActiveTech ? 'text-white' : 'theme-accent-text'
+                          }`}
+                          aria-hidden="true"
+                        />
+                        <span>{tech}</span>
+                        {matchingCount > 0 && (
+                          <span
+                            className={`px-1.5 py-0.5 rounded-md text-[10px] font-extrabold leading-none ${
+                              isActiveTech
+                                ? 'bg-white/20 text-white'
+                                : 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)]'
+                            }`}
+                          >
+                            {matchingCount}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               ) : (
                 <p className="text-sm theme-text-muted leading-relaxed">{t.modalTechNotClaimed}</p>

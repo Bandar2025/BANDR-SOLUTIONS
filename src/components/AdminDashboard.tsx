@@ -3,6 +3,7 @@ import {
   AlertTriangle,
   ArrowDown,
   ArrowUp,
+  BarChart3,
   CheckCircle2,
   Crop,
   Edit3,
@@ -10,6 +11,7 @@ import {
   EyeOff,
   FilePlus2,
   FolderKanban,
+  Globe,
   Image as ImageIcon,
   Loader2,
   Lock,
@@ -62,9 +64,16 @@ import {
   AppearancePreferences,
   GlobalPublishedAppearance,
 } from '../lib/themeSystem';
+import {
+  loadCachedRouteSeoMap,
+  RouteSeoMap,
+  subscribeRouteSeoConfig,
+} from '../lib/seoService';
 import { ProjectVisualPreview } from './ProjectVisualPreview';
 import { ThemeSettingsCenter } from './ThemeSettingsCenter';
 import { ImageCropModal } from './ImageCropModal';
+import { AdminAnalyticsCharts } from './AdminAnalyticsCharts';
+import { AdminSeoManager } from './AdminSeoManager';
 
 export interface QueueImageItem {
   id: string;
@@ -169,10 +178,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [authError, setAuthError] = useState<string | null>(null);
   const [signingIn, setSigningIn] = useState(false);
 
-  // Admin Console Active Section Tab ('projects' | 'appearance')
-  const [activeTab, setActiveTab] = useState<'projects' | 'appearance'>(
-    'projects'
+  // Admin Console Active Section Tab ('projects' | 'analytics' | 'seo' | 'appearance')
+  const [activeTab, setActiveTab] = useState<
+    'projects' | 'analytics' | 'seo' | 'appearance'
+  >('projects');
+
+  // Dynamic Route SEO Map state for Admin editing
+  const [seoMap, setSeoMap] = useState<RouteSeoMap>(() =>
+    loadCachedRouteSeoMap()
   );
+
+  useEffect(() => {
+    const unsub = subscribeRouteSeoConfig((liveMap) => {
+      setSeoMap(liveMap);
+    });
+    return () => unsub();
+  }, []);
 
   // Live Firestore projects list for Admin
   const [projects, setProjects] = useState<ProjectItem[]>(PROJECTS_DATA);
@@ -1251,7 +1272,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
           </div>
 
-          {/* Navigation Tabs: Projects & Media vs Appearance & Themes */}
+          {/* Navigation Tabs: Projects & Media vs Analytics (Recharts) vs Route SEO vs Appearance & Themes */}
           <div className="flex flex-wrap items-center gap-2 pt-2">
             <button
               type="button"
@@ -1267,6 +1288,40 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 {isAr
                   ? 'إدارة المشاريع والصور'
                   : 'Projects & Media Management'}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('analytics')}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-colors cursor-pointer ${
+                activeTab === 'analytics'
+                  ? 'theme-btn-primary'
+                  : 'theme-btn-secondary'
+              }`}
+            >
+              <BarChart3 className="w-4 h-4" />
+              <span>
+                {isAr
+                  ? 'الإحصائيات الفعلية (Recharts)'
+                  : 'Real Analytics (Recharts)'}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('seo')}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-colors cursor-pointer ${
+                activeTab === 'seo'
+                  ? 'theme-btn-primary'
+                  : 'theme-btn-secondary'
+              }`}
+            >
+              <Globe className="w-4 h-4" />
+              <span>
+                {isAr
+                  ? 'إدارة عناوين الصفحات و SEO'
+                  : 'Route SEO & Meta Manager'}
               </span>
             </button>
 
@@ -1322,8 +1377,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             authUser={authUser}
             isOwnerAdmin={true}
           />
+        ) : activeTab === 'seo' ? (
+          <AdminSeoManager
+            lang={lang}
+            authUser={authUser}
+            seoMap={seoMap}
+            onUpdateSeoMap={setSeoMap}
+          />
+        ) : activeTab === 'analytics' ? (
+          <AdminAnalyticsCharts lang={lang} projects={projects} />
         ) : (
           <>
+            {/* Interactive Recharts Analytics Overview inside Projects Tab as well */}
+            <AdminAnalyticsCharts lang={lang} projects={projects} />
             {/* Filter & Search Bar */}
             <div className="theme-bg-surface border theme-border rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4">
               <div className="relative flex-1 min-w-[240px]">

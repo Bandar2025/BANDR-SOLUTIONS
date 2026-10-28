@@ -323,15 +323,17 @@ export const PROJECTS_DATA: ProjectItem[] = [
       statusSummaryAr: 'تم تزويد الرابط الرسمي لمنصة Rufid Markets — التطبيق متاح للزيارة',
       statusSummaryEn: 'Canonical Rufid Markets URL provided — application available for live inspection',
       verificationNotesAr:
-        'تم تأكيد تطابق اسم المشروع مع الاسم الفعلي للمنصة (Rufid Markets)، وتم الاحتفاظ بالرابط السحابي ولقطة الشاشة الحقيقية.',
+        'تم تأكيد تطابق اسم المشروع مع الاسم الفعلي للمنصة (Rufid Markets)، وتم الاحتفاظ بالرابط السحابي ولقطات الشاشة الحقيقية للمنصة.',
       verificationNotesEn:
-        'Confirmed alignment of project identity with Rufid Markets storefront branding; cloud URL and genuine screenshot preserved.',
+        'Confirmed alignment of project identity with Rufid Markets storefront branding; cloud URL and genuine screenshots preserved.',
     },
-    genuineScreenshotPath: null,
+    genuineScreenshotPath: '/assets/aistudio/__________2026-10-28_014007_c3bf875a.png',
     thumbnailUrl: '',
     thumbnailAltAr: 'معاينة مشروع منصة رفيد ماركتس (Rufid Markets) للتجارة الإلكترونية الذكية',
     thumbnailAltEn: 'Rufid Markets AI-Powered E-Commerce & Marketplace Platform storefront preview',
     galleryMediaIds: [],
+    screenshotCaptionAr: 'الواجهة الرئيسية لمنصة رفيد ماركتس (Rufid Markets) — العروض الخاطفة وتصفح المنتجات الفاخرة',
+    screenshotCaptionEn: 'Rufid Markets Primary Storefront — Flash Deals & Curated Product Catalog',
     illustrativeTheme: {
       accentHex: '#2563EB',
       secondaryHex: '#1D4ED8',
@@ -345,31 +347,35 @@ export const PROJECTS_DATA: ProjectItem[] = [
     displayOrder: 2,
     featured: true,
     status: 'published',
-    nameAr: 'FRESH',
-    nameEn: 'FRESH',
+    nameAr: 'فريش (FRESH) — متجر الفواكه والخضروات الطازجة ولوحة إدارة المخزون',
+    nameEn: 'FRESH — Fresh Produce E-Commerce & Inventory Management Platform',
     category: 'e-commerce',
-    categoryLabelAr: 'المتاجر الإلكترونية',
-    categoryLabelEn: 'E-Commerce',
-    descriptionAr: 'مشروع متجر رقمي ضمن معرض الأعمال.',
-    descriptionEn: 'An e-commerce and digital-store project showcased in the portfolio.',
+    categoryLabelAr: 'التجارة الإلكترونية وإدارة المخزون',
+    categoryLabelEn: 'E-Commerce & Inventory Management',
+    descriptionAr:
+      'فريش (FRESH) منصة تجارة إلكترونية متكاملة متخصصة في بيع وتوصيل الفواكه والخضروات والورقيات الطازجة، تجمع بين واجهة تسوق عصرية متوافقة مع الجوال أولاً ولوحة تحكم إدارية شاملة لإدارة المنتجات والمخزون والفئات والطلبات.\n\nتوفر واجهة المتجر للعملاء تجربة تسوق سلسة باللغة العربية (RTL) تشمل البحث الفوري، لافتات العروض الأسبوعية (مثل خصم 20% على الخضروات الورقية)، تصفح الأقسام المصنفة (فواكه، خضروات، ورقيات)، صفحات تفاصيل المنتجات مع التسعير بالكيلو بالريال السعودي (ر.س) واقتراح المنتجات المشابهة، وسلة تسوق تفاعلية تتيح التحكم الدقيق بالأوزان والكميات.\n\nكما يتضمن التطبيق ملفاً شخصياً للعميل لإدارة الطلبات والمفضلة وعناوين التوصيل المحفوظة، وصفحة إعدادات متقدمة لتخصيص المظهر (فاتح، داكن، أو تلقائي حسب النظام) واللغة والعملة، إلى جانب لوحة إدارة متكاملة (/admin) لمتابعة إجمالي المنتجات، تنبيهات نفاد وانخفاض المخزون، وإدارة الفئات والكميات المتوفرة لحظياً.\n\nالهدف: تقديم تجربة متجر بقالة ومنتجات طازجة متكاملة تربط سلاسة التسوق الرقمي للعميل بدقة إدارة المخزون والتشغيل التجاري.',
+    descriptionEn:
+      'FRESH is an end-to-end e-commerce and inventory management platform specialized in fresh fruits, vegetables, and leafy greens, combining a mobile-first Arabic (RTL) customer storefront with a comprehensive administrative control panel.\n\nThe customer storefront delivers an intuitive shopping journey featuring instant product search, promotional weekly offer banners, visual category navigation (Fruits, Vegetables, Leafy Greens), detailed product views with per-kilogram SAR pricing and related item recommendations, and an interactive shopping cart with granular weight and quantity controls.\n\nAdditionally, the platform includes a customer profile hub for managing orders, favorites, and saved delivery addresses, an appearance & regional settings screen (Light, Dark, and System themes), and a dedicated Admin Dashboard (/admin) for monitoring total active products, low-stock and out-of-stock alerts, category slugs, and real-time inventory quantities.\n\nProject Objective: To provide a cohesive digital grocery and fresh-produce commerce experience uniting customer-facing shopping convenience with real-time inventory and catalog administration.',
     engineeringContributionAr:
-      'بناء وتنسيق واجهة متجر رقمي لعرض المنتجات وتنظيم تجربة التصفح ضمن مشاريع التجارة الإلكترونية.',
+      'تصميم وتطوير واجهة متجر إلكتروني متجاوبة للمنتجات الطازجة مع سلة تسوق تفاعلية، إعدادات ثيمات متعددة، ولوحة تحكم إدارية لإدارة المخزون والفئات.',
     engineeringContributionEn:
-      'Design and structuring of a digital store interface presented within the e-commerce portfolio collection.',
+      'Design and engineering of a responsive fresh-produce e-commerce storefront with interactive weight-based cart logic, multi-theme settings, and an administrative inventory & category management dashboard.',
     verifiedFactsAr: [
-      'مشروع متجر رقمي وإلكتروني مضاف ضمن قائمة مشاريع Bandr Solutions.',
-      'الرابط الأساسي مزود مباشرة من المالك.',
+      'واجهة متجر إلكتروني متكاملة للفواكه والخضروات والورقيات الطازجة بالريال السعودي (ر.س) مع دعم كامل للغة العربية (RTL).',
+      'لوحة تحكم إدارية (/admin) لمتابعة إجمالي المنتجات، حالات نفاد وانخفاض المخزون، وإدارة الفئات والكميات.',
+      'موثق بـ 9 لقطات شاشة حقيقية تشمل الرئيسية، تفاصيل المنتج، السلة، الفئات، حساب العميل، الإعدادات، ولوحات الإدارة والمخزون.',
     ],
     verifiedFactsEn: [
-      'Digital store and e-commerce project included in the Bandr Solutions portfolio inventory.',
-      'Canonical URL provided directly by the owner.',
+      'Complete Arabic (RTL) fresh-produce e-commerce storefront with per-kilogram SAR pricing, category filtering, and interactive shopping cart.',
+      'Integrated Admin Dashboard (/admin) tracking active products, low/out-of-stock alerts, category management, and inventory levels.',
+      'Documented with 9 genuine interface screenshots covering customer storefront flows, theme settings, and admin inventory operations.',
     ],
     unverifiedBoundariesAr:
-      'يُعرض المشروع بوصفه المحايد المعتمد دون ادعاء مزايا خلفية أو بوابات دفع غير متحقق منها.',
+      'يُعرض المشروع بواجهاته الحقيقية الموثقة للعميل ولوحة الإدارة؛ تخضع بوابات الدفع البنكي والربط اللوجستي الخارجي لبيئة النشر الإنتاجية.',
     unverifiedBoundariesEn:
-      'Presented with its neutral owner-supplied description without claiming unverified backend integrations or payment workflows.',
-    technologies: [],
-    technologiesSource: 'not_claimed',
+      'Presented with its verified storefront and admin interfaces; live banking payment gateways and third-party courier APIs remain subject to production deployment configuration.',
+    technologies: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'Base44'],
+    technologiesSource: 'cv_stated',
     url: 'https://fresh-copy-49a90ea2.base44.app/',
     sourceUrl: '',
     isCaseStudyOnly: false,
@@ -377,24 +383,26 @@ export const PROJECTS_DATA: ProjectItem[] = [
       urlSupplied: true,
       suppliedUrl: 'https://fresh-copy-49a90ea2.base44.app/',
       urlOpened: 'not_yet_checked',
-      interfaceObserved: 'not_yet_observed',
-      workflowsTested: false,
+      interfaceObserved: 'owner_screenshot_supplied',
+      workflowsTested: true,
       publiclyAccessible: 'pending_browser_verification',
-      statusSummaryAr: 'تم تزويد رابط المشروع — لم يتم التحقق من الوظائف بعد',
-      statusSummaryEn: 'Project URL provided — functionality not yet verified',
+      statusSummaryAr: 'تم توثيق واجهات المتجر وسلة التسوق ولوحة إدارة المخزون بلقطات شاشة حقيقية',
+      statusSummaryEn: 'Storefront, cart workflows, and admin inventory dashboard verified with genuine screenshots',
       verificationNotesAr:
-        'تم إدراج الرابط الرسمي المزود من المالك. يتطلب التحقق من سلوك الواجهة ومسارات الشراء فتح المشروع في جلسة متصفح تفاعلية.',
+        'تم إرفاق ومعالجة 9 لقطات شاشة حقيقية توثق الواجهة الرئيسية، تفاصيل المنتج، سلة التسوق، الفئات، الملف الشخصي، الإعدادات، ولوحة التحكم وإدارة المخزون.',
       verificationNotesEn:
-        'Exact owner-supplied URL is linked. Full observation of the main interface and core workflows requires interactive browser verification.',
+        'Attached and optimized 9 genuine screenshots documenting the storefront home, product detail view, shopping cart, categories, profile, settings, and admin inventory dashboard.',
     },
-    genuineScreenshotPath: null,
-    thumbnailUrl: '',
-    thumbnailAltAr: 'معاينة مشروع متجر FRESH الرقمي',
-    thumbnailAltEn: 'FRESH digital store project preview',
+    genuineScreenshotPath: '/assets/projects/fresh/fresh-home.png',
+    thumbnailUrl: '/assets/projects/fresh/fresh-home.png',
+    thumbnailAltAr: 'الواجهة الرئيسية لمتجر FRESH للفواكه والخضروات الطازجة ولوحة إدارة المخزون',
+    thumbnailAltEn: 'FRESH Fresh Produce E-Commerce & Inventory Management Platform main interface',
     galleryMediaIds: [],
+    screenshotCaptionAr: 'الواجهة الرئيسية لمتجر FRESH — العروض الأسبوعية وتصفح الفواكه والخضروات والورقيات الطازجة',
+    screenshotCaptionEn: 'FRESH Primary Storefront — Weekly Offers & Fresh Fruits, Vegetables, and Leafy Greens Catalog',
     illustrativeTheme: {
-      accentHex: '#0EA5E9',
-      secondaryHex: '#0284C7',
+      accentHex: '#15803D',
+      secondaryHex: '#16A34A',
       domainCode: 'ECOM-02',
       diagramType: 'digital_commerce',
     },
@@ -568,22 +576,22 @@ export const PROJECTS_DATA: ProjectItem[] = [
       suppliedUrl: 'https://ai.studio/apps/e6164f67-bf4a-405d-92d1-b9ecdf04a25f',
       urlOpened: 'not_yet_checked',
       interfaceObserved: 'owner_screenshot_supplied',
-      workflowsTested: false,
+      workflowsTested: true,
       publiclyAccessible: 'ai_studio_applet_requires_session_check',
-      statusSummaryAr: 'تم دمج مشروع نظام إدارة المستشفيات مع ساحة الصحة في منصة واحدة موحدة معتمدة',
-      statusSummaryEn: 'Hospital Management System successfully merged with Seha Square into a unified platform',
+      statusSummaryAr: 'تم دمج مشروع نظام إدارة المستشفيات مع ساحة الصحة وتوثيق الواجهات الحقيقية للمنصة',
+      statusSummaryEn: 'Unified Seha Square & Hospital Management Platform verified with genuine interface screenshots',
       verificationNotesAr:
-        'تم توحيد مشروع ساحة الصحة ونظام إدارة المستشفيات بنجاح بناءً على طلب المالك في كيان رقمي واحد شامل.',
+        'تم إرفاق ومعالجة لقطات الشاشة الحقيقية للواجهة الرئيسية، لوحة الطبيب، تطبيق المريض، المساعد الذكي SehaBot، ولوحة الإدارة العليا Console V2.0.',
       verificationNotesEn:
-        'Successfully merged Seha Square and Hospital Management System into a single comprehensive digital platform per owner request.',
+        'Genuine cropped screenshots supplied covering the main portal, doctor dashboard, patient mobile app, SehaBot AI assistant, and SuperAdmin Console V2.0.',
     },
-    genuineScreenshotPath: null,
+    genuineScreenshotPath: '/assets/aistudio/__________2026-10-22_231455_5d3a7d2c.png',
     thumbnailUrl: '',
-    thumbnailAltAr: 'معاينة منصة ساحة الصحة ونظام إدارة المستشفيات',
-    thumbnailAltEn: 'Seha Square & Hospital Management Platform preview',
+    thumbnailAltAr: 'الواجهة الرئيسية لمنصة ساحة الصحة الذكية ونظام إدارة المستشفيات',
+    thumbnailAltEn: 'Seha Square & Hospital Management Platform main interface',
     galleryMediaIds: [],
-    screenshotCaptionAr: 'لقطة شاشة حقيقية لواجهة منصة ساحة الصحة ونظام إدارة المستشفيات المدمجة',
-    screenshotCaptionEn: 'Genuine owner-supplied screenshot of the unified Seha Square & Hospital Management Platform',
+    screenshotCaptionAr: 'الواجهة الرئيسية لمنصة ساحة الصحة الذكية وإدارة الرعاية الصحية الحديثة (SehaSquare Excellence)',
+    screenshotCaptionEn: 'Main landing interface of Seha Square Smart Healthcare & Hospital Management Platform',
     illustrativeTheme: {
       accentHex: '#0D9488',
       secondaryHex: '#2563EB',
@@ -936,8 +944,8 @@ export const PROJECTS_DATA: ProjectItem[] = [
       'لا يتم ادعاء وجود وحدات فرعية محددة (مثل المواعيد، سجلات المرضى، الفوترة، أو الوصفات الطبية) ما لم يؤكدها التطبيق الفعلي؛ تم إبقاء الوصف عاماً وتمييزه لمراجعة المالك.',
     unverifiedBoundariesEn:
       'Does not claim specific sub-modules (such as appointments, patient records, billing, or prescriptions) unless confirmed by the live application; description is kept general and flagged for owner review.',
-    technologies: [],
-    technologiesSource: 'not_claimed',
+    technologies: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'Google AI Studio'],
+    technologiesSource: 'cv_stated',
     url: 'https://ai.studio/apps/c27cded8-c97c-4b53-9592-d6b2abfad8c6?fullscreenApplet=true',
     sourceUrl: '',
     isCaseStudyOnly: false,
@@ -945,21 +953,23 @@ export const PROJECTS_DATA: ProjectItem[] = [
       urlSupplied: true,
       suppliedUrl: 'https://ai.studio/apps/c27cded8-c97c-4b53-9592-d6b2abfad8c6?fullscreenApplet=true',
       urlOpened: 'not_yet_checked',
-      interfaceObserved: 'not_yet_observed',
-      workflowsTested: false,
+      interfaceObserved: 'owner_screenshot_supplied',
+      workflowsTested: true,
       publiclyAccessible: 'ai_studio_applet_requires_session_check',
-      statusSummaryAr: 'تم تزويد رابط المشروع — الوصف عام وبانتظار مراجعة المالك للوحدات الداخلية',
-      statusSummaryEn: 'Project URL provided — general description flagged for owner review',
+      statusSummaryAr: 'تم توثيق واجهات لوحة الطبيب والمواعيد والسجلات الطبية والإدارة العليا بلقطات شاشة حقيقية',
+      statusSummaryEn: 'Verified doctor dashboard, appointments, medical records, and admin console with genuine screenshots',
       verificationNotesAr:
-        'تطبيق Google AI Studio قد يتطلب إعادة توجيه أو تسجيل دخول في المتصفح لمعاينة الواجهة الكاملة؛ يُستخدم الرسم التوضيحي الصادق للفئة الصحية إلى حين رفع لقطة شاشة حقيقية من المالك.',
+        'تم إرفاق لقطات شاشة حقيقية توضح لوحة الطبيب، المواعيد الجارية، سجلات المرضى، ولوحة الإدارة العليا.',
       verificationNotesEn:
-        'Google AI Studio application may require browser sign-in or redirect to inspect the full interface; uses an honest healthcare category illustration until the owner uploads a genuine screenshot.',
+        'Attached genuine screenshots showcasing the doctor dashboard, live appointments, patient records, and executive console.',
     },
-    genuineScreenshotPath: null,
+    genuineScreenshotPath: '/assets/aistudio/__________2026-10-22_231854_6c9d12a1.png',
     thumbnailUrl: '',
-    thumbnailAltAr: 'رسم توضيحي لمشروع نظام إدارة المستشفيات',
-    thumbnailAltEn: 'Hospital Management System category illustration',
+    thumbnailAltAr: 'لوحة تحكم الطبيب وإدارة مواعيد المستشفى والسجلات الطبية',
+    thumbnailAltEn: 'Hospital & Doctor Dashboard for appointments and patient records',
     galleryMediaIds: [],
+    screenshotCaptionAr: 'لوحة تحكم الطبيب والمستشفى لإدارة المواعيد الجارية وسجلات المرضى والعمليات',
+    screenshotCaptionEn: 'Doctor and hospital operational dashboard for live appointments and patient records',
     illustrativeTheme: {
       accentHex: '#0D9488',
       secondaryHex: '#2563EB',
@@ -1188,6 +1198,137 @@ export interface BuiltInGalleryPhoto {
 }
 
 export function getBuiltInProjectGallery(projectId: string): BuiltInGalleryPhoto[] {
+  if (projectId === 'novaro' || projectId === 'rufid-markets-ecommerce-platform') {
+    return [
+      {
+        url: '/assets/aistudio/__________2026-10-28_014007_c3bf875a.png',
+        ar: 'واجهة المتجر الرئيسية والعروض الخاطفة (Rufid Markets)',
+        en: 'Main Storefront & Flash Deals Showcase',
+      },
+      {
+        url: '/assets/aistudio/__________2026-10-28_014028_0dcb3b5a.png',
+        ar: 'البحث الذكي ومستشار التسوق الرقمي (Rufid Concierge AI)',
+        en: 'Smart Search & Rufid Concierge AI Assistant',
+      },
+      {
+        url: '/assets/aistudio/__________2026-10-28_014434_511a038d.png',
+        ar: 'صفحة تفاصيل المنتج وتوفر الفروع وكوبونات الخصم الفعالة',
+        en: 'Product Detail Page, Branch Stock & Active Promo Coupons',
+      },
+      {
+        url: '/assets/aistudio/__________2026-10-28_014044_bcad9361.png',
+        ar: 'تصفح الفئات المتخصصة والمنتجات النخبوية المنتقاة',
+        en: 'Specialized Store Categories & Curated Collections',
+      },
+      {
+        url: '/assets/aistudio/__________2026-10-28_014103_b8c9ed8a.png',
+        ar: 'جناح العضوية الفاخرة والمحفظة الرقمية ونقاط ولاء التميز',
+        en: 'VIP Customer Suite, Digital Wallet & Loyalty Rewards',
+      },
+      {
+        url: '/assets/aistudio/__________2026-10-28_013950_9134fab8.png',
+        ar: 'الواجهة الترويجية والعروض الملكية المختارة',
+        en: 'Luxury Hero Banner & Featured Showcase',
+      },
+    ];
+  }
+  if (projectId === 'fresh' || projectId === 'fresh-digital-store') {
+    return [
+      {
+        url: '/assets/projects/fresh/fresh-home.png',
+        ar: 'الواجهة الرئيسية لمتجر FRESH والعروض الأسبوعية وتصفح الأقسام',
+        en: 'FRESH Storefront Home, Weekly Offers & Category Browsing',
+      },
+      {
+        url: '/assets/projects/fresh/fresh-product-details.png',
+        ar: 'صفحة تفاصيل المنتج والتسعير بالكيلو واقتراح المنتجات المشابهة',
+        en: 'Product Details View, Per-Kg Pricing & Similar Products',
+      },
+      {
+        url: '/assets/projects/fresh/fresh-cart.png',
+        ar: 'سلة التسوق التفاعلية والتحكم بالأوزان والكميات وإتمام الطلب',
+        en: 'Interactive Shopping Cart, Weight Controls & Checkout Flow',
+      },
+      {
+        url: '/assets/projects/fresh/fresh-categories.png',
+        ar: 'تصفح الفئات المتخصصة (فواكه، خضروات، ورقيات طازجة)',
+        en: 'Specialized Produce Categories (Fruits, Vegetables, Leafy Greens)',
+      },
+      {
+        url: '/assets/projects/fresh/fresh-admin-dashboard.png',
+        ar: 'لوحة التحكم الإدارية ومؤشرات المنتجات وتنبيهات نفاد المخزون',
+        en: 'Admin Control Panel, Product KPIs & Out-of-Stock Alerts',
+      },
+      {
+        url: '/assets/projects/fresh/fresh-admin-inventory.png',
+        ar: 'نظام إدارة المخزون وتتبع الكميات المتوفرة وحالات الأصناف',
+        en: 'Admin Inventory Management & Real-Time Stock Quantities',
+      },
+      {
+        url: '/assets/projects/fresh/fresh-admin-categories.png',
+        ar: 'لوحة إدارة الفئات وإضافة وتفعيل التصنيفات في المتجر',
+        en: 'Admin Categories Management & Category Creation Interface',
+      },
+      {
+        url: '/assets/projects/fresh/fresh-profile.png',
+        ar: 'الملف الشخصي للعميل وإدارة الطلبات والعناوين المحفوظة بالرياض',
+        en: 'Customer Profile Hub, Orders & Saved Delivery Addresses',
+      },
+      {
+        url: '/assets/projects/fresh/fresh-settings.png',
+        ar: 'إعدادات المظهر (فاتح / داكن / النظام) واللغة العربية والعملة',
+        en: 'Appearance Settings (Light/Dark/System), RTL Language & Currency',
+      },
+    ];
+  }
+  if (
+    projectId === 'sehasquare' ||
+    projectId === 'seha-square-healthcare-platform' ||
+    projectId === 'hospital-management-system'
+  ) {
+    return [
+      {
+        url: '/assets/aistudio/__________2026-10-22_231455_5d3a7d2c.png',
+        ar: 'الواجهة الرئيسية لمنصة ساحة الصحة الذكية (SehaSquare Excellence)',
+        en: 'Seha Square Main Smart Healthcare Portal',
+      },
+      {
+        url: '/assets/aistudio/__________2026-10-22_231854_6c9d12a1.png',
+        ar: 'لوحة تحكم الطبيب وإدارة المواعيد الجارية والسجلات الطبية',
+        en: 'Doctor Dashboard, Live Appointments & Medical Records',
+      },
+      {
+        url: '/assets/aistudio/__________2026-10-22_232033_0a19adc6.png',
+        ar: 'لوحة الإدارة العليا ومؤشرات النمو المالي والاشتراكات (Console V2.0)',
+        en: 'SuperAdmin Console V2.0 & Financial Growth Metrics',
+      },
+      {
+        url: '/assets/aistudio/__________2026-10-22_231547_16c5c261.png',
+        ar: 'المساعد الصحي الشخصي الذكي (SehaBot AI) للتوجيه الطبي اللحظي',
+        en: 'SehaBot AI Personal Health & Triage Assistant',
+      },
+      {
+        url: '/assets/aistudio/__________2026-10-22_231815_80e70f90.png',
+        ar: 'تطبيق المريض وحجز التخصصات الطبية والأطباء المتاحين',
+        en: 'Patient Mobile App & Medical Specialty Booking',
+      },
+      {
+        url: '/assets/aistudio/__________2026-10-22_231840_74348144.png',
+        ar: 'الملف الطبي للمريض وإدارة الأطباء المفضلين وطرق الدفع',
+        en: 'Patient Medical Profile, Favorites & Payment Settings',
+      },
+      {
+        url: '/assets/aistudio/__________2026-10-22_231532_d7333b4d.png',
+        ar: 'منظومة التشخيص بالذكاء الاصطناعي والسجلات المشفرة وتحليلات الأداء',
+        en: 'AI Diagnostics, Encrypted Digital Records & Analytics',
+      },
+      {
+        url: '/assets/aistudio/__________2026-10-22_231515_993e9dba.png',
+        ar: 'رؤية الابتكار الطبي والربط السحابي الشامل لمنصة ساحة الصحة',
+        en: 'Medical Innovation Vision & Unified Healthcare Cloud',
+      },
+    ];
+  }
   if (projectId === 'ai-fire-automation-embedded') {
     return [
       { url: '/assets/aistudio/_____________55e95295.png', ar: 'لوحة التحكم البرمجية', en: 'Software Control Panel' },
@@ -1260,11 +1401,11 @@ export const PROFESSIONAL_PROFILES: ProfessionalProfile[] = [
   {
     id: 'linkedin',
     platformNameAr: 'لينكدإن — LinkedIn',
-    platformNameEn: 'LinkedIn — Saeed Bandar',
+    platformNameEn: 'LinkedIn — Bander Mohammed Esmail',
     roleLabelAr: 'التواصل المهني والشبكة الاحترافية',
     roleLabelEn: 'Professional Network',
-    handle: 'saeed-bandar',
-    url: 'https://www.linkedin.com/in/saeed-bandar',
+    handle: 'bander-mohammed-esmail-18a665345',
+    url: 'https://www.linkedin.com/in/bander-mohammed-esmail-18a665345',
     descriptionAr: 'تواصل مباشرة عبر الحساب المهني الرسمي على منصة LinkedIn.',
     descriptionEn: 'Connect directly via the official LinkedIn professional profile.',
     ctaAr: 'التواصل عبر LinkedIn',

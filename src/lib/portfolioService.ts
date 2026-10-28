@@ -283,6 +283,25 @@ function resolveCanonicalAuditOverrides(
       resolvedCaseStudyOnly = false;
       needsFirestorePatch = true;
     }
+  } else if (docId === 'fresh') {
+    // Upgrade legacy minimal FRESH seed to full verified FRESH storefront & inventory description
+    const isMinimalLegacyFresh =
+      data.nameAr === 'FRESH' ||
+      data.nameEn === 'FRESH' ||
+      data.descriptionAr === 'مشروع متجر رقمي ضمن معرض الأعمال.';
+
+    if (isMinimalLegacyFresh) {
+      resolvedNameAr = baseline.nameAr;
+      resolvedNameEn = baseline.nameEn;
+      resolvedDescriptionAr = baseline.descriptionAr;
+      resolvedDescriptionEn = baseline.descriptionEn;
+      resolvedContributionAr = baseline.engineeringContributionAr;
+      resolvedContributionEn = baseline.engineeringContributionEn;
+      resolvedCategory = baseline.category;
+      resolvedCategoryLabelAr = baseline.categoryLabelAr;
+      resolvedCategoryLabelEn = baseline.categoryLabelEn;
+      needsFirestorePatch = true;
+    }
   }
 
   return {
@@ -336,9 +355,13 @@ export function mapFirestoreRecordToProjectItem(
         canonical.categoryLabelAr || data.categoryLabelAr || baseline.categoryLabelAr,
       categoryLabelEn:
         canonical.categoryLabelEn || data.categoryLabelEn || baseline.categoryLabelEn,
-      technologies: Array.isArray(data.technologies) ? data.technologies : baseline.technologies,
-      technologiesSource:
+      technologies:
         Array.isArray(data.technologies) && data.technologies.length > 0
+          ? data.technologies
+          : baseline.technologies,
+      technologiesSource:
+        (Array.isArray(data.technologies) && data.technologies.length > 0) ||
+        baseline.technologies.length > 0
           ? 'cv_stated'
           : baseline.technologiesSource,
       url: canonical.url,
@@ -347,7 +370,7 @@ export function mapFirestoreRecordToProjectItem(
       displayOrder: Number(data.displayOrder) || baseline.displayOrder,
       status: data.status === 'draft' ? 'draft' : 'published',
       isCaseStudyOnly: canonical.isCaseStudyOnly,
-      thumbnailUrl: data.thumbnailUrl || '',
+      thumbnailUrl: data.thumbnailUrl || baseline.thumbnailUrl || '',
       thumbnailAltAr: data.thumbnailAltAr || baseline.thumbnailAltAr || '',
       thumbnailAltEn: data.thumbnailAltEn || baseline.thumbnailAltEn || '',
       galleryMediaIds: Array.isArray(data.galleryMediaIds) ? data.galleryMediaIds : [],

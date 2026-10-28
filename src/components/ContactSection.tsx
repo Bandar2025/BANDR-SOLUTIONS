@@ -17,6 +17,7 @@ import {
   SERVICES_DATA,
   UI_TRANSLATIONS,
 } from '../data/portfolioData';
+import { recordContactInteraction } from '../lib/analyticsService';
 
 interface ContactSectionProps {
   lang: Language;
@@ -42,12 +43,25 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
     const [touched, setTouched] = useState(false);
     const [briefPrepared, setBriefPrepared] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [hasTrackedFieldFocus, setHasTrackedFieldFocus] = useState(false);
+
+    useEffect(() => {
+      recordContactInteraction('form_view');
+    }, []);
 
     useEffect(() => {
       if (preselectedService) {
         setProjectType(preselectedService);
+        recordContactInteraction('field_interaction', preselectedService);
       }
     }, [preselectedService]);
+
+    const handleTrackFirstInteraction = () => {
+      if (!hasTrackedFieldFocus) {
+        setHasTrackedFieldFocus(true);
+        recordContactInteraction('field_interaction', projectType || undefined);
+      }
+    };
 
     const errors = {
       name: name.trim().length < 2 ? t.errors.nameRequired : '',
@@ -79,12 +93,15 @@ export const ContactSection: React.FC<ContactSectionProps> = React.memo(
     const handlePrepareBrief = (e: React.FormEvent) => {
       e.preventDefault();
       setTouched(true);
+      handleTrackFirstInteraction();
       if (isValid) {
         setBriefPrepared(true);
+        recordContactInteraction('brief_prepared', projectType.trim());
       }
     };
 
     const handleCopyBrief = async () => {
+      recordContactInteraction('copy_brief', projectType.trim());
       try {
         await navigator.clipboard.writeText(formattedBrief);
         setCopied(true);

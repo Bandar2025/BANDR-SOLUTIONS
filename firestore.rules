@@ -340,31 +340,70 @@ service cloud.firestore {
 
     // Collection 3: /site_settings/{settingId}
     match /site_settings/{settingId} {
-      // Public visitors can read the global 'appearance' document; no list scraping allowed
-      allow get: if settingId == 'appearance';
+      // Public visitors can read global 'appearance' and 'seo_routes' documents
+      allow get: if settingId == 'appearance' || settingId == 'seo_routes';
       allow list: if false;
 
-      // Only verified Owner Admin can create or update global appearance settings
-      allow create: if isAdmin() &&
-        settingId == 'appearance' &&
-        isValidSiteAppearance(incoming()) &&
-        incoming().createdAt == request.time &&
-        incoming().updatedAt == request.time;
+      // Only verified Owner Admin can create or update global appearance or SEO route settings
+      allow create: if isAdmin() && (
+        (
+          settingId == 'appearance' &&
+          isValidSiteAppearance(incoming()) &&
+          incoming().createdAt == request.time &&
+          incoming().updatedAt == request.time
+        ) ||
+        (
+          settingId == 'seo_routes' &&
+          incoming().keys().hasAll(['routesJson', 'ownerUid', 'updatedAt']) &&
+          incoming().keys().hasOnly(['routesJson', 'ownerUid', 'updatedAt']) &&
+          incoming().routesJson is string &&
+          incoming().routesJson.size() >= 2 &&
+          incoming().routesJson.size() <= 50000 &&
+          incoming().ownerUid == request.auth.uid
+        )
+      );
 
-      allow update: if isValidSiteAppearance(incoming()) &&
-        settingId == 'appearance' &&
-        isAdmin() &&
-        incoming().createdAt == existing().createdAt &&
-        incoming().ownerUid == existing().ownerUid &&
-        incoming().updatedAt == request.time &&
-        incoming().diff(existing()).affectedKeys().hasOnly([
-          'themeId',
-          'density',
-          'reducedMotion',
-          'updatedAt'
-        ]);
+      allow update: if isAdmin() && (
+        (
+          settingId == 'appearance' &&
+          isValidSiteAppearance(incoming()) &&
+          incoming().createdAt == existing().createdAt &&
+          incoming().ownerUid == existing().ownerUid &&
+          incoming().updatedAt == request.time &&
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'themeId',
+            'density',
+            'reducedMotion',
+            'updatedAt'
+          ])
+        ) ||
+        (
+          settingId == 'seo_routes' &&
+          incoming().keys().hasAll(['routesJson', 'ownerUid', 'updatedAt']) &&
+          incoming().keys().hasOnly(['routesJson', 'ownerUid', 'updatedAt']) &&
+          incoming().routesJson is string &&
+          incoming().routesJson.size() >= 2 &&
+          incoming().routesJson.size() <= 50000 &&
+          incoming().ownerUid == request.auth.uid
+        )
+      );
 
       allow delete: if false;
+    }
+
+    // Collection 3b: /site_analytics/{docId} (Real Visitor & Interaction Telemetry)
+    match /site_analytics/{docId} {
+      allow get: if docId == 'telemetry';
+      allow list: if false;
+      allow create, update: if docId == 'telemetry' &&
+        incoming().keys().hasAll(['payloadJson', 'updatedAt']) &&
+        incoming().keys().hasOnly(['payloadJson', 'updatedAt']) &&
+        incoming().payloadJson is string &&
+        incoming().payloadJson.size() >= 2 &&
+        incoming().payloadJson.size() <= 100000 &&
+        incoming().updatedAt is string &&
+        incoming().updatedAt.size() <= 60;
+      allow delete: if isAdmin();
     }
 
     // Collection 4: /admins/{adminId}

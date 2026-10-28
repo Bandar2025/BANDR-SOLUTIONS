@@ -29,6 +29,16 @@ import {
   savePersonalAppearance,
   subscribePublishedSiteAppearance,
 } from './lib/themeSystem';
+import {
+  applyRouteSeoToDocument,
+  loadCachedRouteSeoMap,
+  RouteSeoMap,
+  subscribeRouteSeoConfig,
+} from './lib/seoService';
+import {
+  recordPageVisit,
+  recordProjectInteraction,
+} from './lib/analyticsService';
 
 const LazyAdminDashboard = lazy(() => import('./components/AdminDashboard'));
 
@@ -77,7 +87,13 @@ export default function App() {
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(
     null
   );
+  const [selectedTech, setSelectedTech] = useState<string | null>(null);
   const [preselectedService, setPreselectedService] = useState<string>('');
+
+  // Dynamic Route SEO Metadata State (synced from Firestore /site_settings/seo_routes)
+  const [routeSeoMap, setRouteSeoMap] = useState<RouteSeoMap>(() =>
+    loadCachedRouteSeoMap()
+  );
 
   // Subscribe to published projects in Firestore for public visitors
   useEffect(() => {
@@ -93,6 +109,14 @@ export default function App() {
   useEffect(() => {
     const unsubscribe = subscribePublishedSiteAppearance((published) => {
       setGlobalPublished(published);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Subscribe to dynamic route SEO metadata in Firestore (/site_settings/seo_routes)
+  useEffect(() => {
+    const unsubscribe = subscribeRouteSeoConfig((liveSeoMap) => {
+      setRouteSeoMap(liveSeoMap);
     });
     return () => unsubscribe();
   }, []);
@@ -142,7 +166,7 @@ export default function App() {
     setPersonalPrefs(null);
   }, []);
 
-  // Synchronize document language, RTL/LTR direction, and SEO metadata
+  // Synchronize document language, RTL/LTR direction, and dynamic Route SEO metadata
   useEffect(() => {
     const isAr = lang === 'ar';
     document.documentElement.lang = lang;
@@ -154,55 +178,13 @@ export default function App() {
       // Ignore storage errors
     }
 
-    const baseTitle = isAr
-      ? 'Bandr Solutions | معرض الأعمال والمشاريع التقنية'
-      : 'Bandr Solutions | Web Development & Digital Portfolio';
+    applyRouteSeoToDocument(currentPath, lang, routeSeoMap);
+  }, [lang, currentPath, routeSeoMap]);
 
-    const routeSuffixMap: Record<RoutePath, { ar: string; en: string }> = {
-      '/': { ar: '', en: '' },
-      '/projects': {
-        ar: ' — المشاريع ودراسات الحالة',
-        en: ' — Projects & Case Studies',
-      },
-      '/services': { ar: ' — الخدمات التقنية', en: ' — Services Offered' },
-      '/community': { ar: ' — المنتدى والتحديثات', en: ' — Community & Updates' },
-      '/about': { ar: ' — نبذة والسيرة الذاتية', en: ' — About & CV' },
-      '/contact': { ar: ' — تواصل معي', en: ' — Contact' },
-      '/admin': {
-        ar: ' — لوحة الإدارة الخاصة',
-        en: ' — Private Admin Console',
-      },
-      '/404': {
-        ar: ' — 404 الصفحة غير موجودة',
-        en: ' — 404 Page Not Found',
-      },
-    };
-
-    const suffix = routeSuffixMap[currentPath]?.[lang] || '';
-    const fullTitle = `${baseTitle}${suffix}`;
-    document.title = fullTitle;
-
-    const descriptionText = isAr
-      ? 'اكتشف أعمال Bandr Solutions في تطوير المواقع والمتاجر الإلكترونية والمشاريع الرقمية.'
-      : 'Explore web projects, e-commerce experiences, and digital work showcased by Bandr Solutions.';
-
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute('content', descriptionText);
-
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) ogTitle.setAttribute('content', fullTitle);
-
-    const ogDesc = document.querySelector('meta[property="og:description"]');
-    if (ogDesc) ogDesc.setAttribute('content', descriptionText);
-
-    const canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical) {
-      canonical.setAttribute(
-        'href',
-        window.location.origin + window.location.pathname
-      );
-    }
-  }, [lang, currentPath]);
+  // Record real page visit telemetry when route changes
+  useEffect(() => {
+    recordPageVisit();
+  }, [currentPath]);
 
   // Listen to browser back/forward navigation
   useEffect(() => {
@@ -233,12 +215,39 @@ export default function App() {
     [handleNavigate]
   );
 
+  const handleOpenProjectModal = useCallback((project: ProjectItem | null) => {
+    if (project) {
+      recordProjectInteraction(project.id, 'case_study');
+    }
+    setSelectedProject(project);
+  }, []);
+
   const handleSelectProjectId = useCallback(
     (id: string) => {
       const found = projects.find((p) => p.id === id);
-      if (found) setSelectedProject(found);
+      if (found) handleOpenProjectModal(found);
     },
-    [projects]
+    [projects, handleOpenProjectModal]
+  );
+
+  const handleSelectTechFromModal = useCallback(
+    (tech: string) => {
+      setSelectedTech(tech);
+      setSelectedProject(null);
+      if (currentPath !== '/' && currentPath !== '/projects') {
+        if (window.location.pathname !== '/projects') {
+          window.history.pushState({}, '', '/projects');
+        }
+        setCurrentPath('/projects');
+      }
+      window.setTimeout(() => {
+        const el = document.getElementById('projects-section');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 80);
+    },
+    [currentPath]
   );
 
   const notFoundT = UI_TRANSLATIONS[lang].notFound;
@@ -263,13 +272,15 @@ export default function App() {
               onNavigate={handleNavigate}
               reducedMotionActive={activeReducedMotion}
               projects={projects}
-              onSelectProject={setSelectedProject}
+              onSelectProject={handleOpenProjectModal}
             />
             <ProjectsSection
               lang={lang}
               projects={projects}
-              onSelectProject={setSelectedProject}
+              onSelectProject={handleOpenProjectModal}
               showDedicatedDomainBreakdowns={true}
+              selectedTech={selectedTech}
+              onSelectTech={setSelectedTech}
             />
             <ProfilesSection lang={lang} />
             <ServicesSection
@@ -318,8 +329,10 @@ export default function App() {
             <ProjectsSection
               lang={lang}
               projects={projects}
-              onSelectProject={setSelectedProject}
+              onSelectProject={handleOpenProjectModal}
               showDedicatedDomainBreakdowns={true}
+              selectedTech={selectedTech}
+              onSelectTech={setSelectedTech}
             />
             <ProfilesSection lang={lang} />
           </>
@@ -449,6 +462,9 @@ export default function App() {
         onClose={() => setSelectedProject(null)}
         isAdminPreview={currentPath === '/admin'}
         onInquireService={handleInquireService}
+        onSelectTech={handleSelectTechFromModal}
+        selectedTech={selectedTech}
+        allProjects={projects}
       />
     </div>
   );
