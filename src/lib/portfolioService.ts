@@ -302,6 +302,44 @@ function resolveCanonicalAuditOverrides(
       resolvedCategoryLabelEn = baseline.categoryLabelEn;
       needsFirestorePatch = true;
     }
+  } else if (docId === 'pawere-global-store') {
+    const isLegacyPawere =
+      data.nameAr?.includes('متجر مستلزمات الحيوانات الأليفة') ||
+      data.nameEn?.includes('Pet Supplies E-Commerce Platform') ||
+      !data.nameAr?.includes('Pawere Global Store');
+
+    if (isLegacyPawere) {
+      resolvedNameAr = baseline.nameAr;
+      resolvedNameEn = baseline.nameEn;
+      resolvedDescriptionAr = baseline.descriptionAr;
+      resolvedDescriptionEn = baseline.descriptionEn;
+      resolvedContributionAr = baseline.engineeringContributionAr;
+      resolvedContributionEn = baseline.engineeringContributionEn;
+      resolvedCategory = baseline.category;
+      resolvedCategoryLabelAr = baseline.categoryLabelAr;
+      resolvedCategoryLabelEn = baseline.categoryLabelEn;
+      needsFirestorePatch = true;
+    }
+  } else if (docId === 'injazak-tech') {
+    const isLegacyInjazak =
+      !data.nameAr?.includes('ENJAZAK TECH') ||
+      !data.descriptionAr?.includes('صنعاء') ||
+      !data.thumbnailUrl;
+
+    if (isLegacyInjazak) {
+      resolvedUrl = baseline.url;
+      resolvedCaseStudyOnly = false;
+      resolvedNameAr = baseline.nameAr;
+      resolvedNameEn = baseline.nameEn;
+      resolvedDescriptionAr = baseline.descriptionAr;
+      resolvedDescriptionEn = baseline.descriptionEn;
+      resolvedContributionAr = baseline.engineeringContributionAr;
+      resolvedContributionEn = baseline.engineeringContributionEn;
+      resolvedCategory = baseline.category;
+      resolvedCategoryLabelAr = baseline.categoryLabelAr;
+      resolvedCategoryLabelEn = baseline.categoryLabelEn;
+      needsFirestorePatch = true;
+    }
   }
 
   return {
@@ -370,7 +408,10 @@ export function mapFirestoreRecordToProjectItem(
       displayOrder: Number(data.displayOrder) || baseline.displayOrder,
       status: data.status === 'draft' ? 'draft' : 'published',
       isCaseStudyOnly: canonical.isCaseStudyOnly,
-      thumbnailUrl: data.thumbnailUrl || baseline.thumbnailUrl || '',
+      thumbnailUrl:
+        data.thumbnailUrl && !data.thumbnailUrl.startsWith('/assets/aistudio/')
+          ? data.thumbnailUrl
+          : baseline.thumbnailUrl || baseline.genuineScreenshotPath || data.thumbnailUrl || '',
       thumbnailAltAr: data.thumbnailAltAr || baseline.thumbnailAltAr || '',
       thumbnailAltEn: data.thumbnailAltEn || baseline.thumbnailAltEn || '',
       galleryMediaIds: Array.isArray(data.galleryMediaIds) ? data.galleryMediaIds : [],
@@ -536,10 +577,11 @@ export function subscribeAdminAllProjects(
       onProjects(items, !needsSync);
     },
     (error) => {
+      console.warn('Admin projects snapshot fallback:', error);
+      onProjects([...RECOVERABLE_INITIAL_PROJECTS_BACKUP], false);
       if (onError) {
         onError(error instanceof Error ? error : new Error(String(error)));
       }
-      handleFirestoreError(error, OperationType.LIST, path);
     }
   );
   return unsubscribe;

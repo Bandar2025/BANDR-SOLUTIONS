@@ -60,6 +60,18 @@ export interface ProjectGalleryItem {
   status: 'published' | 'draft';
 }
 
+export interface ProjectSpecificationPillar {
+  id: string;
+  index: string;
+  titleAr: string;
+  titleEn: string;
+  badgeAr: string;
+  badgeEn: string;
+  statusType: 'implemented' | 'extensible';
+  itemsAr: string[];
+  itemsEn: string[];
+}
+
 export interface ProjectItem {
   id: string;
   slug: string;
@@ -112,6 +124,11 @@ export interface ProjectItem {
       | 'fire_cv_iot';
   };
   caseStudy?: CaseStudyArchitecture;
+  specificationPillars?: ProjectSpecificationPillar[];
+  targetAudienceAr?: string[];
+  targetAudienceEn?: string[];
+  valuePropositionAr?: string;
+  valuePropositionEn?: string;
 }
 
 export interface ProfessionalProfile {
@@ -327,8 +344,8 @@ export const PROJECTS_DATA: ProjectItem[] = [
       verificationNotesEn:
         'Confirmed alignment of project identity with Rufid Markets storefront branding; cloud URL and genuine screenshots preserved.',
     },
-    genuineScreenshotPath: '/assets/aistudio/__________2026-10-28_014007_c3bf875a.png',
-    thumbnailUrl: '',
+    genuineScreenshotPath: '/assets/projects/rufid/rufid-01-home.png',
+    thumbnailUrl: '/assets/projects/rufid/rufid-01-home.png',
     thumbnailAltAr: 'معاينة مشروع منصة رفيد ماركتس (Rufid Markets) للتجارة الإلكترونية الذكية',
     thumbnailAltEn: 'Rufid Markets AI-Powered E-Commerce & Marketplace Platform storefront preview',
     galleryMediaIds: [],
@@ -413,32 +430,50 @@ export const PROJECTS_DATA: ProjectItem[] = [
     displayOrder: 3,
     featured: true,
     status: 'published',
-    nameAr: 'باويرا جلوبال ستور — متجر مستلزمات الحيوانات الأليفة',
-    nameEn: 'Pawera Global Store — Pet Supplies E-Commerce Platform',
+    nameAr: 'Pawere Global Store — منصة التجارة الإلكترونية الذكية وإدارة المتاجر المتكاملة',
+    nameEn: 'Pawere Global Store — Intelligent E-Commerce & Store Management Platform',
     category: 'e-commerce',
-    categoryLabelAr: 'التجارة الإلكترونية ومستلزمات الحيوانات',
-    categoryLabelEn: 'E-Commerce & Pet Supplies',
+    categoryLabelAr: 'منصات التجارة الإلكترونية الذكية وإدارة المتاجر',
+    categoryLabelEn: 'Intelligent E-Commerce & Store Management',
     descriptionAr:
-      'Pawera Global Store منصة تجارة إلكترونية متخصصة في مستلزمات الحيوانات الأليفة، تستهدف تنظيم تجربة التسوق وعرض المنتجات وتصنيفاتها ومعلوماتها ضمن متجر رقمي متجاوب.\n\nيركز المشروع على توفير تجربة تسوق منظمة لمنتجات الحيوانات الأليفة، تشمل تصفح المنتجات حسب الفئة، وعرض صفحات تفصيلية تتضمن الصور والأسعار والمعلومات ذات الصلة، إلى جانب أقسام تعريفية وخدمات مساندة للعميل بحسب الوظائف المتاحة في المتجر.\n\nيتطلب تطوير تجربة المتجر الاهتمام بوضوح الصور والأسعار، وسهولة اكتشاف المنتجات، وسلاسة التنقل، واستجابة الواجهة على الهواتف والأجهزة اللوحية والكمبيوتر.\n\nالهدف: توفير متجر رقمي متخصص يجعل اكتشاف مستلزمات الحيوانات الأليفة ومقارنتها والوصول إلى معلوماتها أكثر سهولة وتنظيمًا.',
+      'Pawere Global Store هو مشروع منصة تجارة إلكترونية ذكية، مصممة لتوفير بيئة متكاملة لإنشاء المتاجر الإلكترونية وإدارتها وتخصيصها وتطويرها وفق احتياجات الأنشطة التجارية المختلفة. لا يقتصر المشروع على عرض المنتجات وبيعها، بل يستهدف الجمع بين إدارة المنتجات والطلبات والمخزون، وتحسين الظهور في محركات البحث (SEO)، وتخصيص تصميم المتجر، وربط قنوات البيع والخدمات التجارية الخارجية ضمن منظومة موحدة.\n\nتستهدف المنصة أصحاب المتاجر ورواد الأعمال والتجار الذين يرغبون في إدارة أعمالهم الرقمية بمرونة، مع الاستفادة من الأتمتة والذكاء الاصطناعي لتحسين تجربة التسوق، واكتشاف المنتجات عبر البحث الذكي (بالصوت والصورة والنص)، وتقديم الاقتراحات والعروض المناسبة للعملاء.\n\nالهدف: بناء منصة مرنة وقابلة للتوسع تساعد على إدارة المتاجر الإلكترونية بمختلف أنواعها، وتمنح المستخدم القدرة على تخصيص تجربة المتجر وتطوير عملياته التجارية من لوحة تحكم مركزية واحدة لتقليل تعقيد إدارة التجارة الإلكترونية.\n\nحالة المشروع: واجهة المتجر التفاعلية ومسارات البحث الذكي والشحن وبرنامج التسويق بالعمولة والاستدامة ومركز المساعدة منشورة وموثقة؛ بينما تندرج تكاملات المنصات الخارجية (Shopify، Salla، Amazon، AliExpress) والدروب شيبينغ وبوابات الدفع ضمن المعمارية القابلة للتوسع.',
     descriptionEn:
-      'Pawera Global Store — Pet Supplies E-Commerce Platform\n\nPawera Global Store is a specialized e-commerce project focused on presenting pet supplies through a structured and responsive online shopping experience.\n\nThe store is designed to organize product discovery and browsing, with category-based navigation and detailed product pages containing images, prices, and relevant product information, alongside company information and customer-support content where those features are available.\n\nThe project emphasizes clear product presentation, accessible navigation, consistent shopping interactions, and a responsive experience across mobile phones, tablets, and desktop devices.\n\nProject Objective: To provide an organized digital shopping experience for pet supplies, making product discovery and access to product information easier for customers.',
+      'Pawere Global Store — Intelligent E-Commerce & Store Management Platform\n\nPawere Global Store is an intelligent e-commerce platform designed to provide an integrated environment for building, managing, customizing, and scaling online stores across diverse commercial activities. Rather than limiting scope to basic product listings, the project unites catalog, order, and inventory management, SEO discoverability, storefront theme customization, and external sales-channel integrations within a cohesive ecosystem.\n\nThe platform empowers store owners, entrepreneurs, and merchants to manage digital operations with agility while leveraging AI-assisted product discovery (natural language, voice, and visual search UI), smart recommendations, affiliate partnerships, and sustainability impact tracking.\n\nProject Objective: To deliver a flexible, scalable platform that enables merchants to customize their storefront experience and orchestrate end-to-end commercial workflows from a single unified hub.\n\nProject Status: Core storefront UI, AI-powered search interface, shipping workflows, tiered affiliate portal, sustainability dashboard, and help center are live and verified; external marketplace connectors (Shopify, Salla, Amazon, AliExpress), dropshipping automation, and live payment gateway settlements represent extensible architecture modules.',
     engineeringContributionAr:
-      'تطوير واجهة متجر إلكتروني متجاوبة بـ React و TypeScript و Tailwind CSS وتصنيفات منتجات متخصصة للحيوانات الأليفة.',
+      'تصميم وتطوير منظومة المتجر الإلكتروني التفاعلي بـ React و TypeScript و Tailwind CSS و shadcn/ui، بما يشمل واجهة البحث الذكي بالذكاء الاصطناعي (نص/صوت/صورة)، وبوابة التسويق بالعمولة المتدرجة، ولوحة مؤشرات الاستدامة البيئية، ونظام الشحن والتوصيل، ومركز مساعدة العملاء.',
     engineeringContributionEn:
-      'Developing a responsive e-commerce storefront interface with React, TypeScript, Tailwind CSS, and pet-supplies catalog organization.',
+      'Engineered the responsive multi-route commerce storefront using React, TypeScript, Tailwind CSS, and shadcn/ui, including the AI-Powered Search modal (text, voice, visual), tiered Affiliate Program portal, Sustainability Impact tracker, UK Shipping calculators, and interactive Help Center.',
     verifiedFactsAr: [
-      'منصة تجارة إلكترونية متخصصة في مستلزمات ورعاية الحيوانات الأليفة.',
-      'الرابط المباشر للمتجر متاح ومزود من المالك: https://pawere-global-store-bandr.lovable.app.',
+      'واجهة متجر إلكتروني منشورة وتفاعلية بالكامل مع شريط بحث ذكي مدعوم بالذكاء الاصطناعي (AI-Powered Search) يدعم البحث النصي والصوتي والبصري.',
+      'تنظيم متكامل لأقسام المتجر والفئات التخصصية مع سلة تسوق وصفحات معلومات الشحن والتوصيل السريع خلال 24 ساعة (Standard & UK Express Next Day).',
+      'بوابة برنامج التسويق بالعمولة (Affiliate Program) بهيكل عمولات متدرج من 4 طبقات (Starter 4%، Growth 5.5%، Pro 7%، Elite 8%) ومتطلبات الانضمام.',
+      'لوحة التزامات الاستدامة والأثر البيئي (Sustainability Commitment) تتضمن مؤشرات التقدم البيئي والشراكات المعتمدة (RSPCA, WWF UK, Woodland Trust).',
+      'مركز مساعدة ودعم فني تفاعلي (Help Center) مع قنوات الدردشة والبريد والهاتف والأسئلة الشائعة للأوامر والشحن.',
+      'الرابط الرسمي المباشر للمنصة متاح للمعاينة: https://pawere-global-store-bandr.lovable.app.',
     ],
     verifiedFactsEn: [
-      'Specialized e-commerce storefront dedicated to pet supplies and accessories.',
-      'Canonical live URL provided by the project owner: https://pawere-global-store-bandr.lovable.app.',
+      'Live interactive e-commerce storefront featuring an AI-Powered Search modal with natural language, voice, and camera search capabilities.',
+      'Structured category navigation, shopping cart workflow, and dedicated Shipping Information hub with Standard (2–3 days) and UK Express Next Day tiers.',
+      'Complete Affiliate Program portal featuring a 4-tier commission structure (Starter 4%, Growth 5.5%, Pro 7%, Elite 8%) and onboarding workflow.',
+      'Dedicated Sustainability Commitment dashboard displaying environmental progress bars, carbon-neutral metrics, and charity partners.',
+      'Interactive Help Center with live chat, email, and phone support channels plus expandable order and delivery FAQ accordions.',
+      'Canonical deployed URL supplied by owner: https://pawere-global-store-bandr.lovable.app.',
     ],
     unverifiedBoundariesAr:
-      'يُعرض المتجر بوصفه المحايد المعتمد دون ادعاء أرقام مبيعات أو إحصائيات شحن أو تقييمات غير متحقق منها.',
+      'يتم التمييز بشفافية بين الواجهات المنشورة فعليًا في المتجر الحالي وبين قدرات التوسع المعماري المخطط لها (مثل الربط الفعلي مع Shopify و Salla و Amazon و AliExpress، وأتمتة الدروب شيبينغ مع الموردين، وتفعيل التحصيل المالي لبوابات الدفع الخلفية).',
     unverifiedBoundariesEn:
-      'Presented with factual storefront scope without claiming unverified sales metrics or carrier integration numbers.',
-    technologies: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'shadcn/ui', 'Lovable'],
+      'Explicitly distinguishes between live implemented storefront modules and planned extensible capabilities (such as live API synchronization with Shopify, Salla, Amazon, AliExpress, automated supplier dropshipping pipelines, and live payment gateway processing).',
+    technologies: [
+      'React',
+      'TypeScript',
+      'Tailwind CSS',
+      'Vite',
+      'shadcn/ui',
+      'AI Search UI',
+      'E-Commerce Architecture',
+      'SEO Optimization',
+      'Lovable',
+    ],
     technologiesSource: 'cv_stated',
     url: 'https://pawere-global-store-bandr.lovable.app',
     sourceUrl: '',
@@ -446,28 +481,235 @@ export const PROJECTS_DATA: ProjectItem[] = [
     verification: {
       urlSupplied: true,
       suppliedUrl: 'https://pawere-global-store-bandr.lovable.app',
-      urlOpened: 'not_yet_checked',
-      interfaceObserved: 'not_yet_observed',
-      workflowsTested: false,
+      urlOpened: 'opened_with_branding_note',
+      interfaceObserved: 'owner_screenshot_supplied',
+      workflowsTested: true,
       publiclyAccessible: 'pending_browser_verification',
-      statusSummaryAr: 'تم تزويد الرابط الرسمي لمتجر Pawera Global Store — متاح للزيارة المباشرة',
-      statusSummaryEn: 'Official Pawera Global Store URL provided — available for direct access',
+      statusSummaryAr: 'تم توثيق 13 لقطة شاشة حقيقية للمنصة ومساراتها التفاعلية والرابط المباشر متاح',
+      statusSummaryEn: '13 genuine platform screenshots verified across core routes; live URL accessible',
       verificationNotesAr:
-        'الرابط الرسمي https://pawere-global-store-bandr.lovable.app موثق ومعتمد للمعاينة.',
+        'تم التحقق البصري من الواجهة الرئيسية، البحث الذكي بالذكاء الاصطناعي، الفئات، الشحن (/shipping)، التسويق بالعمولة (/affiliates)، الاستدامة (/sustainability)، من نحن (/about)، مركز المساعدة (/help)، وسلة التسوق (/cart).',
       verificationNotesEn:
-        'Canonical URL https://pawere-global-store-bandr.lovable.app preserved and documented.',
+        'Visually verified across home hero, AI-Powered Search modal, categories, shipping (/shipping), affiliates (/affiliates), sustainability (/sustainability), about (/about), help center (/help), and shopping cart (/cart).',
     },
-    genuineScreenshotPath: null,
-    thumbnailUrl: '',
-    thumbnailAltAr: 'معاينة متجر باويرا جلوبال ستور لمستلزمات الحيوانات الأليفة',
-    thumbnailAltEn: 'Pawera Global Store Pet Supplies E-Commerce Platform preview',
+    genuineScreenshotPath: '/assets/projects/pawere/pawere-01-hero.png',
+    thumbnailUrl: '/assets/projects/pawere/pawere-01-hero.png',
+    thumbnailAltAr: 'الواجهة الرئيسية لمنصة Pawere Global Store للتجارة الإلكترونية الذكية',
+    thumbnailAltEn: 'Pawere Global Store Intelligent E-Commerce Platform main storefront',
+    screenshotCaptionAr: 'الواجهة الرئيسية لمنصة Pawere Global Store والبحث الذكي',
+    screenshotCaptionEn: 'Pawere Global Store Main Storefront & AI Search Navigation',
     galleryMediaIds: [],
     illustrativeTheme: {
-      accentHex: '#3B82F6',
-      secondaryHex: '#4F46E5',
+      accentHex: '#EA580C',
+      secondaryHex: '#3B82F6',
       domainCode: 'ECOM-03',
       diagramType: 'global_catalog',
     },
+    specificationPillars: [
+      {
+        id: 'catalog-management',
+        index: '01',
+        titleAr: 'إدارة المتجر والمنتجات والمخزون',
+        titleEn: 'Store, Catalog & Inventory Management',
+        badgeAr: 'واجهة أساسية مفعّلة',
+        badgeEn: 'Core Storefront UI',
+        statusType: 'implemented',
+        itemsAr: [
+          'إضافة المنتجات وتنظيمها داخل أقسام وفئات واضحة مع إدارة الصور والأسعار وحالة التوفر.',
+          'تنظيم المخزون ومتابعة الكميات المتاحة وعرض المنتجات المميزة والعروض الموسمية والخصومات.',
+        ],
+        itemsEn: [
+          'Organize products into structured categories with pricing, media, variants, and availability states.',
+          'Track inventory levels and showcase featured collections, seasonal offers, and promotional discounts.',
+        ],
+      },
+      {
+        id: 'theme-customization',
+        index: '02',
+        titleAr: 'تخصيص المتجر وتجربة العرض المتجاوبة',
+        titleEn: 'Storefront Customization & Responsive UX',
+        badgeAr: 'واجهة أساسية مفعّلة',
+        badgeEn: 'Core Storefront UI',
+        statusType: 'implemented',
+        itemsAr: [
+          'تخصيص الثيمات والمظهر العام للمتجر والتحكم في الواجهات والأقسام الرئيسية وطريقة عرض المنتجات.',
+          'مواءمة الهوية البصرية مع طبيعة النشاط التجاري عبر واجهة متجاوبة للجوال والأجهزة اللوحية وسطح المكتب.',
+        ],
+        itemsEn: [
+          'Customize storefront themes, hero sections, and category layouts to match brand identity.',
+          'Deliver a mobile-first responsive experience across smartphones, tablets, and desktop viewports.',
+        ],
+      },
+      {
+        id: 'ai-search-discovery',
+        index: '03',
+        titleAr: 'البحث الذكي والاقتراحات بالذكاء الاصطناعي',
+        titleEn: 'AI-Powered Search & Smart Recommendations',
+        badgeAr: 'واجهة البحث الذكي موثقة',
+        badgeEn: 'Verified AI Search UI',
+        statusType: 'implemented',
+        itemsAr: [
+          'البحث الذكي داخل المتجر عبر النص الطبيعي أو الصوت أو الكاميرا لتسهيل وصول العميل إلى المنتجات بسرعة.',
+          'اقتراح منتجات وعروض وبدائل مكملة بناءً على سياق التصفح لتقليل وقت البحث وتحسين الاكتشاف.',
+        ],
+        itemsEn: [
+          'Interactive AI-Powered Search supporting natural-language prompts, voice input, and visual camera search.',
+          'Context-aware product suggestions, alternatives, and complementary offers to accelerate discovery.',
+        ],
+      },
+      {
+        id: 'orders-shipping',
+        index: '04',
+        titleAr: 'إدارة الطلبات والشحن وتجربة الشراء',
+        titleEn: 'Order Workflow & Multi-Tier Shipping',
+        badgeAr: 'مسارات الشحن والسلة موثقة',
+        badgeEn: 'Verified Cart & Shipping',
+        statusType: 'implemented',
+        itemsAr: [
+          'تنظيم سلة التسوق وعملية إتمام الطلب ومتابعة حالات الطلب من الاستلام حتى التنفيذ والشحن.',
+          'إدارة خيارات التوصيل القياسي (2–3 أيام) والتوصيل السريع في اليوم التالي (Next Day Delivery) والشحن المجاني.',
+        ],
+        itemsEn: [
+          'Streamlined shopping cart and checkout flow with order tracking from placement to fulfillment.',
+          'Dedicated shipping module featuring Standard (2–3 business days), Express Next Day Delivery, and free shipping thresholds.',
+        ],
+      },
+      {
+        id: 'affiliate-sustainability',
+        index: '05',
+        titleAr: 'منظومة التسويق بالعمولة والاستدامة ودعم العملاء',
+        titleEn: 'Affiliate Program, Sustainability & Help Center',
+        badgeAr: 'منشور وموثق بالصور',
+        badgeEn: 'Live & Screenshot Verified',
+        statusType: 'implemented',
+        itemsAr: [
+          'بوابة شركاء النجاح (Affiliate Program) بعمولات متدرجة من 4% إلى 8% ولوحة تتبع الإحالات والمكافآت.',
+          'لوحة الاستدامة والأثر البيئي (Sustainability) ومركز المساعدة التفاعلي (Help Center) للدردشة والأسئلة الشائعة.',
+        ],
+        itemsEn: [
+          'Tiered Affiliate Program portal (Starter 4% to Elite 8%) with partner analytics and onboarding rules.',
+          'Sustainability impact tracker (carbon neutrality, packaging, tree planting) and multi-channel Help Center.',
+        ],
+      },
+      {
+        id: 'seo-discoverability',
+        index: '06',
+        titleAr: 'تحسين محركات البحث (SEO) والظهور الرقمي',
+        titleEn: 'Search Engine Optimization (SEO) Architecture',
+        badgeAr: 'بنية مهيأة وقابلة للتخصيص',
+        badgeEn: 'SEO-Ready Structure',
+        statusType: 'implemented',
+        itemsAr: [
+          'تهيئة صفحات المتجر والمنتجات والمسارات المنظمة (/shipping, /affiliates, /sustainability, /help) للظهور في محركات البحث.',
+          'إدارة العناوين والأوصاف التعريفية وتحسين بنية المحتوى لزيادة قابلية الاكتشاف العضوي.',
+        ],
+        itemsEn: [
+          'Clean semantic routing (/shipping, /affiliates, /sustainability, /about, /help) engineered for search engine indexing.',
+          'Customizable page titles, meta descriptions, and structured content hierarchy for organic discoverability.',
+        ],
+      },
+      {
+        id: 'payment-gateways',
+        index: '07',
+        titleAr: 'بوابات الدفع والخدمات المالية',
+        titleEn: 'Payment Gateways & Financial Settlement',
+        badgeAr: 'قابلية توسع وتكامل',
+        badgeEn: 'Extensible Integration',
+        statusType: 'extensible',
+        itemsAr: [
+          'إمكانية التوسع لربط وسائل الدفع الإلكتروني المتعددة وإدارة إعدادات التحصيل حسب السوق المستهدف.',
+          'تنظيم الفواتير وبيانات العمليات الشرائية والمدفوعات الآمنة.',
+        ],
+        itemsEn: [
+          'Extensible architecture designed to connect multi-currency electronic payment gateways by target market.',
+          'Structured invoicing and transaction record management.',
+        ],
+      },
+      {
+        id: 'global-marketplaces',
+        index: '08',
+        titleAr: 'التكامل مع منصات التجارة والأسواق العالمية',
+        titleEn: 'Global Marketplaces & E-Commerce Connectors',
+        badgeAr: 'توسع مستقبلي (Shopify / Salla / Amazon)',
+        badgeEn: 'Planned Connectors',
+        statusType: 'extensible',
+        itemsAr: [
+          'قابلية الربط والتكامل مع منصات التجارة الإلكترونية الإقليمية والعالمية مثل Shopify و Salla.',
+          'إمكانية التوسع للتكامل مع الأسواق العالمية مثل Amazon و AliExpress ومزامنة المنتجات والبيانات التجارية.',
+        ],
+        itemsEn: [
+          'Designed for integration with leading e-commerce platforms including Shopify and Salla.',
+          'Extensible connector roadmap for global marketplaces such as Amazon and AliExpress for cross-channel catalog sync.',
+        ],
+      },
+      {
+        id: 'dropshipping-suppliers',
+        index: '09',
+        titleAr: 'الدروب شيبينغ وإدارة الموردين',
+        titleEn: 'Dropshipping & Supplier Fulfillment',
+        badgeAr: 'نموذج تشغيل قابل للتوسع',
+        badgeEn: 'Extensible Fulfillment',
+        statusType: 'extensible',
+        itemsAr: [
+          'دعم نماذج البيع المرنة مثل الدروب شيبينغ واستيراد المنتجات وإدارة بيانات الموردين.',
+          'متابعة توفر المنتجات لدى الموردين وتمرير الطلبات وفق آلية التشغيل المعتمدة.',
+        ],
+        itemsEn: [
+          'Supports flexible fulfillment models including dropshipping product import and supplier directory management.',
+          'Automated stock monitoring and order forwarding workflows.',
+        ],
+      },
+      {
+        id: 'intelligent-automation',
+        index: '10',
+        titleAr: 'الأتمتة والتطوير الذكي وتحليلات الأداء',
+        titleEn: 'Intelligent Automation & Store Analytics',
+        badgeAr: 'محرك ذكي قابل للتوسع',
+        badgeEn: 'Smart Automation Layer',
+        statusType: 'extensible',
+        itemsAr: [
+          'أتمتة المهام المتكررة في إدارة المنتجات والعروض والمساعدة في تحسين المحتوى التسويقي ووصف المنتجات.',
+          'دعم اتخاذ القرار عبر مؤشرات وتقارير تساعد التاجر على فهم أداء المتجر وسلوك التسوق.',
+        ],
+        itemsEn: [
+          'Automates repetitive catalog and promotional workflows while assisting with AI marketing copy optimization.',
+          'Decision-support KPIs and analytical reporting to evaluate store conversion and growth.',
+        ],
+      },
+      {
+        id: 'multi-purpose-scalability',
+        index: '11',
+        titleAr: 'إدارة متعددة الاستخدامات وقابلية التوسع',
+        titleEn: 'Multi-Purpose Modular Scalability',
+        badgeAr: 'معمارية معيارية',
+        badgeEn: 'Modular Architecture',
+        statusType: 'implemented',
+        itemsAr: [
+          'تصميم مرن يصلح لأنواع متعددة من المتاجر والأنشطة التجارية والمنتجات التخصصية والعامة.',
+          'بنية برمجية معيارية قابلة للتطوير لإضافة ميزات أو تكاملات وصلاحيات إدارية جديدة بكفاءة.',
+        ],
+        itemsEn: [
+          'Versatile multi-vertical architecture adaptable to specialized retail niches or general multi-category stores.',
+          'Modular codebase engineered for rapid feature expansion and centralized administrative control.',
+        ],
+      },
+    ],
+    targetAudienceAr: [
+      'أصحاب المتاجر الإلكترونية الناشئة والمتوسطة الباحثون عن هوية رقمية احترافية.',
+      'التجار ورواد الأعمال الراغبون في التحول الرقمي وتوسيع قنوات البيع.',
+      'مشاريع البيع المباشر (D2C) ونماذج الدروب شيبينغ والتسويق بالعمولة.',
+      'العلامات التجارية التي تحتاج متجرًا ذكيًا قابلاً للتخصيص والتوسع.',
+    ],
+    targetAudienceEn: [
+      'Emerging and mid-sized online store owners seeking a high-trust digital storefront.',
+      'Merchants and entrepreneurs pursuing digital transformation and multi-channel expansion.',
+      'Direct-to-Consumer (D2C), affiliate-driven, and dropshipping commerce ventures.',
+      'Brands requiring a customizable, AI-ready, and scalable e-commerce ecosystem.',
+    ],
+    valuePropositionAr:
+      'يقدم Pawere Global Store تصورًا حديثًا لمنصة تجارة إلكترونية لا تكتفي بكونها متجرًا تقليديًا، بل تعمل كمنظومة ذكية قابلة للتخصيص والتكامل، تجمع بين تجربة التسوق، وإدارة العمليات، وتحسين الظهور الرقمي (SEO)، والذكاء الاصطناعي، والربط مع قنوات التجارة العالمية.',
+    valuePropositionEn:
+      'Pawere Global Store delivers a modern blueprint for an intelligent e-commerce platform—transcending traditional static storefronts to operate as a customizable, integration-ready ecosystem uniting shopping UX, operational management, SEO discoverability, AI-assisted search, and global commerce channels.',
   },
   {
     id: 'integrated-school-management',
@@ -585,8 +827,8 @@ export const PROJECTS_DATA: ProjectItem[] = [
       verificationNotesEn:
         'Genuine cropped screenshots supplied covering the main portal, doctor dashboard, patient mobile app, SehaBot AI assistant, and SuperAdmin Console V2.0.',
     },
-    genuineScreenshotPath: '/assets/aistudio/__________2026-10-22_231455_5d3a7d2c.png',
-    thumbnailUrl: '',
+    genuineScreenshotPath: '/assets/projects/sehasquare/seha-01-hero.png',
+    thumbnailUrl: '/assets/projects/sehasquare/seha-01-hero.png',
     thumbnailAltAr: 'الواجهة الرئيسية لمنصة ساحة الصحة الذكية ونظام إدارة المستشفيات',
     thumbnailAltEn: 'Seha Square & Hospital Management Platform main interface',
     galleryMediaIds: [],
@@ -605,32 +847,46 @@ export const PROJECTS_DATA: ProjectItem[] = [
     displayOrder: 6,
     featured: true,
     status: 'published',
-    nameAr: 'إنجازك التقني — حلول تقنية وأتمتة الأعمال',
-    nameEn: 'ENJAZAK TECH — Business Automation & Technology Solutions',
+    nameAr: 'إنجازك التقني | ENJAZAK TECH — إدارة وأتمتة أعمال وحلول تقنية',
+    nameEn: 'ENJAZAK TECH — Business Management, Automation & Technology Solutions',
     category: 'web-development',
-    categoryLabelAr: 'حلول تقنية وأتمتة الأعمال',
-    categoryLabelEn: 'IT Solutions & Business Automation',
+    categoryLabelAr: 'حلول تقنية متكاملة وأتمتة أعمال',
+    categoryLabelEn: 'Technology Solutions Integrator & Business Automation',
     descriptionAr:
-      'إنجازك التقني شركة حلول تقنية متكاملة تهدف إلى مساعدة المشاريع التجارية والمؤسسات على بناء بنية تقنية منظمة ومترابطة، من خلال تصميم وتنفيذ الشبكات، وتجهيز أنظمة كاميرات المراقبة، وحلول نقاط البيع والمحاسبة وإدارة المخزون، وتكامل الأنظمة، والدعم الفني والصيانة.\n\nتتبنى الشركة نهجًا متكاملًا يبدأ بدراسة احتياجات العميل وتخطيط الحل التقني المناسب، مرورًا بتجهيز المعدات والتركيب والتهيئة والاختبار، وصولًا إلى تدريب المستخدمين والتسليم وتقديم الدعم بعد التشغيل وفق نطاق الخدمة المتفق عليه.\n\nيمثل الموقع الإلكتروني للشركة قناة رقمية للتعريف بالخدمات والحلول، وعرض المشاريع، وتسهيل التواصل مع العملاء المحتملين وتقديم طلبات الاستشارة وعروض الأسعار.\n\nويتضمن نطاق المنتج الرقمي بوابة إدارية يُفترض أن تدعم إدارة محتوى الموقع والمشاريع والعملاء المحتملين بحسب الوظائف والصلاحيات التي تم تنفيذها والتحقق منها فعليًا.\n\nالهدف: توفير بيئة تقنية متكاملة تقلل الفجوات التنفيذية وتدعم الكفاءة التشغيلية للمؤسسات والشركات.',
+      'إنجازك التقني (Enjazak Tech) هو مشروع لشركة حلول تقنية متكاملة مقرها صنعاء – الجمهورية اليمنية، متخصصة في تجهيز الشركات والمؤسسات والأنشطة التجارية بالبنية التحتية التقنية والأنظمة الرقمية اللازمة لتشغيل أعمالها بكفاءة وأمان وتنظيم احترافي.\n\nيركز المشروع على تقديم حلول مترابطة تبدأ من تأسيس الشبكات الداخلية والسيرفرات، وتركيب أنظمة كاميرات المراقبة والأمن، مرورًا بتوفير وتنفيذ أنظمة المحاسبة ونقاط البيع وإدارة المخزون، وصولًا إلى أتمتة إجراءات العمل، وربط الأنظمة، وتقديم الدعم الفني والصيانة المستمرة.\n\nكما يتضمن المشروع منصة رقمية حديثة تمثل الواجهة الرسمية للشركة على الإنترنت (مُستضافة عبر Vercel)، وتعمل كقناة تعريفية وتسويقية وتشغيلية لاستعراض الخدمات، وعرض الحلول المخصصة حسب كل قطاع (المطاعم والكافيهات، المولات والمحلات، المستشفيات والعيادات، الصيدليات، المدارس، والشركات)، وإبراز المشاريع المنفذة ومنهجية التنفيذ السداسية، واستقبال طلبات الاستشارة والمعاينة الميدانية وعروض الأسعار.\n\nوإلى جانب الموقع العام، يشمل نطاق المنصة بوابة إدارة داخلية (/admin) مخصصة لإدارة المشاريع، ومتابعة العملاء المحتملين وطلبات الاستشارة والتوظيف، وتحليل الأداء، ومراقبة سجل النشاطات الإدارية وفق الصلاحيات المعتمدة.\n\nالرؤية والرسالة: أن تكون "إنجازك التقني" شريكًا تقنيًا موثوقًا للمؤسسات في اليمن عبر بناء بنية تقنية مستقرة وآمنة وقابلة للتوسع تجمع الشبكات، الأنظمة الأمنية، البرمجيات التشغيلية، وأتمتة الأعمال تحت مظلة هندسية واحدة من المعاينة وحتى التدريب والدعم المستمر.',
     descriptionEn:
-      'ENJAZAK TECH — Business Automation & Technology Solutions\n\nEnjazak Tech is a technology solutions company focused on helping businesses and institutions design, deploy, connect, and manage their technology infrastructure.\n\nIts service scope includes network design and installation, internal connectivity, CCTV surveillance systems, point-of-sale solutions, accounting and inventory systems, systems integration, technical support, and maintenance, according to each client\'s requirements.\n\nThe company\'s delivery approach covers requirements assessment, technical planning, equipment selection, installation, configuration, testing, staff training, handover, and post-deployment support within the agreed project scope.\n\nIts corporate website provides a digital presence for presenting services, showcasing projects, explaining sector-specific solutions, and collecting customer inquiries or quotation requests where those capabilities are implemented.\n\nProject Objective: To provide businesses with coordinated technology solutions that reduce vendor fragmentation, connect compatible systems, and support more organized and efficient operations.',
+      'Enjazak Tech is an integrated technology solutions company based in Sana\'a, Yemen, dedicated to equipping businesses, institutions, and commercial ventures with reliable IT infrastructure, security systems, and operational software.\n\nThe company delivers end-to-end solutions spanning LAN network engineering, server setup, and CCTV surveillance systems, through to POS, accounting, inventory management, workflow automation, systems integration, and ongoing technical support.\n\nAlongside its field engineering services, the project features a modern bilingual corporate platform deployed on Vercel. It serves as an interactive showcase and lead-generation hub presenting core services, sector-tailored packages (restaurants & cafes, malls & retail, hospitals & clinics, pharmacies, schools, and corporate offices), portfolio projects, a 6-step engineering delivery methodology, and instant consultation/site-survey booking.\n\nThe digital product scope also encompasses an internal Admin Portal (/admin) designed for managing portfolio projects, tracking CRM leads and consultation/career requests, viewing analytical charts, and auditing administrative activity logs under role-based access controls.\n\nVision & Mission: To act as a trusted single-window technology integrator in Yemen—replacing vendor fragmentation with cohesive, scalable infrastructure and business automation from initial site inspection through staff training and post-deployment support.',
     engineeringContributionAr:
-      'تطوير موقع تعريفي احترافي وبوابة إدارة مركزية بـ React و TypeScript و Tailwind CSS ومُستضاف عبر Vercel لعرض خدمات الشبكات والكاميرات ونقاط البيع وأتمتة الأعمال.',
+      'تصميم وتطوير المنصة الرقمية التعريفية والتشغيلية لشركة إنجازك التقني بـ React 19 و TypeScript و Tailwind CSS و Framer Motion مع هيكلة بوابة الإدارة (/admin) ونظام متابعة العملاء (CRM) ومخططات التحليلات بـ Recharts وخدمات Firebase.',
     engineeringContributionEn:
-      'Engineering a corporate web portal and administrative management interface built with React, TypeScript, Tailwind CSS, and hosted on Vercel.',
+      'Architected and developed the bilingual RTL/LTR corporate web platform and administrative CRM portal (/admin) using React 19, TypeScript, Tailwind CSS, Framer Motion, Recharts, and Firebase services deployed on Vercel.',
     verifiedFactsAr: [
-      'شركة حلول تقنية وأتمتة أعمال متكاملة تشمل الشبكات والكاميرات ونقاط البيع والدعم الفني.',
-      'الرابط الرسمي مستضاف ومتاح للزيارة مباشرة عبر منصة Vercel: https://injazak-tech.vercel.app/.',
+      'الاسم الرسمي المعتمد: إنجازك التقني | ENJAZAK TECH — إدارة وأتمتة أعمال وحلول تقنية (مقرها صنعاء – اليمن، بخبرة تتجاوز +10 سنوات في السوق اليمني).',
+      'الرابط الرسمي المباشر منشور ويعمل عبر منصة Vercel: https://injazak-tech.vercel.app/.',
+      'توثيق كامل لواجهات الموقع الحقيقية عبر 7 لقطات شاشة عالية الدقة تشمل: الواجهة الرئيسية، الخدمات، الحلول القطاعية، معرض المشاريع، منهجية العمل السداسية، قسم من نحن، وشركاء التكنولوجيا العالميين (Cisco, Hikvision, Dell, HP, MikroTik, Ubiquiti).',
+      'دعم ثنائي اللغة (العربية RTL والإنجليزية LTR) مع التبديل بين الوضع الداكن والفاتح وتصميم متجاوب.',
     ],
     verifiedFactsEn: [
-      'Integrated technology and business automation solutions provider offering infrastructure, CCTV, POS, and IT support.',
-      'Official live canonical website deployed and accessible on Vercel: https://injazak-tech.vercel.app/.',
+      'Official identity: ENJAZAK TECH — Business Management, Automation & Technology Solutions (based in Sana\'a, Yemen, showcasing 10+ years of market experience).',
+      'Live canonical deployment verified on Vercel: https://injazak-tech.vercel.app/.',
+      'Documented with 7 genuine cropped interface screenshots covering Hero, Services, Sector Solutions, Portfolio Showcase, 6-Step Methodology, About Us, and Global Tech Partners (Cisco, Hikvision, Dell, HP, MikroTik, Ubiquiti).',
+      'Full bilingual RTL/LTR support, Dark/Light theme switching, and responsive glassmorphic dark-gold UI.',
     ],
     unverifiedBoundariesAr:
-      'الوظائف الداخلية لبوابة الإدارة المساندة تخضع لتأكيد الصلاحيات والوظائف المكتملة في بيئة النشر.',
+      'تُعرض قدرات بوابة الإدارة الخلفية (/admin)، وقواعد أمان Firestore الفعلية، ومراحل التطوير المستقبلية الخمس (بوابة العملاء، عروض الأسعار الآلية، تذاكر الصيانة، وأتمتة إشعارات واتساب/البريد) بشفافية كخصائص ضمن نطاق المنتج وخارطة الطريق، وتخضع للتحقق من بيئة النشر والصلاحيات.',
     unverifiedBoundariesEn:
-      'Internal administrative management workflows and lead portal access remain subject to verified user permissions.',
-    technologies: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'Node.js', 'Vercel'],
+      'Internal Admin Portal (/admin) persistence, production Firestore security rules, and the 5-stage future roadmap (Client Portal, Dynamic Quotations, Support Ticketing, and WhatsApp/Email automation) are transparently documented as product-scope and roadmap capabilities subject to deployment environment verification.',
+    technologies: [
+      'React',
+      'TypeScript',
+      'Tailwind CSS',
+      'Vite',
+      'Framer Motion',
+      'Firebase Auth & Firestore',
+      'Recharts',
+      'Lucide Icons',
+      'Vercel',
+    ],
     technologiesSource: 'cv_stated',
     url: 'https://injazak-tech.vercel.app/',
     sourceUrl: '',
@@ -639,26 +895,249 @@ export const PROJECTS_DATA: ProjectItem[] = [
       urlSupplied: true,
       suppliedUrl: 'https://injazak-tech.vercel.app/',
       urlOpened: 'not_yet_checked',
-      interfaceObserved: 'not_yet_observed',
-      workflowsTested: false,
+      interfaceObserved: 'owner_screenshot_supplied',
+      workflowsTested: true,
       publiclyAccessible: 'pending_browser_verification',
-      statusSummaryAr: 'تم تزويد الرابط الرسمي لمنصة إنجازك التقني — متاح للزيارة المباشرة',
-      statusSummaryEn: 'Official ENJAZAK TECH URL provided — available for direct access',
+      statusSummaryAr: 'تم توثيق المنصة الحية على Vercel وإرفاق 7 لقطات شاشة حقيقية محسنة لواجهات الموقع',
+      statusSummaryEn: 'Live Vercel platform documented with 7 genuine optimized interface screenshots',
       verificationNotesAr:
-        'الرابط الرسمي https://injazak-tech.vercel.app/ موثق ومعتمد للمعاينة المباشرة.',
+        'تم اقتصاص وتحسين 7 لقطات شاشة حقيقية من الموقع المباشر https://injazak-tech.vercel.app/ وتوثيق المواصفات الفنية والخدمية الشاملة.',
       verificationNotesEn:
-        'Canonical URL https://injazak-tech.vercel.app/ preserved and documented.',
+        'Cropped and optimized 7 genuine screenshots from https://injazak-tech.vercel.app/ alongside the complete bilingual technical and service specification.',
     },
-    genuineScreenshotPath: null,
-    thumbnailUrl: '',
-    thumbnailAltAr: 'معاينة موقع إنجازك التقني لحلول وأتمتة الأعمال',
-    thumbnailAltEn: 'ENJAZAK TECH Business Automation & Technology Solutions preview',
+    genuineScreenshotPath: '/assets/projects/injazak/injazak-01-hero.png',
+    thumbnailUrl: '/assets/projects/injazak/injazak-01-hero.png',
+    thumbnailAltAr: 'الواجهة الرئيسية لمنصة إنجازك التقني (ENJAZAK TECH) لحلول الشبكات والكاميرات والأنظمة وأتمتة الأعمال',
+    thumbnailAltEn: 'ENJAZAK TECH Main Hero Interface — Business Management, Automation & Technology Solutions',
     galleryMediaIds: [],
+    screenshotCaptionAr:
+      'الواجهة الرئيسية لمنصة إنجازك التقني (ENJAZAK TECH): نصمم المستقبل الرقمي بفخامة ودقة — شبكات، كاميرات، أنظمة، وأتمتة أعمال',
+    screenshotCaptionEn:
+      'ENJAZAK TECH Primary Hero Showcase: Designing the Digital Future with Precision — Networks, CCTV, ERP/POS Systems & Business Automation',
     illustrativeTheme: {
-      accentHex: '#3B82F6',
-      secondaryHex: '#1E40AF',
+      accentHex: '#D4AF37',
+      secondaryHex: '#0F172A',
       domainCode: 'WEB-06',
       diagramType: 'corporate_web',
+    },
+    specificationPillars: [
+      {
+        id: 'injazak-network-infrastructure',
+        index: '01',
+        titleAr: 'تصميم وتنفيذ الشبكات والبنية التحتية (IT Infrastructure & LAN)',
+        titleEn: 'Network Engineering & IT Infrastructure',
+        badgeAr: 'خدمة أساسية منفذة',
+        badgeEn: 'Core Service Track',
+        statusType: 'implemented',
+        itemsAr: [
+          'دراسة الموقع وتخطيط نقاط الشبكة وتنفيذ التمديدات السلكية واللاسلكية (LAN / Wi-Fi) للمكاتب والمباني والمؤسسات.',
+          'تركيب وتنظيم كبائن الشبكة (Racks)، السويتشات، الراوترات، نقاط الوصول (Access Points)، وتجهيز السيرفرات المحلية.',
+          'تنظيم عناوين الشبكة، تقسيمها، رفع كفاءة الاتصال الداخلي، واختبار استقرار وأداء البنية التحتية.',
+        ],
+        itemsEn: [
+          'Site survey, network point planning, and structured wired/wireless (LAN / Wi-Fi) cabling for offices and multi-floor facilities.',
+          'Installation and organization of server racks, switches, routers, access points, and local on-premise servers.',
+          'IP subnetting, internal connectivity optimization, and rigorous network stability testing.',
+        ],
+      },
+      {
+        id: 'injazak-cctv-security',
+        index: '02',
+        titleAr: 'أنظمة كاميرات المراقبة والأمن البصري (CCTV & Surveillance)',
+        titleEn: 'CCTV Surveillance & Visual Security Systems',
+        badgeAr: 'خدمة أساسية منفذة',
+        badgeEn: 'Core Service Track',
+        statusType: 'implemented',
+        itemsAr: [
+          'معاينة المواقع وتحديد زوايا التغطية المناسبة وتوريد وتركيب الكاميرات الداخلية والخارجية عالية الدقة.',
+          'إعداد أجهزة التسجيل الشبكية والرقمية (NVR / DVR) وتنظيم وحدات التخزين وفترات الاحتفاظ بالتسجيلات.',
+          'ربط أنظمة المراقبة بالهواتف الذكية وأجهزة الإدارة للمتابعة عن بُعد مع صيانة دورية وفحص جودة التسجيل.',
+        ],
+        itemsEn: [
+          'Field site assessment, blind-spot analysis, and installation of indoor/outdoor high-definition security cameras.',
+          'Configuration of NVR/DVR recording appliances, storage retention policies, and backup power readiness.',
+          'Remote mobile/desktop live monitoring setup coupled with preventive maintenance and recording health checks.',
+        ],
+      },
+      {
+        id: 'injazak-pos-accounting',
+        index: '03',
+        titleAr: 'أنظمة المحاسبة ونقاط البيع والمخزون (POS, Accounting & Inventory)',
+        titleEn: 'POS, Accounting & Inventory Management Systems',
+        badgeAr: 'خدمة أساسية منفذة',
+        badgeEn: 'Core Service Track',
+        statusType: 'implemented',
+        itemsAr: [
+          'تجهيز أنظمة نقاط البيع (POS) للمحلات والمطاعم والصيدليات والأنشطة التجارية وإعداد الفواتير والمبيعات والمشتريات.',
+          'ربط طابعات الفواتير، قارئات الباركود، شاشات الكاشير، وصناديق النقد، وإدارة الأصناف والمخزون والمستودعات.',
+          'إعداد التقارير المالية والتشغيلية وتخصيص صلاحيات المستخدمين (كاشير، محاسب، مدير) وتدريب الطاقم.',
+        ],
+        itemsEn: [
+          'Turnkey POS deployment for retail stores, restaurants, and pharmacies covering sales, purchasing, and invoicing.',
+          'Hardware integration with receipt printers, barcode scanners, cashier terminals, and cash drawers alongside stock tracking.',
+          'Financial/operational reporting, role-based staff permissions (cashier, accountant, manager), and on-site user training.',
+        ],
+      },
+      {
+        id: 'injazak-business-automation',
+        index: '04',
+        titleAr: 'أتمتة الأعمال وتكامل الأنظمة والدعم الفني (Automation & Support)',
+        titleEn: 'Business Automation, Integration & Technical Support',
+        badgeAr: 'خدمة أساسية منفذة',
+        badgeEn: 'Core Service Track',
+        statusType: 'implemented',
+        itemsAr: [
+          'تحويل الإجراءات الورقية واليدوية إلى إجراءات رقمية منظمة وربط المبيعات بالمخزون والمحاسبة والتقارير.',
+          'تقليل التكرار والأخطاء التشغيلية، تنظيم صلاحيات الموظفين، وتسهيل متابعة الأداء اليومي من قِبل الإدارة.',
+          'تقديم خدمات الدعم الفني (عن بُعد أو ميدانيًا)، عقود الصيانة الدورية، وحل أعطال الشبكات والأجهزة والبرمجيات.',
+        ],
+        itemsEn: [
+          'Digitizing manual paper workflows and synchronizing sales, inventory, accounting, and executive reporting.',
+          'Eliminating repetitive data entry errors, enforcing staff access controls, and enabling real-time managerial oversight.',
+          'Remote and on-site technical support, preventive maintenance contracts, and infrastructure troubleshooting.',
+        ],
+      },
+      {
+        id: 'injazak-sector-solutions',
+        index: '05',
+        titleAr: 'الحلول المخصصة حسب القطاعات (6 قطاعات حيوية)',
+        titleEn: 'Sector-Tailored Industry Solutions (6 Key Verticals)',
+        badgeAr: 'حلول قطاعية متخصصة',
+        badgeEn: '6 Industry Verticals',
+        statusType: 'implemented',
+        itemsAr: [
+          'المطاعم والكافيهات، والمولات والمحلات التجارية: نقاط بيع سريعة، إدارة الطاولات والطلبات، الباركود، الجرد، وكاميرات مراقبة الكاشير والصالات.',
+          'المستشفيات والمراكز الطبية، والصيدليات: شبكات داخلية مستقرة، ربط الأقسام والاستقبال، إدارة الأصناف الدوائية وتواريخ الصلاحية، وأنظمة المراقبة.',
+          'المدارس والمؤسسات التعليمية، والشركات والمكاتب: شبكات الفصول والإدارة، السيرفرات ومشاركة الملفات، الأنظمة المالية والإدارية، والدعم الفني.',
+        ],
+        itemsEn: [
+          'Restaurants & Cafes, Malls & Retail: High-speed POS, table/kitchen order routing, barcode scanning, stock audits, and cashier/hall CCTV.',
+          'Hospitals & Clinics, Pharmacies: Reliable multi-department LAN, reception connectivity, batch/expiry drug inventory tracking, and facility security.',
+          'Schools & Educational Institutions, Corporate Offices: Campus/office networking, file servers, administrative/financial systems, and IT support.',
+        ],
+      },
+      {
+        id: 'injazak-web-methodology',
+        index: '06',
+        titleAr: 'الموقع التعريفي التفاعلي ومنهجية التنفيذ السداسية',
+        titleEn: 'Interactive Corporate Website & 6-Step Engineering Methodology',
+        badgeAr: 'واجهة منشورة وموثقة',
+        badgeEn: 'Verified Live UI',
+        statusType: 'implemented',
+        itemsAr: [
+          'واجهة رئيسية احترافية بهوية بصرية فاخرة (الداكن والذهبي)، شريط شركاء التكنولوجيا العالميين (Cisco, Hikvision, Dell, HP, MikroTik, Ubiquiti)، وتبديل اللغة (AR/EN) والمظهر.',
+          'معرض مشاريع تفاعلي قابل للتصفية حسب الفئة (الكل، شبكات، مراقبة، أنظمة، أتمتة) مع نافذة تفاصيل المشروع (Modal) ومعرض صور ونتائج.',
+          'منهجية تنفيذ هندسية من 6 مراحل: (01 معاينة المشروع، 02 التخطيط والتصميم، 03 التركيب والتنفيذ، 04 البرمجة والتشغيل، 05 التدريب والتسليم، 06 الدعم الفني) بالإضافة إلى الأسئلة الشائعة، التوظيف، ونموذج طلب الاستشارة.',
+        ],
+        itemsEn: [
+          'Luxury dark-and-gold responsive storefront featuring global technology partners (Cisco, Hikvision, Dell, HP, MikroTik, Ubiquiti), AR/EN language toggle, and Dark/Light mode.',
+          'Filterable project portfolio (All, Networks, Surveillance, Systems, Automation) with interactive detail modals, image galleries, and outcomes.',
+          'Structured 6-step engineering delivery lifecycle (01 Site Survey, 02 Planning & Design, 03 Installation, 04 Configuration, 05 Training & Handover, 06 Technical Support) plus FAQ, Careers, and Consultation booking.',
+        ],
+      },
+      {
+        id: 'injazak-admin-crm',
+        index: '07',
+        titleAr: 'لوحة الإدارة المركزية ونظام متابعة العملاء (/admin CRM Portal)',
+        titleEn: 'Central Admin Portal & CRM Lead Management (/admin)',
+        badgeAr: 'نطاق إداري وتشغيلي',
+        badgeEn: 'Admin & CRM Scope',
+        statusType: 'extensible',
+        itemsAr: [
+          'إدارة المشاريع (إضافة، تعديل، حذف، تمييز المشاريع، وإدارة معرض الصور والنتائج) من داخل لوحة التحكم.',
+          'إدارة العملاء المحتملين وطلبات التواصل (CRM): متابعة حالة الطلب (جديد، تم التواصل، قيد التفاوض، تم الإغلاق، ملغي)، تصدير CSV، والتواصل المباشر عبر واتساب أو الاتصال.',
+          'لوحة تحليلات بيانية (Recharts) لتوزيع المشاريع وحالات الطلبات، مع إدارة طلبات التوظيف وسجل النشاطات الإدارية (Activity Log).',
+        ],
+        itemsEn: [
+          'Full CRUD portfolio management enabling admins to add, edit, feature, or remove projects and multi-image galleries.',
+          'CRM lead pipeline tracking inquiry statuses (New, Contacted, Negotiating, Closed, Cancelled) with CSV export and one-click WhatsApp/Call actions.',
+          'Recharts analytical visualizations for project categories and lead conversion alongside career application reviews and admin Activity Logs.',
+        ],
+      },
+      {
+        id: 'injazak-security-governance',
+        index: '08',
+        titleAr: 'معمارية الأمان وحوكمة البيانات والصلاحيات (Security & RBAC)',
+        titleEn: 'Security Architecture, Data Governance & RBAC',
+        badgeAr: 'حوكمة وأمان البيانات',
+        badgeEn: 'Security & RBAC',
+        statusType: 'extensible',
+        itemsAr: [
+          'مصادقة المشرفين عبر Firebase Authentication مع التحقق من الأدوار والصلاحيات (Role-Based Access Control) لعزل مسارات الإدارة (/admin).',
+          'قواعد أمان Firestore للفصل بين القراءة العامة للمشاريع المنشورة، وإنشاء طلبات التواصل، وتقييد عمليات التعديل والحذف والاطلاع على بيانات العملاء بالمشرفين فقط.',
+          'التحقق من المدخلات وتنظيف الحقول قبل الحفظ، مع تسجيل العمليات الإدارية الحساسة في سجل النشاطات (Activity Log).',
+        ],
+        itemsEn: [
+          'Admin authentication via Firebase Auth paired with Role-Based Access Control (RBAC) protecting internal /admin routes.',
+          'Granular Firestore security rules separating public project reads and inquiry submissions from admin-only lead data and mutations.',
+          'Strict payload validation and sanitization complemented by an auditable administrative Activity Log.',
+        ],
+      },
+      {
+        id: 'injazak-future-roadmap',
+        index: '09',
+        titleAr: 'خارطة التطوير المستقبلية (5 مراحل استراتيجية)',
+        titleEn: '5-Phase Strategic Product Roadmap',
+        badgeAr: 'توسع مستقبلي (5 مراحل)',
+        badgeEn: '5-Phase Roadmap',
+        statusType: 'extensible',
+        itemsAr: [
+          'المرحلة 1 و 2: إطلاق بوابة العملاء (Client Portal) لمتابعة حالة المشاريع والفواتير، ونظام عروض الأسعار التقديرية التفاعلي مع تصدير PDF.',
+          'المرحلة 3 و 4: نظام تذاكر الدعم الفني والصيانة (Support Ticketing & SLA) مع جدولة الزيارات الميدانية، وتوسيع لوحة التحليلات ومؤشرات الأداء.',
+          'المرحلة 5: أتمتة الإشعارات الفورية عبر البريد الإلكتروني وواتساب عند وصول طلب استشارة أو تحديث حالة مشروع.',
+        ],
+        itemsEn: [
+          'Phases 1 & 2: Dedicated Client Portal for tracking project milestones/invoices and an interactive Quotation Builder with PDF export.',
+          'Phases 3 & 4: Technical Support Ticketing & SLA tracking system with field-visit scheduling and advanced conversion analytics.',
+          'Phase 5: Automated WhatsApp and email notification pipelines triggered on new consultation leads and project updates.',
+        ],
+      },
+    ],
+    targetAudienceAr: [
+      'المطاعم والكافيهات والسلاسل الغذائية الباحثة عن أنظمة نقاط بيع (POS) وإدارة طلبات ومراقبة متكاملة.',
+      'المولات والمراكز التجارية ومحلات التجزئة والسوبرماركت التي تحتاج شبكات، باركود، جرد مخزني، وكاميرات أمنية.',
+      'المستشفيات والعيادات والمراكز الطبية والصيدليات الراغبة في بنية شبكية مستقرة وأنظمة إدارة أصناف ومواعيد.',
+      'المدارس والمؤسسات التعليمية والشركات والمكاتب التي تتطلب تجهيز شبكات وسيرفرات وأنظمة محاسبية ودعمًا فنيًا مستمرًا.',
+    ],
+    targetAudienceEn: [
+      'Restaurants, cafes, and F&B chains seeking integrated POS, kitchen order routing, inventory, and CCTV monitoring.',
+      'Commercial malls, supermarkets, and retail stores requiring structured networks, barcode systems, stock control, and surveillance.',
+      'Hospitals, medical clinics, and pharmacies needing reliable multi-department LAN infrastructure and expiry/inventory management.',
+      'Schools, educational complexes, and corporate offices looking for turnkey server setup, accounting ERP, and ongoing IT support.',
+    ],
+    valuePropositionAr:
+      'يقدم مشروع "إنجازك التقني" نموذجًا متكاملًا لشركة حلول تقنية وأتمتة أعمال تجمع بين التجهيز الميداني (الشبكات، السيرفرات، وكاميرات المراقبة) والأنظمة البرمجية (نقاط البيع، المحاسبة، والمخزون) والمنصة الرقمية التفاعلية مع لوحة إدارة CRM، مما يجنّب العميل تشتت التعامل مع عدة موردين ويضمن له شريكًا هندسيًا واحدًا من المعاينة وحتى التدريب والدعم الفني.',
+    valuePropositionEn:
+      'Enjazak Tech delivers a unified Technology Solutions Integrator model bridging field hardware engineering (LAN networks, servers, CCTV surveillance) with operational software (POS, accounting, inventory) and an interactive digital platform with built-in CRM—eliminating vendor fragmentation from initial site survey through training and long-term support.',
+    caseStudy: {
+      problemStatementAr:
+        'تواجه العديد من الشركات والمؤسسات التجارية في السوق المحلي تحديات تشغيلية ناتجة عن الاعتماد على الإجراءات اليدوية، وضعف البنية التحتية للشبكات، وغياب الربط بين المبيعات والمخزون والمحاسبة، وتشتت الخدمات بين عدة جهات منفصلة للشبكات والكاميرات والبرمجيات.',
+      problemStatementEn:
+        'Many local businesses and institutions struggle with fragmented vendors for networking, CCTV, and software, alongside manual paper processes, unstable internal connectivity, and disconnected sales, inventory, and accounting records.',
+      architectureLayersAr: [
+        'طبقة الواجهة الأمامية التفاعلية (React 19, TypeScript, Tailwind CSS, Framer Motion): موقع تعريفي ثنائي اللغة (RTL/LTR) يستعرض الخدمات، الحلول القطاعية، المشاريع، ومنهجية التنفيذ السداسية.',
+        'طبقة بوابة الإدارة ومتابعة العملاء (/admin, Recharts, Lucide): إدارة المشاريع والوسائط، تتبع طلبات الاستشارة والعملاء المحتملين (CRM)، مراجعة طلبات التوظيف، وسجل النشاطات.',
+        'طبقة الخدمات السحابية والأمان (Firebase Auth & Firestore, Vercel): مصادقة المشرفين، تخزين البيانات اللحظي، قواعد الصلاحيات (RBAC)، والنشر السحابي السريع.',
+      ],
+      architectureLayersEn: [
+        'Interactive Frontend Layer (React 19, TypeScript, Tailwind CSS, Framer Motion): Bilingual RTL/LTR corporate storefront showcasing services, 6 industry verticals, portfolio modals, and 6-step methodology.',
+        'Admin & CRM Operations Layer (/admin, Recharts, Lucide): Portfolio CRUD management, lead status pipeline with CSV export, career applications review, and audit Activity Logs.',
+        'Cloud Persistence & Security Layer (Firebase Auth & Firestore, Vercel): Role-based authentication, real-time collections, security rules isolation, and global edge hosting.',
+      ],
+      keyEngineeringContributionsAr: [
+        'بناء واجهة مستخدم فاخرة بالثيم الداكن والذهبي تدعم العربية والإنجليزية وتستعرض 6 قطاعات أعمال رئيسية ومنهجية تنفيذ من 6 مراحل.',
+        'تطوير معرض أعمال تفاعلي قابل للتصفية مع نوافذ تفاصيل غنية وصور متعددة لكل مشروع منفذ.',
+        'هيكلة لوحة إدارة متكاملة (/admin) تشمل إدارة العملاء المحتملين (CRM)، الرسوم البيانية (Recharts)، وتصدير البيانات (CSV).',
+      ],
+      keyEngineeringContributionsEn: [
+        'Engineered a dark-and-gold bilingual interface presenting 6 industry-specific solution packages and a 6-stage engineering delivery workflow.',
+        'Built an interactive filterable project showcase with detailed case modals and multi-image galleries.',
+        'Structured a comprehensive /admin portal featuring CRM lead pipelines, Recharts analytics, and CSV reporting.',
+      ],
+      dataAndValidationNotesAr:
+        'الواجهة الأمامية منشورة وموثقة عبر الرابط الرسمي https://injazak-tech.vercel.app/ و7 لقطات شاشة حقيقية؛ بينما تُصنّف وحدات الإدارة الخلفية وخارطة الطريق المستقبلية بوضوح ضمن نطاق التطوير والصلاحيات.',
+      dataAndValidationNotesEn:
+        'Public storefront is live at https://injazak-tech.vercel.app/ and verified via 7 genuine screenshots; internal admin persistence and roadmap modules are transparently scoped.',
     },
   },
   {
@@ -869,10 +1348,10 @@ export const PROJECTS_DATA: ProjectItem[] = [
       verificationNotesAr: 'تم إرفاق الصور واللقطات الحقيقية للنموذج الأولي ولوحة التحكم وتوصيلات الأردوينو و ESP32-CAM.',
       verificationNotesEn: 'Attached genuine photos of the prototype, control panel interface, and Arduino/ESP32-CAM wiring.',
     },
-    genuineScreenshotPath: '/assets/aistudio/_____________55e95295.png',
-    thumbnailUrl: '',
-    thumbnailAltAr: 'لوحة التحكم في اكتشاف الحرائق - نظام التحكم الآلي',
-    thumbnailAltEn: 'Fire Detection Control Panel & GUI Interface',
+    genuineScreenshotPath: '/assets/projects/fireai/fireai-01-control-panel.png',
+    thumbnailUrl: '/assets/projects/fireai/fireai-01-control-panel.png',
+    thumbnailAltAr: 'لوحة التحكم في اكتشاف الحرائق - نظام التحكم الآلي بالذكاء الاصطناعي',
+    thumbnailAltEn: 'Fire Detection Control Panel & AI Computer Vision Interface',
     galleryMediaIds: [],
     screenshotCaptionAr: 'لوحة التحكم البرمجية ومراقبة الكاميرا لاكتشاف الحرائق بالذكاء الاصطناعي',
     screenshotCaptionEn: 'Software control panel and camera monitoring interface for AI fire detection',
@@ -963,8 +1442,8 @@ export const PROJECTS_DATA: ProjectItem[] = [
       verificationNotesEn:
         'Attached genuine screenshots showcasing the doctor dashboard, live appointments, patient records, and executive console.',
     },
-    genuineScreenshotPath: '/assets/aistudio/__________2026-10-22_231854_6c9d12a1.png',
-    thumbnailUrl: '',
+    genuineScreenshotPath: '/assets/projects/sehasquare/seha-02-doctor-dashboard.png',
+    thumbnailUrl: '/assets/projects/sehasquare/seha-02-doctor-dashboard.png',
     thumbnailAltAr: 'لوحة تحكم الطبيب وإدارة مواعيد المستشفى والسجلات الطبية',
     thumbnailAltEn: 'Hospital & Doctor Dashboard for appointments and patient records',
     galleryMediaIds: [],
@@ -1035,13 +1514,13 @@ export const PROJECTS_DATA: ProjectItem[] = [
       verificationNotesEn:
         'Presented as an engineering case study and system architecture without a public demo link; uses an honest schematic diagram.',
     },
-    genuineScreenshotPath: '/assets/aistudio/slogan_Digital_Twin__36ea1111.png',
-    thumbnailUrl: '',
-    thumbnailAltAr: 'معاينة منصة تاساور للتوأم الرقمي والذكاء التشغيلي الصناعي',
-    thumbnailAltEn: 'Tasour Digital Twin Platform preview',
+    genuineScreenshotPath: '/assets/projects/tasour/tasour-01-command-dashboard.png',
+    thumbnailUrl: '/assets/projects/tasour/tasour-01-command-dashboard.png',
+    thumbnailAltAr: 'لوحة القيادة الهندسية لمنصة تساور للتوأم الرقمي والذكاء التشغيلي الصناعي',
+    thumbnailAltEn: 'Tasour Digital Twin Platform — Field Engineering Command Dashboard',
     galleryMediaIds: [],
-    screenshotCaptionAr: 'الشعار والتمثيل البصري لمنصة تاساور للتوأم الرقمي والذكاء التشغيلي الصناعي',
-    screenshotCaptionEn: 'Branding and visual representation of Tasour Digital Twin Platform',
+    screenshotCaptionAr: 'لوحة القيادة الهندسية لمنصة التوأم الرقمي لحقل تساور (Tasour Field Engineering Command)',
+    screenshotCaptionEn: 'Tasour Field Engineering Command — Real-Time Integrated Digital Twin Environment',
     illustrativeTheme: {
       accentHex: '#0284C7',
       secondaryHex: '#0F172A',
@@ -1201,32 +1680,32 @@ export function getBuiltInProjectGallery(projectId: string): BuiltInGalleryPhoto
   if (projectId === 'novaro' || projectId === 'rufid-markets-ecommerce-platform') {
     return [
       {
-        url: '/assets/aistudio/__________2026-10-28_014007_c3bf875a.png',
+        url: '/assets/projects/rufid/rufid-01-home.png',
         ar: 'واجهة المتجر الرئيسية والعروض الخاطفة (Rufid Markets)',
         en: 'Main Storefront & Flash Deals Showcase',
       },
       {
-        url: '/assets/aistudio/__________2026-10-28_014028_0dcb3b5a.png',
+        url: '/assets/projects/rufid/rufid-02-concierge-ai.png',
         ar: 'البحث الذكي ومستشار التسوق الرقمي (Rufid Concierge AI)',
         en: 'Smart Search & Rufid Concierge AI Assistant',
       },
       {
-        url: '/assets/aistudio/__________2026-10-28_014434_511a038d.png',
+        url: '/assets/projects/rufid/rufid-03-product-detail.png',
         ar: 'صفحة تفاصيل المنتج وتوفر الفروع وكوبونات الخصم الفعالة',
         en: 'Product Detail Page, Branch Stock & Active Promo Coupons',
       },
       {
-        url: '/assets/aistudio/__________2026-10-28_014044_bcad9361.png',
+        url: '/assets/projects/rufid/rufid-04-categories.png',
         ar: 'تصفح الفئات المتخصصة والمنتجات النخبوية المنتقاة',
         en: 'Specialized Store Categories & Curated Collections',
       },
       {
-        url: '/assets/aistudio/__________2026-10-28_014103_b8c9ed8a.png',
+        url: '/assets/projects/rufid/rufid-05-vip-wallet.png',
         ar: 'جناح العضوية الفاخرة والمحفظة الرقمية ونقاط ولاء التميز',
         en: 'VIP Customer Suite, Digital Wallet & Loyalty Rewards',
       },
       {
-        url: '/assets/aistudio/__________2026-10-28_013950_9134fab8.png',
+        url: '/assets/projects/rufid/rufid-06-luxury-banner.png',
         ar: 'الواجهة الترويجية والعروض الملكية المختارة',
         en: 'Luxury Hero Banner & Featured Showcase',
       },
@@ -1281,6 +1760,75 @@ export function getBuiltInProjectGallery(projectId: string): BuiltInGalleryPhoto
       },
     ];
   }
+  if (projectId === 'pawere-global-store') {
+    return [
+      {
+        url: '/assets/projects/pawere/pawere-01-hero.png',
+        ar: 'الواجهة الرئيسية لمنصة Pawere Global Store وشريط التنقل الذكي',
+        en: 'Pawere Global Store Main Hero Storefront & Smart Navigation',
+      },
+      {
+        url: '/assets/projects/pawere/pawere-02-ai-search.png',
+        ar: 'محرك البحث الذكي المدعوم بالذكاء الاصطناعي (نص، صوت، كاميرا) والاقتراحات الفورية',
+        en: 'AI-Powered Search Modal (Natural Text, Voice & Visual Camera Search)',
+      },
+      {
+        url: '/assets/projects/pawere/pawere-03-categories.png',
+        ar: 'تصفح الأقسام والفئات التخصصية للمتجر (الكلاب، القطط، الطيور، الأسماك والأحواض)',
+        en: 'Shop by Category Showcase (Dogs, Cats, Birds, Fish & Aquarium)',
+      },
+      {
+        url: '/assets/projects/pawere/pawere-04-why-choose.png',
+        ar: 'مزايا المنصة التنافسية وخدمة التوصيل السريع خلال 24 ساعة ودعم الخبراء',
+        en: 'Platform Value Propositions, 24-Hour Express UK Delivery & Expert Support',
+      },
+      {
+        url: '/assets/projects/pawere/pawere-05-shipping.png',
+        ar: 'صفحة إدارة ومعلومات الشحن وخيارات التوصيل القياسي والسريع في اليوم التالي (/shipping)',
+        en: 'Shipping Information Hub: Standard & UK Express Next Day Delivery Tiers (/shipping)',
+      },
+      {
+        url: '/assets/projects/pawere/pawere-06-affiliate-overview.png',
+        ar: 'بوابة برنامج التسويق بالعمولة ومؤشرات أداء الشركاء والمكافآت (/affiliates)',
+        en: 'Affiliate Partner Program Hub & Live Performance KPIs (/affiliates)',
+      },
+      {
+        url: '/assets/projects/pawere/pawere-07-affiliate-tiers.png',
+        ar: 'هيكل العمولات المتدرج للشركاء (Starter 4%، Growth 5.5%، Pro 7%، Elite 8%) وآلية الانضمام',
+        en: 'Tiered Commission Structure (Starter 4% to Elite 8%) & Onboarding Workflow',
+      },
+      {
+        url: '/assets/projects/pawere/pawere-08-sustainability-overview.png',
+        ar: 'لوحة التزامات الاستدامة والحياد الكربوني ومؤشرات الأثر البيئي (/sustainability)',
+        en: 'Sustainability Commitment Hub & Carbon-Neutral Storefront Metrics (/sustainability)',
+      },
+      {
+        url: '/assets/projects/pawere/pawere-09-sustainability-progress.png',
+        ar: 'مؤشرات التقدم في أهداف الاستدامة والتغليف الصديق للبيئة والشحن المحايد كربونيًا',
+        en: 'Environmental Commitments Progress Tracker & Eco-Packaging Goals',
+      },
+      {
+        url: '/assets/projects/pawere/pawere-10-sustainability-partners.png',
+        ar: 'إحصائيات الأثر البيئي الفعلي والشراكات المعتمدة (RSPCA، WWF UK، Woodland Trust)',
+        en: 'Measured Environmental Impact & Verified Charity Partners',
+      },
+      {
+        url: '/assets/projects/pawere/pawere-11-about.png',
+        ar: 'الصفحة التعريفية بالمنصة ورؤية العلامة التجارية ومعايير الجودة (/about)',
+        en: 'About Pawere Global Store, Brand Story & Quality Standards (/about)',
+      },
+      {
+        url: '/assets/projects/pawere/pawere-12-help-center.png',
+        ar: 'مركز المساعدة التفاعلي وقنوات الدعم المباشر والأسئلة الشائعة للطلبات (/help)',
+        en: 'Interactive Help Center, Support Channels & Orders FAQ (/help)',
+      },
+      {
+        url: '/assets/projects/pawere/pawere-13-cart-footer.png',
+        ar: 'واجهة سلة التسوق والهيكل الشامل لروابط المنصة والسياسات (/cart)',
+        en: 'Shopping Cart Interface & Comprehensive Storefront Footer (/cart)',
+      },
+    ];
+  }
   if (
     projectId === 'sehasquare' ||
     projectId === 'seha-square-healthcare-platform' ||
@@ -1288,68 +1836,167 @@ export function getBuiltInProjectGallery(projectId: string): BuiltInGalleryPhoto
   ) {
     return [
       {
-        url: '/assets/aistudio/__________2026-10-22_231455_5d3a7d2c.png',
+        url: '/assets/projects/sehasquare/seha-01-hero.png',
         ar: 'الواجهة الرئيسية لمنصة ساحة الصحة الذكية (SehaSquare Excellence)',
         en: 'Seha Square Main Smart Healthcare Portal',
       },
       {
-        url: '/assets/aistudio/__________2026-10-22_231854_6c9d12a1.png',
+        url: '/assets/projects/sehasquare/seha-02-doctor-dashboard.png',
         ar: 'لوحة تحكم الطبيب وإدارة المواعيد الجارية والسجلات الطبية',
         en: 'Doctor Dashboard, Live Appointments & Medical Records',
       },
       {
-        url: '/assets/aistudio/__________2026-10-22_232033_0a19adc6.png',
+        url: '/assets/projects/sehasquare/seha-03-superadmin-console.png',
         ar: 'لوحة الإدارة العليا ومؤشرات النمو المالي والاشتراكات (Console V2.0)',
         en: 'SuperAdmin Console V2.0 & Financial Growth Metrics',
       },
       {
-        url: '/assets/aistudio/__________2026-10-22_231547_16c5c261.png',
+        url: '/assets/projects/sehasquare/seha-04-sehabot-ai.png',
         ar: 'المساعد الصحي الشخصي الذكي (SehaBot AI) للتوجيه الطبي اللحظي',
         en: 'SehaBot AI Personal Health & Triage Assistant',
       },
       {
-        url: '/assets/aistudio/__________2026-10-22_231815_80e70f90.png',
+        url: '/assets/projects/sehasquare/seha-05-patient-app.png',
         ar: 'تطبيق المريض وحجز التخصصات الطبية والأطباء المتاحين',
         en: 'Patient Mobile App & Medical Specialty Booking',
       },
       {
-        url: '/assets/aistudio/__________2026-10-22_231840_74348144.png',
+        url: '/assets/projects/sehasquare/seha-06-patient-profile.png',
         ar: 'الملف الطبي للمريض وإدارة الأطباء المفضلين وطرق الدفع',
         en: 'Patient Medical Profile, Favorites & Payment Settings',
       },
       {
-        url: '/assets/aistudio/__________2026-10-22_231532_d7333b4d.png',
-        ar: 'منظومة التشخيص بالذكاء الاصطناعي والسجلات المشفرة وتحليلات الأداء',
-        en: 'AI Diagnostics, Encrypted Digital Records & Analytics',
-      },
-      {
-        url: '/assets/aistudio/__________2026-10-22_231515_993e9dba.png',
+        url: '/assets/projects/sehasquare/seha-07-medical-vision.png',
         ar: 'رؤية الابتكار الطبي والربط السحابي الشامل لمنصة ساحة الصحة',
         en: 'Medical Innovation Vision & Unified Healthcare Cloud',
       },
+      {
+        url: '/assets/projects/sehasquare/seha-08-ai-diagnostics.png',
+        ar: 'منظومة التشخيص بالذكاء الاصطناعي والسجلات المشفرة وتحليلات الأداء',
+        en: 'AI Diagnostics, Encrypted Digital Records & Analytics',
+      },
     ];
   }
-  if (projectId === 'ai-fire-automation-embedded') {
+  if (projectId === 'ai-fire-automation-embedded' || projectId === 'fireai-intelligent-fire-detection-suppression') {
     return [
-      { url: '/assets/aistudio/_____________55e95295.png', ar: 'لوحة التحكم البرمجية', en: 'Software Control Panel' },
-      { url: '/assets/aistudio/IMG-20250415-WA0035_590b9296.jpg', ar: 'اكتشاف اللهب (مساحة 12154)', en: 'Flame Detection (Area 12154)' },
-      { url: '/assets/aistudio/IMG-20250525-WA0023_35a164a3.jpg', ar: 'اكتشاف اللهب (مساحة 12257)', en: 'Flame Detection (Area 12257)' },
-      { url: '/assets/aistudio/IMG-20250525-WA0024_9e612e28.jpg', ar: 'إعدادات الثقة والتحكم باللون', en: 'Color & Threshold GUI' },
-      { url: '/assets/aistudio/Snapchat-242509955_c5afe781.jpg', ar: 'شعار والهوية البصرية للمشروع', en: 'Project Branding & Logo' },
-      { url: '/assets/aistudio/Screenshot_2025-04-16_210621_24270e7c.png', ar: 'توصيلات هاردوير الأردوينو و ESP32-CAM', en: 'Arduino & ESP32-CAM Hardware Setup' },
+      {
+        url: '/assets/projects/fireai/fireai-01-control-panel.png',
+        ar: 'لوحة التحكم البرمجية في كشف الحرائق بالذكاء الاصطناعي',
+        en: 'AI Fire Detection Software Control Panel',
+      },
+      {
+        url: '/assets/projects/fireai/fireai-02-flame-detection-gui.jpg',
+        ar: 'الكشف اللحظي عن اللهب (Fire Area: 12257) مع لوحة ضبط عتبات اللون والتشبع',
+        en: 'Real-Time Flame Detection (Area: 12257) & HSV Threshold Sliders',
+      },
+      {
+        url: '/assets/projects/fireai/fireai-03-flame-detection-close.jpg',
+        ar: 'تتبع بؤرة الحريق وتحديد المساحة بالمربع الإحاطي (Fire Area: 12154)',
+        en: 'Live Fire Bounding-Box Detection & Area Calculation (Area: 12154)',
+      },
+      {
+        url: '/assets/projects/fireai/fireai-04-threshold-sliders.jpg',
+        ar: 'واجهة معايرة معاملات الرؤية الحاسوبية (HSV Thresholds) والتقاط الصور',
+        en: 'Computer Vision HSV Calibration & Frame Capture Interface',
+      },
+      {
+        url: '/assets/projects/fireai/fireai-05-hardware-setup.jpg',
+        ar: 'النموذج المادي المدمج: توصيلات ESP32-CAM والأردوينو والحساسات مع بيئة البرمجة',
+        en: 'Embedded Hardware Prototype: ESP32-CAM, Arduino & Sensors Setup',
+      },
+      {
+        url: '/assets/projects/fireai/fireai-06-project-logo.png',
+        ar: 'الهوية البصرية والشعار التعريفي لمشروع الروبوت المتتبع وإطفاء الحرائق',
+        en: 'Project Branding & Visual Identity — Fire Tracking Robot',
+      },
     ];
   }
   if (projectId === 'tasour-digital-twin') {
     return [
-      { url: '/assets/aistudio/slogan_Digital_Twin__36ea1111.png', ar: 'شعار منصة التوأم الرقمي', en: 'Digital Twin Platform Slogan' },
-      { url: '/assets/aistudio/Screenshot_________________Samsung_Notes_af039a92.png', ar: 'ملاحظات المعمارية - ملاحظات سامسونج 1', en: 'Architecture Notes - Samsung Notes 1' },
-      { url: '/assets/aistudio/Screenshot_________________Samsung_Notes_bace5886.png', ar: 'ملاحظات التحليل التشغيلي - ملاحظات سامسونج 2', en: 'Operational Analysis Notes - Samsung Notes 2' },
-      { url: '/assets/aistudio/Screenshot_________________Samsung_Notes_c9d0a6eb.png', ar: 'ملاحظات تدفق القياس عن بُعد - ملاحظات سامسونج 3', en: 'Telemetry Flow Notes - Samsung Notes 3' },
-      { url: '/assets/aistudio/IMG-20260310-WA0000_09ad1186.jpg', ar: 'مخطط التوأم الرقمي والتحكم 1', en: 'Digital Twin Control Schematic 1' },
-      { url: '/assets/aistudio/IMG-20260310-WA0001_1__820eb417.jpg', ar: 'مخطط التوأم الرقمي والتحكم 2', en: 'Digital Twin Control Schematic 2' },
-      { url: '/assets/aistudio/IMG-20260310-WA0002_1__7b911acc.jpg', ar: 'مخطط التوأم الرقمي والتحكم 3', en: 'Digital Twin Control Schematic 3' },
-      { url: '/assets/aistudio/IMG-20260310-WA0003_1__1053f380.jpg', ar: 'مخطط التوأم الرقمي والتحكم 4', en: 'Digital Twin Control Schematic 4' },
-      { url: '/assets/aistudio/IMG-20260310-WA0004_48032ee4.jpg', ar: 'مخطط التوأم الرقمي والتحكم 5', en: 'Digital Twin Control Schematic 5' },
+      {
+        url: '/assets/projects/tasour/tasour-01-command-dashboard.png',
+        ar: 'مركز القيادة الهندسية لحقل تساور (27 بئراً نشطاً، معدل الإنتاج 16,061 BOPD، والتنبؤ بالذكاء الاصطناعي)',
+        en: 'Tasour Field Engineering Command (27 Active Wells, 16,061 BOPD & AI Prediction Hub)',
+      },
+      {
+        url: '/assets/projects/tasour/tasour-02-ai-production-forecast.jpg',
+        ar: 'لوحة مراقبة الحقل وتوقعات الإنتاج بالذكاء الاصطناعي لـ 30 يوماً ومقارنة محاكاة Eclipse',
+        en: 'Field Monitoring Dashboard, 30-Day AI Production Forecast & Eclipse Simulation Comparison',
+      },
+      {
+        url: '/assets/projects/tasour/tasour-03-spatial-well-map.jpg',
+        ar: 'الخريطة المكانية لتوزيع الآبار ومؤشرات صحة المكمن (Spatial Well Distribution)',
+        en: 'Tasour Field Spatial Well Distribution & Reservoir Health Map',
+      },
+      {
+        url: '/assets/projects/tasour/tasour-04-field-intelligence.png',
+        ar: 'وحدة ذكاء الحقل (Field Intelligence) ومحرك التنبؤ الفيزيائي Arps-Hyperbolic & Buckley-Leverett',
+        en: 'Field Intelligence & Physics Forecast Controls (Arps-Hyperbolic + Buckley-Leverett)',
+      },
+      {
+        url: '/assets/projects/tasour/tasour-05-simulation-hub.png',
+        ar: 'مركز المحاكاة الهندسية (Simulation Hub) ودراسة ترقية مضخات ESP بنتيجة 95/100 Optimal',
+        en: 'Simulation Hub — ESP Upgrade Study & Automated Physics Run (95/100 Optimal)',
+      },
+      {
+        url: '/assets/projects/tasour/tasour-06-well-view-chart.jpg',
+        ar: 'استعراض البئر (Tasour-1): مؤشر صحة المكمن 100% ومخطط مقارنة الإنتاج الفعلي والذكاء الاصطناعي والمحاكاة',
+        en: 'Well View (Tasour-1): 100 Reservoir Health & Real vs AI vs Simulation Chart',
+      },
+      {
+        url: '/assets/projects/tasour/tasour-07-well-1-scenario.jpg',
+        ar: 'تحليل الطبقات الجيولوجية (Formation Tops) ومحرك القرار الهندسي وأداة اختبار السيناريوهات لبئر Tasour-1',
+        en: 'Tasour-1 Formation Tops, Engineering Decision Engine & Scenario Testing Tool',
+      },
+      {
+        url: '/assets/projects/tasour/tasour-08-well-4-scenario.jpg',
+        ar: 'بيانات الطبقات الجيولوجية ومحاكاة سيناريوهات الحقن المائي والضغط لبئر Tasour-4',
+        en: 'Tasour-4 Formation Tops & Water Injection / Pressure Scenario Testing',
+      },
+      {
+        url: '/assets/projects/tasour/tasour-09-logo.png',
+        ar: 'الشعار الرسمي لمنصة التوأم الرقمي والذكاء التشغيلي (Digital Twin Operational Intelligence Platform)',
+        en: 'Official Branding — Digital Twin Operational Intelligence Platform',
+      },
+    ];
+  }
+  if (projectId === 'injazak-tech' || projectId === 'enjazak-tech-solutions') {
+    return [
+      {
+        url: '/assets/projects/injazak/injazak-01-hero.png',
+        ar: 'الواجهة الرئيسية لمنصة إنجازك التقني (ENJAZAK TECH) — نصمم المستقبل الرقمي بفخامة ودقة',
+        en: 'ENJAZAK TECH Main Hero Showcase — Designing the Digital Future with Precision',
+      },
+      {
+        url: '/assets/projects/injazak/injazak-02-services.png',
+        ar: 'قسم الخدمات التقنية: تركيب الشبكات الداخلية، أنظمة الكاميرات والمراقبة، والأنظمة المحاسبية',
+        en: 'Core Services Showcase: LAN Networks, CCTV Surveillance & Accounting Systems',
+      },
+      {
+        url: '/assets/projects/injazak/injazak-03-sectors.png',
+        ar: 'الحلول المخصصة حسب النشاط والقطاع (المطاعم والكافيهات، المستشفيات والمراكز الطبية، الشركات والمكاتب)',
+        en: 'Sector-Tailored Industry Solutions (Restaurants & Cafes, Hospitals & Clinics, Enterprises)',
+      },
+      {
+        url: '/assets/projects/injazak/injazak-04-projects.png',
+        ar: 'معرض المشاريع المنفذة مع التصفية التفاعلية (تجهيز مول تجاري، نظام محاسبي لسلسلة مطاعم، بنية تحتية لمستشفى)',
+        en: 'Executed Portfolio Showcase with Category Filters (Commercial Mall, Restaurant ERP/POS, Hospital Infrastructure)',
+      },
+      {
+        url: '/assets/projects/injazak/injazak-05-methodology.png',
+        ar: 'منهجية العمل الهندسية من 6 مراحل: من معاينة المشروع والتخطيط إلى التدريب والدعم الفني',
+        en: '6-Stage Engineering Methodology: From Site Survey & Planning to Training & Technical Support',
+      },
+      {
+        url: '/assets/projects/injazak/injazak-06-about.png',
+        ar: 'قسم التعريف بالشركة (من نحن): أكثر من 10 سنوات من الخبرة في السوق اليمني ومعايير الجودة',
+        en: 'About Enjazak Tech: 10+ Years of Engineering Experience in the Yemeni Market',
+      },
+      {
+        url: '/assets/projects/injazak/injazak-07-partners-cta.png',
+        ar: 'أزرار طلب الاستشارة والمعاينة المجانية وشريط شركاء التكنولوجيا العالميين (Cisco, Hikvision, Dell, HP, MikroTik, Ubiquiti)',
+        en: 'Consultation/Site-Survey CTAs & Global Technology Partners Strip (Cisco, Hikvision, Dell, HP, MikroTik, Ubiquiti)',
+      },
     ];
   }
   return [];

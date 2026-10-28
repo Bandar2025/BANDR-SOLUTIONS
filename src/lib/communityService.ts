@@ -54,7 +54,7 @@ export function subscribeCommunityPosts(
       callback(posts);
     },
     (error) => {
-      console.error('Error listening to community posts:', error);
+      console.warn('Community posts snapshot fallback:', error);
       callback([]);
     }
   );

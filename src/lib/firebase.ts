@@ -1,10 +1,35 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, User } from 'firebase/auth';
-import { doc, getDocFromServer, getFirestore } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  getFirestore,
+  initializeFirestore,
+  setLogLevel,
+  Firestore,
+} from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+// Suppress internal @firebase/firestore WebChannel 10s transport negotiation logs from triggering console.error overlays
+setLogLevel('silent');
+
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+
+function initResilientFirestore(): Firestore {
+  try {
+    return initializeFirestore(
+      app,
+      {
+        experimentalAutoDetectLongPolling: true,
+      },
+      firebaseConfig.firestoreDatabaseId
+    );
+  } catch {
+    return getFirestore(app, firebaseConfig.firestoreDatabaseId);
+  }
+}
+
+export const db = initResilientFirestore();
 export const auth = getAuth(app);
 
 export const AUTHORIZED_OWNER_EMAILS = [
@@ -66,17 +91,19 @@ export function handleFirestoreError(
     operationType,
     path,
   };
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  console.warn('Firestore Operation Diagnostic:', JSON.stringify(errInfo));
   throw new Error(JSON.stringify(errInfo));
 }
 
 async function testConnection() {
+  if (!firebaseConfig?.apiKey || !firebaseConfig?.projectId) {
+    console.warn('Firebase configuration is missing required fields.');
+    return;
+  }
   try {
-    await getDocFromServer(doc(db, 'test', 'connection'));
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('the client is offline')) {
-      console.error('Please check your Firebase configuration.');
-    }
+    await getDoc(doc(db, 'test', 'connection'));
+  } catch {
+    // Gracefully operate in offline/cached mode when network or proxy delays initial handshake
   }
 }
 

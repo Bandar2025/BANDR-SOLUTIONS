@@ -106,12 +106,14 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
   // Fullscreen Lightbox State
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [activeLightboxIndex, setActiveLightboxIndex] = useState(0);
+  const [specFilter, setSpecFilter] = useState<'all' | 'implemented' | 'extensible'>('all');
 
   useEffect(() => {
     if (!project) return;
     setSelectedGalleryImage(null);
     setLightboxOpen(false);
     setActiveLightboxIndex(0);
+    setSpecFilter('all');
 
     if (preloadedGallery) {
       setGalleryItems(preloadedGallery);
@@ -701,6 +703,175 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                 <p className="text-sm theme-text-muted leading-relaxed">{t.modalTechNotClaimed}</p>
               )}
             </div>
+
+            {/* Smart Specification & Capabilities Matrix (For Projects with Structured Pillars) */}
+            {project.specificationPillars && project.specificationPillars.length > 0 && (
+              <div className="p-6 sm:p-8 rounded-2xl theme-card-elevated space-y-6 border theme-border">
+                <div className="flex flex-wrap items-start justify-between gap-4 border-b theme-border pb-4">
+                  <div className="space-y-1.5">
+                    <div className="inline-flex items-center gap-2 text-xs font-extrabold theme-accent-text uppercase tracking-wider">
+                      <Layers className="w-4 h-4" />
+                      <span>
+                        {isAr
+                          ? 'المواصفات الوظيفية والمعمارية المقسمة بذكاء'
+                          : 'Smart Functional & Architectural Specification'}
+                      </span>
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-extrabold theme-text-primary leading-snug">
+                      {isAr
+                        ? `منظومة القدرات والمميزات الرئيسية (${project.specificationPillars.length} محاور)`
+                        : `Core Platform Capabilities & Pillars (${project.specificationPillars.length} Modules)`}
+                    </h3>
+                  </div>
+
+                  {/* Interactive Filter Tabs for Specification Pillars */}
+                  <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl theme-bg-surface border theme-border">
+                    <button
+                      type="button"
+                      onClick={() => setSpecFilter('all')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        specFilter === 'all'
+                          ? 'bg-[var(--accent-primary)] text-white shadow-xs'
+                          : 'theme-text-secondary hover:theme-text-primary'
+                      }`}
+                    >
+                      {isAr
+                        ? `الكل (${project.specificationPillars.length})`
+                        : `All (${project.specificationPillars.length})`}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSpecFilter('implemented')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        specFilter === 'implemented'
+                          ? 'bg-emerald-600 text-white shadow-xs'
+                          : 'theme-text-secondary hover:theme-text-primary'
+                      }`}
+                    >
+                      {isAr
+                        ? `منشور وموثق (${
+                            project.specificationPillars.filter((p) => p.statusType === 'implemented')
+                              .length
+                          })`
+                        : `Live Storefront (${
+                            project.specificationPillars.filter((p) => p.statusType === 'implemented')
+                              .length
+                          })`}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSpecFilter('extensible')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        specFilter === 'extensible'
+                          ? 'bg-amber-600 text-white shadow-xs'
+                          : 'theme-text-secondary hover:theme-text-primary'
+                      }`}
+                    >
+                      {isAr
+                        ? `قابل للتوسع والتكامل (${
+                            project.specificationPillars.filter((p) => p.statusType === 'extensible')
+                              .length
+                          })`
+                        : `Extensible / Planned (${
+                            project.specificationPillars.filter((p) => p.statusType === 'extensible')
+                              .length
+                          })`}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Pillars Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {project.specificationPillars
+                    .filter((pillar) => specFilter === 'all' || pillar.statusType === specFilter)
+                    .map((pillar) => {
+                      const isImplemented = pillar.statusType === 'implemented';
+                      return (
+                        <div
+                          key={pillar.id}
+                          className="p-5 rounded-2xl theme-bg-surface border theme-border hover:border-[var(--accent-primary)]/50 transition-all flex flex-col justify-between gap-4 shadow-sm"
+                        >
+                          <div className="space-y-3">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <span className="px-2.5 py-1 rounded-lg theme-bg-elevated border theme-border font-mono-tabular text-xs font-black theme-accent-text shrink-0">
+                                  {pillar.index}
+                                </span>
+                                <h4 className="text-base font-extrabold theme-text-primary leading-snug">
+                                  {isAr ? pillar.titleAr : pillar.titleEn}
+                                </h4>
+                              </div>
+                              <span
+                                className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold shrink-0 border ${
+                                  isImplemented
+                                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                                    : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                                }`}
+                              >
+                                {isAr ? pillar.badgeAr : pillar.badgeEn}
+                              </span>
+                            </div>
+
+                            <ul className="space-y-2 pt-1">
+                              {(isAr ? pillar.itemsAr : pillar.itemsEn).map((bullet, bIdx) => (
+                                <li
+                                  key={bIdx}
+                                  className="flex items-start gap-2.5 text-sm theme-text-secondary leading-[1.7]"
+                                >
+                                  <CheckCircle2
+                                    className={`w-4 h-4 shrink-0 mt-1 ${
+                                      isImplemented ? 'text-emerald-400' : 'theme-accent-text'
+                                    }`}
+                                  />
+                                  <span>{bullet}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+
+                {/* Target Audience & Value Proposition Footer inside Specification Matrix */}
+                {((project.targetAudienceAr && project.targetAudienceAr.length > 0) ||
+                  project.valuePropositionAr) && (
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-2">
+                    {project.targetAudienceAr && project.targetAudienceAr.length > 0 && (
+                      <div className="lg:col-span-6 p-5 rounded-2xl theme-bg-surface border theme-border space-y-3">
+                        <h4 className="text-sm font-extrabold theme-accent-text uppercase tracking-wider">
+                          {isAr ? 'الفئات المستهدفة للمنصة' : 'Target Audience & Segments'}
+                        </h4>
+                        <ul className="space-y-2">
+                          {(isAr ? project.targetAudienceAr : project.targetAudienceEn || []).map(
+                            (aud, idx) => (
+                              <li
+                                key={idx}
+                                className="flex items-start gap-2.5 text-sm font-medium theme-text-primary leading-relaxed"
+                              >
+                                <span className="w-2 h-2 rounded-full bg-[var(--accent-primary)] shrink-0 mt-2" />
+                                <span>{aud}</span>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+                    )}
+
+                    {(project.valuePropositionAr || project.valuePropositionEn) && (
+                      <div className="lg:col-span-6 p-5 rounded-2xl theme-bg-surface border theme-border flex flex-col justify-between space-y-3">
+                        <h4 className="text-sm font-extrabold theme-accent-text uppercase tracking-wider">
+                          {isAr ? 'القيمة المضافة للمشروع' : 'Core Project Value Proposition'}
+                        </h4>
+                        <p className="text-sm sm:text-base font-semibold theme-text-primary leading-[1.85]">
+                          {isAr ? project.valuePropositionAr : project.valuePropositionEn}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Engineering Case Study Deep Dive */}
             {project.caseStudy && (
