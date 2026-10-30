@@ -31,7 +31,7 @@ export interface RouteSeoEntry {
 
 export type RouteSeoMap = Record<SeoManagedRoute, RouteSeoEntry>;
 
-const SEO_CACHE_STORAGE_KEY = 'bandr_seo_routes_cache_v1';
+const SEO_CACHE_STORAGE_KEY = 'bandr_seo_routes_cache_v2';
 
 export const DEFAULT_ROUTE_SEO_MAP: RouteSeoMap = {
   '/': {
@@ -41,13 +41,13 @@ export const DEFAULT_ROUTE_SEO_MAP: RouteSeoMap = {
     titleAr: 'Bandr Solutions | معرض الأعمال والمشاريع التقنية الذكية',
     titleEn: 'Bandr Solutions | Full Stack Engineering & AI Portfolio',
     descriptionAr:
-      'اكتشف أعمال Bandr Solutions للمهندس سعيد بندر في تطوير المنصات الذكية، المتاجر الإلكترونية، أنظمة ERP، وحلول الذكاء الاصطناعي وإنترنت الأشياء.',
+      'اكتشف أعمال Bandr Solutions للمهندس بندر سعيد في تطوير المنصات الذكية، المتاجر الإلكترونية، أنظمة ERP، وحلول الذكاء الاصطناعي وإنترنت الأشياء.',
     descriptionEn:
-      'Explore Bandr Solutions by Saeed Bandar — showcasing AI-powered web platforms, e-commerce storefronts, enterprise ERP systems, and IoT solutions.',
+      'Explore Bandr Solutions by Bandar Saeed — showcasing AI-powered web platforms, e-commerce storefronts, enterprise ERP systems, and IoT solutions.',
     keywordsAr:
-      'Bandr Solutions, سعيد بندر, تطوير مواقع, متاجر إلكترونية, ذكاء اصطناعي, أنظمة ERP, معرض أعمال برمجية',
+      'Bandr Solutions, بندر سعيد, بندر محمد إسماعيل سعيد, تطوير مواقع, متاجر إلكترونية, ذكاء اصطناعي, أنظمة ERP, معرض أعمال برمجية',
     keywordsEn:
-      'Bandr Solutions, Saeed Bandar, Full Stack Engineer, AI Specialist, React, E-Commerce, ERP, Portfolio',
+      'Bandr Solutions, Bandar Saeed, Bandar Mohammed Ismail Saeed, Full Stack Engineer, AI Specialist, React, E-Commerce, ERP, Portfolio',
     ogImage: '/og-bandr-solutions.svg',
   },
   '/projects': {
@@ -102,16 +102,16 @@ export const DEFAULT_ROUTE_SEO_MAP: RouteSeoMap = {
     path: '/about',
     routeLabelAr: 'نبذة والسيرة الذاتية (/about)',
     routeLabelEn: 'About & Verified CV (/about)',
-    titleAr: 'نبذة والسيرة الذاتية الموثقة — سعيد بندر | Bandr Solutions',
-    titleEn: 'About Saeed Bandar & Verified Engineering CV | Bandr Solutions',
+    titleAr: 'نبذة والسيرة الذاتية الموثقة — م. بندر سعيد | Bandr Solutions',
+    titleEn: 'About Eng. Bandar Saeed & Verified Engineering CV | Bandr Solutions',
     descriptionAr:
-      'تعرف على المهندس سعيد إسماعيل محمد بندر، المؤهل الأكاديمي في علوم الحاسوب وتقنية المعلومات، ومصفوفة المهارات التقنية الموثقة.',
+      'تعرف على المهندس بندر محمد إسماعيل سعيد، المؤهل الأكاديمي في علوم الحاسوب وتقنية المعلومات، ومصفوفة المهارات التقنية الموثقة.',
     descriptionEn:
-      'Learn about Saeed Ismail Mohammed Bandar, Full Stack Engineer & AI Specialist, academic credentials, and verified 6-domain technical skills matrix.',
+      'Learn about Bandar Mohammed Ismail Saeed, Full Stack Engineer & AI Specialist, academic credentials, and verified 6-domain technical skills matrix.',
     keywordsAr:
-      'سعيد إسماعيل محمد بندر, السيرة الذاتية, مهندس برمجيات, متخصص ذكاء اصطناعي, جامعة الحكمة',
+      'بندر محمد إسماعيل سعيد, بندر سعيد, السيرة الذاتية, مهندس برمجيات, متخصص ذكاء اصطناعي, جامعة الحكمة',
     keywordsEn:
-      'Saeed Ismail Mohammed Bandar, Curriculum Vitae, Full Stack Developer, AI Engineer, Skills Matrix',
+      'Bandar Mohammed Ismail Saeed, Bandar Saeed, Curriculum Vitae, Full Stack Developer, AI Engineer, Skills Matrix',
     ogImage: '/og-bandr-solutions.svg',
   },
   '/contact': {
@@ -121,9 +121,9 @@ export const DEFAULT_ROUTE_SEO_MAP: RouteSeoMap = {
     titleAr: 'تواصل معي واطلب مشروعك التقني | Bandr Solutions',
     titleEn: 'Contact & Start Your Project Inquiry | Bandr Solutions',
     descriptionAr:
-      'تواصل مباشرة مع المهندس سعيد بندر عبر البريد الرسمي أو منصات العمل الحر الموثقة أو استخدم نموذج تجهيز ملخص المشروع الفوري.',
+      'تواصل مباشرة مع المهندس بندر سعيد عبر البريد الرسمي أو منصات العمل الحر الموثقة أو استخدم نموذج تجهيز ملخص المشروع الفوري.',
     descriptionEn:
-      'Connect directly with Saeed Bandar via official email, LinkedIn, or verified freelance profiles, or build a structured project inquiry brief.',
+      'Connect directly with Bandar Saeed via official email, LinkedIn, or verified freelance profiles, or build a structured project inquiry brief.',
     keywordsAr:
       'تواصل مع مبرمج, طلب مشروع تقني, توظيف مهندس برمجيات, Bandr Solutions تواصل',
     keywordsEn:
